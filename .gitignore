@@ -1,0 +1,33 @@
+# 依赖
+node_modules/
+
+# 构建输出
+dist/
+frontend/dist/
+
+# 环境变量
+.env
+
+# Prisma 迁移
+server/prisma/migrations/
+
+# 上传文件
+uploads/*
+!uploads/.gitkeep
+
+# 数据持久化
+data/
+
+# 备份
+backups/
+
+# 系统
+.DS_Store
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# Claude 配置
+.claude/settings.local.json

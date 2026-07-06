@@ -1,0 +1,32 @@
+import type { FastifyInstance } from "fastify";
+import { prisma } from "../../lib/db.js";
+import { confirmSale } from "../../lib/card-pool.js";
+
+export async function webhookPayRoutes(app: FastifyInstance) {
+  // mock支付回调
+  app.post("/mock", async (request, reply) => {
+    const { orderNo } = request.body as { orderNo: string };
+    const order = await prisma.order.findUnique({ where: { orderNo } });
+    if (!order) return reply.code(404).send({ success: false });
+    if (order.paymentStatus === "paid") return { success: true };
+
+    // 事务处理
+    await prisma.$transaction(async (tx) => {
+      await tx.order.update({ where: { id: order.id }, data: { paymentStatus: "paid", paidAt: new Date(), orderStatus: "completed" } });
+      await tx.payment.updateMany({ where: { orderId: order.id, isActive: true }, data: { status: "success", paidAmount: order.totalAmount, paidAt: new Date() } });
+    });
+
+    // 发货
+    const cards = await prisma.card.findMany({ where: { orderId: order.id, status: "locked" } });
+    if (cards.length > 0) {
+      await confirmSale(cards.map((c) => c.id));
+      const content = cards.map((c) => c.content).join("\n");
+      await prisma.delivery.create({ data: { orderId: order.id, type: "card", content, status: "delivered", deliveredAt: new Date() } });
+      await prisma.order.update({ where: { id: order.id }, data: { deliveryStatus: "delivered", deliveredAt: new Date() } });
+      // 更新销量
+      await prisma.product.update({ where: { id: order.productId }, data: { salesCount: { increment: 1 } } });
+    }
+
+    return { success: true };
+  });
+}
