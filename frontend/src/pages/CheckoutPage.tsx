@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../lib/client.js";
 import { LoadingState } from "../components/LoadingStates.js";
+import { Select } from "../theme/components/form/Select.js";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
@@ -67,9 +68,7 @@ export default function CheckoutPage() {
         <p className="mb-2 text-sm text-text-secondary">{t("orderNo", { ns: "common" })}</p>
         <p className="mb-4 font-mono text-lg">{orderNo}</p>
         <p className="mb-2 text-sm text-text-secondary">{t("paymentMethod")}</p>
-        <select value={channel} onChange={(e) => setChannel(e.target.value)} className="w-full rounded border-border px-3 py-2">
-          {channels?.map((ch: any) => <option key={ch.code} value={ch.code}>{ch.name}</option>)}
-        </select>
+        <Select value={channel} onChange={(e) => setChannel(e.target.value)} options={channels?.map((ch: any) => ({ value: ch.code, label: ch.name })) || []} />
       </div>
 
       <button onClick={handlePay} className="w-full rounded bg-green-500 py-3 text-lg font-medium text-white hover:bg-green-600">

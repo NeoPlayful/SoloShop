@@ -4,6 +4,7 @@ import { apiClient } from "../../lib/client.js";
 import { Pagination } from "../../components/Pagination.js";
 import { LoadingState } from "../../components/LoadingStates.js";
 import { useState } from "react";
+import { Select } from "../../theme/components/form/Select.js";
 
 export default function DeliveriesPage() {
   const { t } = useTranslation("admin");
@@ -18,12 +19,12 @@ export default function DeliveriesPage() {
     <div>
       <h1 className="mb-4 text-xl font-bold text-text-primary">{t("deliveryManagement")}</h1>
       <div className="mb-4">
-        <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="rounded border border-border px-3 py-2 text-sm text-text-primary">
-          <option value="">{t("common:all")}</option>
-          <option value="pending">{t("common:pending")}</option>
-          <option value="delivered">{t("common:delivered")}</option>
-          <option value="failed">{t("common:failed")}</option>
-        </select>
+        <Select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} options={[
+          { value: "", label: t("common:all") },
+          { value: "pending", label: t("common:pending") },
+          { value: "delivered", label: t("common:delivered") },
+          { value: "failed", label: t("common:failed") },
+        ]} />
       </div>
       <table className="w-full rounded-lg bg-surface shadow">
         <thead className="border-b border-border bg-surface-alt"><tr>

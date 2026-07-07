@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CubeIcon } from "@heroicons/react/24/outline";
 import { apiClient } from "../lib/client.js";
 import { LoadingState } from "../components/LoadingStates.js";
+import { Input } from "../theme/components/form/Input.js";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
@@ -62,12 +63,12 @@ export default function ProductPage() {
       <div className="space-y-4 rounded-lg border-border bg-surface p-6">
         <div>
           <label className="mb-1 block text-sm font-medium">{t("quantity")}</label>
-          <input type="number" value={quantity} min={product.minQuantity} max={product.maxQuantity} onChange={(e) => setQuantity(parseInt(e.target.value) || 1)} className="w-24 rounded border-border px-3 py-2 text-center" />
+          <Input type="number" value={quantity} min={product.minQuantity} max={product.maxQuantity} onChange={(e) => setQuantity(parseInt(e.target.value) || 1)} className="w-24 text-center" />
           <span className="ml-2 text-xs text-text-tertiary">{t("quantityRange", { min: product.minQuantity, max: product.maxQuantity })}</span>
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium">{t("email")}</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded border-border px-3 py-2" placeholder={t("emailPlaceholder")} />
+          <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("emailPlaceholder")} />
         </div>
         {product.purchaseNotes && (
           <div className="rounded bg-yellow-50 p-3 text-xs text-yellow-700">{product.purchaseNotes}</div>

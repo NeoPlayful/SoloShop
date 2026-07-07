@@ -11,6 +11,9 @@
   --tw-bg-sidebar-hover: #374151;
   --tw-overlay: rgba(0, 0, 0, 0.4);
 
+  /* Focus ring */
+  --tw-ring-focus: #3b82f6;
+
   /* Text colors */
   --tw-text-primary: #111827;
   --tw-text-secondary: #6b7280;
@@ -123,6 +126,8 @@
   --tw-bg-sidebar: #0f172a;
   --tw-bg-sidebar-hover: #1e293b;
   --tw-overlay: rgba(0, 0, 0, 0.6);
+
+  --tw-ring-focus: #60a5fa;
 
   --tw-text-primary: #f3f4f6;
   --tw-text-secondary: #9ca3af;

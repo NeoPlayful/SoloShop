@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiClient } from "../lib/client.js";
+import { Input } from "../theme/components/form/Input.js";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 
@@ -30,11 +31,11 @@ export default function OrderQueryPage() {
       <div className="space-y-4 rounded-lg border-border bg-surface p-6">
         <div>
           <label className="mb-1 block text-sm font-medium">{t("orderNo", { ns: "common" })}</label>
-          <input value={orderNo} onChange={(e) => setOrderNo(e.target.value)} className="w-full rounded border-border px-3 py-2" placeholder={t("orderNoPlaceholder")} />
+          <Input value={orderNo} onChange={(e) => setOrderNo(e.target.value)} placeholder={t("orderNoPlaceholder")} />
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium">{t("email")}</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded border-border px-3 py-2" placeholder={t("orderEmailPlaceholder")} />
+          <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("orderEmailPlaceholder")} />
         </div>
         <button onClick={handleQuery} className="w-full rounded bg-blue-500 py-2 text-white hover:bg-blue-600">{t("orderQueryBtn")}</button>
       </div>

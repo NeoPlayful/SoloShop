@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./theme/presets/default-theme/styles.css";
+@import "./theme/presets/ocean-theme/styles.css";
 
 /* ===== TailwindCSS 4 Theme Registration ===== */
 /* These make CSS variables available as Tailwind utility classes (bg-*, text-*, border-*) */
@@ -12,6 +13,8 @@
   --color-sidebar: var(--tw-bg-sidebar);
   --color-sidebar-hover: var(--tw-bg-sidebar-hover);
   --color-overlay: var(--tw-overlay);
+
+  --color-ring-focus: var(--tw-ring-focus);
 
   --color-text-primary: var(--tw-text-primary);
   --color-text-secondary: var(--tw-text-secondary);

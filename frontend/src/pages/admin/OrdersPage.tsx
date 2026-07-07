@@ -5,6 +5,8 @@ import { apiClient } from "../../lib/client.js";
 import { Pagination } from "../../components/Pagination.js";
 import { LoadingState } from "../../components/LoadingStates.js";
 import { Modal } from "../../components/Modal.js";
+import { Input } from "../../theme/components/form/Input.js";
+import { Select } from "../../theme/components/form/Select.js";
 import toast from "react-hot-toast";
 
 export default function OrdersPage() {
@@ -41,13 +43,13 @@ export default function OrdersPage() {
     <div>
       <h1 className="mb-4 text-xl font-bold text-text-primary">{t("orderManagement")}</h1>
       <div className="mb-4 flex gap-2">
-        <input value={orderNo} onChange={(e) => { setOrderNo(e.target.value); setPage(1); }} placeholder={t("orderSearch")} className="rounded border border-border px-3 py-2 text-sm text-text-primary" />
-        <select value={paymentStatus} onChange={(e) => { setPaymentStatus(e.target.value); setPage(1); }} className="rounded border border-border px-3 py-2 text-sm text-text-primary">
-          <option value="">{t("allPaymentStatus")}</option>
-          <option value="unpaid">{t("common:unpaid")}</option>
-          <option value="paid">{t("common:paid")}</option>
-          <option value="failed">{t("common:failed")}</option>
-        </select>
+        <Input value={orderNo} onChange={(e) => { setOrderNo(e.target.value); setPage(1); }} placeholder={t("orderSearch")} />
+        <Select value={paymentStatus} onChange={(e) => { setPaymentStatus(e.target.value); setPage(1); }} options={[
+          { value: "", label: t("allPaymentStatus") },
+          { value: "unpaid", label: t("common:unpaid") },
+          { value: "paid", label: t("common:paid") },
+          { value: "failed", label: t("common:failed") },
+        ]} />
       </div>
 
       <table className="w-full rounded-lg bg-surface shadow">

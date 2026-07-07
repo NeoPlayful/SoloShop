@@ -132,6 +132,15 @@
   "isHidden": "隐藏商品",
   "stockDisplay": "库存显示",
 
+  "themeSettings": "站点主题设置",
+  "siteDefaultTheme": "默认色系",
+  "themeModeLabel": "默认模式",
+  "saveThemeSettings": "保存主题设置",
+  "themeSaved": "主题设置已保存",
+  "themeLight": "始终亮色",
+  "themeDark": "始终暗色",
+  "themeSystem": "跟随系统",
+
   "saveSuccess": "保存成功",
   "deleteSuccess": "删除成功",
   "operationSuccess": "操作成功",

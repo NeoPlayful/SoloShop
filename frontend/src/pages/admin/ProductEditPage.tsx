@@ -4,6 +4,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "../../lib/client.js";
 import { LoadingState } from "../../components/LoadingStates.js";
+import { Input } from "../../theme/components/form/Input.js";
+import { Select } from "../../theme/components/form/Select.js";
+import { Textarea } from "../../theme/components/form/Textarea.js";
 import toast from "react-hot-toast";
 
 export default function ProductEditPage() {
@@ -40,27 +43,24 @@ export default function ProductEditPage() {
     <div>
       <h1 className="mb-6 text-xl font-bold text-text-primary">{isNew ? t("addProduct") : t("editProduct")}</h1>
       <div className="max-w-2xl space-y-4 rounded-lg bg-surface p-6 shadow">
-        <div><label className="mb-1 block text-sm font-medium text-text-primary">{t("productName")}</label><input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded border border-border px-3 py-2 text-text-primary" /></div>
-        <div><label className="mb-1 block text-sm font-medium text-text-primary">{t("productSlug")}</label><input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className="w-full rounded border border-border px-3 py-2 text-text-primary" /></div>
-        <div><label className="mb-1 block text-sm font-medium text-text-primary">{t("category")}</label><select value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: parseInt(e.target.value) })} className="w-full rounded border border-border px-3 py-2 text-text-primary">
-          <option value={0}>{t("common:all")}</option>
-          {categories?.items?.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
-        </select></div>
+        <Input label={t("productName")} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+        <Input label={t("productSlug")} value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} />
+        <Select label={t("category")} value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: parseInt(e.target.value) })} placeholderOption={t("common:all")} options={categories?.items?.map((c: any) => ({ value: String(c.id), label: c.name })) || []} />
         <div className="grid grid-cols-2 gap-4">
-          <div><label className="mb-1 block text-sm font-medium text-text-primary">{t("price")}</label><input type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })} className="w-full rounded border border-border px-3 py-2 text-text-primary" /></div>
-          <div><label className="mb-1 block text-sm font-medium text-text-primary">{t("originalPrice")}</label><input type="number" step="0.01" value={form.originalPrice} onChange={(e) => setForm({ ...form, originalPrice: parseFloat(e.target.value) || 0 })} className="w-full rounded border border-border px-3 py-2 text-text-primary" /></div>
+          <Input label={t("price")} type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })} />
+          <Input label={t("originalPrice")} type="number" step="0.01" value={form.originalPrice} onChange={(e) => setForm({ ...form, originalPrice: parseFloat(e.target.value) || 0 })} />
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <div><label className="mb-1 block text-sm font-medium text-text-primary">{t("minQuantity")}</label><input type="number" value={form.minQuantity} onChange={(e) => setForm({ ...form, minQuantity: parseInt(e.target.value) || 1 })} className="w-full rounded border border-border px-3 py-2 text-text-primary" /></div>
-          <div><label className="mb-1 block text-sm font-medium text-text-primary">{t("maxQuantity")}</label><input type="number" value={form.maxQuantity} onChange={(e) => setForm({ ...form, maxQuantity: parseInt(e.target.value) || 1 })} className="w-full rounded border border-border px-3 py-2 text-text-primary" /></div>
+          <Input label={t("minQuantity")} type="number" value={form.minQuantity} onChange={(e) => setForm({ ...form, minQuantity: parseInt(e.target.value) || 1 })} />
+          <Input label={t("maxQuantity")} type="number" value={form.maxQuantity} onChange={(e) => setForm({ ...form, maxQuantity: parseInt(e.target.value) || 1 })} />
         </div>
-        <div><label className="mb-1 block text-sm font-medium text-text-primary">{t("deliveryType")}</label><select value={form.deliveryType} onChange={(e) => setForm({ ...form, deliveryType: e.target.value })} className="w-full rounded border border-border px-3 py-2 text-text-primary">
-          <option value="auto_card">{t("autoCard")}</option>
-          <option value="text">{t("text")}</option>
-          <option value="manual">{t("manual")}</option>
-        </select></div>
-        <div><label className="mb-1 block text-sm font-medium text-text-primary">{t("description", { ns: "common" })}</label><textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} className="w-full rounded border border-border px-3 py-2 text-text-primary" /></div>
-        <div><label className="mb-1 block text-sm font-medium text-text-primary">{t("purchaseNotes2")}</label><textarea value={form.purchaseNotes} onChange={(e) => setForm({ ...form, purchaseNotes: e.target.value })} rows={2} className="w-full rounded border border-border px-3 py-2 text-text-primary" /></div>
+        <Select label={t("deliveryType")} value={form.deliveryType} onChange={(e) => setForm({ ...form, deliveryType: e.target.value })} options={[
+          { value: "auto_card", label: t("autoCard") },
+          { value: "text", label: t("text") },
+          { value: "manual", label: t("manual") },
+        ]} />
+        <Textarea label={t("description", { ns: "common" })} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} />
+        <Textarea label={t("purchaseNotes2")} value={form.purchaseNotes} onChange={(e) => setForm({ ...form, purchaseNotes: e.target.value })} rows={2} />
         <div className="flex gap-3">
           <button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending} className="rounded bg-blue-500 px-6 py-2 text-white hover:bg-blue-600 disabled:opacity-50">{saveMutation.isPending ? t("saving", { ns: "common" }) : t("save", { ns: "common" })}</button>
           <button onClick={() => navigate("/admin/products")} className="rounded border border-border px-6 py-2 text-text-primary hover:bg-surface-hover">{t("cancel", { ns: "common" })}</button>

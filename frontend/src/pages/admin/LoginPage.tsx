@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "../../lib/client.js";
+import { Input } from "../../theme/components/form/Input.js";
 import toast from "react-hot-toast";
 
 export default function LoginPage() {
@@ -36,11 +37,11 @@ export default function LoginPage() {
         <h1 className="mb-6 text-center text-2xl font-bold text-text-primary">{t("loginTitle")}</h1>
         <div className="mb-4">
           <label className="mb-1 block text-sm font-medium text-text-primary">{t("username", { ns: "common" })}</label>
-          <input value={username} onChange={(e) => setUsername(e.target.value)} className="w-full rounded border border-border px-3 py-2 focus:border-blue-500 focus:outline-none" placeholder={t("usernamePlaceholder", { ns: "common" })} />
+          <Input value={username} onChange={(e) => setUsername(e.target.value)} placeholder={t("usernamePlaceholder", { ns: "common" })} />
         </div>
         <div className="mb-6">
           <label className="mb-1 block text-sm font-medium text-text-primary">{t("password", { ns: "common" })}</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded border border-border px-3 py-2 focus:border-blue-500 focus:outline-none" placeholder={t("passwordPlaceholder", { ns: "common" })} />
+          <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={t("passwordPlaceholder", { ns: "common" })} />
         </div>
         <button type="submit" disabled={loading} className="w-full rounded bg-blue-500 py-2 text-white hover:bg-blue-600 disabled:opacity-50">
           {loading ? t("loggingIn", { ns: "common" }) : t("login", { ns: "common" })}
