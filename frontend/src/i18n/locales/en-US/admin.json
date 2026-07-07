@@ -132,6 +132,15 @@
   "isHidden": "Hidden Product",
   "stockDisplay": "Stock Display",
 
+  "themeSettings": "Site Theme Settings",
+  "siteDefaultTheme": "Default Theme",
+  "themeModeLabel": "Default Mode",
+  "saveThemeSettings": "Save Theme Settings",
+  "themeSaved": "Theme settings saved",
+  "themeLight": "Always Light",
+  "themeDark": "Always Dark",
+  "themeSystem": "Follow System",
+
   "saveSuccess": "Saved successfully",
   "deleteSuccess": "Deleted successfully",
   "operationSuccess": "Operation successful",

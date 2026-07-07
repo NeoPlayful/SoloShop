@@ -1,0 +1,189 @@
+/* ===== ocean-theme: Design Token Values ===== */
+/* Ocean color scheme — cyan/teal tones, fresh and airy */
+/* Light mode (default) */
+[data-theme="ocean-theme"] {
+  /* Surface colors */
+  --tw-surface: #ffffff;
+  --tw-surface-alt: #f0fdfa;
+  --tw-surface-hover: #ccfbf1;
+  --tw-surface-raised: #ffffff;
+  --tw-bg-page: #f0fdfa;
+  --tw-bg-sidebar: #0f172a;
+  --tw-bg-sidebar-hover: #1e293b;
+  --tw-overlay: rgba(0, 0, 0, 0.4);
+
+  /* Focus ring */
+  --tw-ring-focus: #06b6d4;
+
+  /* Text colors */
+  --tw-text-primary: #0f172a;
+  --tw-text-secondary: #64748b;
+  --tw-text-tertiary: #94a3b8;
+  --tw-text-inverse: #f0fdfa;
+
+  /* Border colors */
+  --tw-border: #ccfbf1;
+  --tw-border-light: #a7f3d0;
+
+  /* Semantic status badges */
+  --tw-badge-success-bg: #d1fae5;
+  --tw-badge-success-text: #065f46;
+  --tw-badge-warning-bg: #fef3c7;
+  --tw-badge-warning-text: #92400e;
+  --tw-badge-danger-bg: #ffe4e6;
+  --tw-badge-danger-text: #9f1239;
+  --tw-badge-info-bg: #cffafe;
+  --tw-badge-info-text: #0e7490;
+
+  /* Primary (cyan) scale — replacing blue */
+  --tw-blue-50: #ecfeff;
+  --tw-blue-100: #cffafe;
+  --tw-blue-200: #a5f3fc;
+  --tw-blue-500: #06b6d4;
+  --tw-blue-600: #0891b2;
+  --tw-blue-700: #0e7490;
+  /* Success (emerald) scale */
+  --tw-green-100: #d1fae5;
+  --tw-green-500: #10b981;
+  --tw-green-600: #059669;
+  --tw-green-700: #047857;
+  /* Warning (amber) scale */
+  --tw-yellow-50: #fffbeb;
+  --tw-yellow-100: #fef3c7;
+  --tw-yellow-500: #f59e0b;
+  --tw-yellow-600: #d97706;
+  --tw-yellow-700: #b45309;
+  /* Danger (rose) scale */
+  --tw-red-100: #ffe4e6;
+  --tw-red-500: #f43f5e;
+  --tw-red-600: #e11d48;
+  --tw-red-700: #be123c;
+
+  /* Gray scale */
+  --tw-gray-50: #f8fafc;
+  --tw-gray-100: #f1f5f9;
+  --tw-gray-200: #e2e8f0;
+  --tw-gray-300: #cbd5e1;
+  --tw-gray-400: #94a3b8;
+  --tw-gray-500: #64748b;
+  --tw-gray-600: #475569;
+  --tw-gray-700: #334155;
+  --tw-gray-900: #0f172a;
+
+  /* ----- 设计 Token（非颜色） ----- */
+  /* Radius — more rounded, pill-shaped */
+  --tw-radius-sm: 0.125rem;
+  --tw-radius-md: 0.5rem;
+  --tw-radius-lg: 0.75rem;
+  --tw-radius-xl: 1rem;
+  --tw-radius-2xl: 1.25rem;
+  --tw-radius-3xl: 1.75rem;
+  --tw-radius-full: 9999px;
+
+  --tw-radius-button: var(--tw-radius-full);
+  --tw-radius-card: var(--tw-radius-xl);
+  --tw-radius-input: var(--tw-radius-full);
+  --tw-radius-modal: var(--tw-radius-xl);
+  --tw-radius-badge: var(--tw-radius-md);
+
+  /* Shadow — larger, softer, with cyan tint */
+  --tw-shadow-sm: 0 1px 3px 0 rgba(6, 182, 212, 0.08);
+  --tw-shadow-md: 0 4px 12px -2px rgba(6, 182, 212, 0.1);
+  --tw-shadow-lg: 0 10px 24px -4px rgba(6, 182, 212, 0.12);
+  --tw-shadow-xl: 0 20px 40px -6px rgba(6, 182, 212, 0.15);
+
+  --tw-shadow-card: var(--tw-shadow-sm);
+  --tw-shadow-modal: var(--tw-shadow-xl);
+  --tw-shadow-dropdown: var(--tw-shadow-lg);
+
+  /* Typography — same as default */
+  --tw-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+  --tw-font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+  --tw-font-mono: "SF Mono", "Fira Code", "Fira Mono", Menlo, Consolas,
+    monospace;
+
+  /* Spacing & Layout — more spacious */
+  --tw-page-padding: 2rem;
+  --tw-sidebar-width: 14rem;
+  --tw-content-max-width: 80rem;
+
+  /* Motion — smoother */
+  --tw-duration-fast: 200ms;
+  --tw-duration-normal: 300ms;
+  --tw-duration-slow: 400ms;
+  --tw-easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --tw-easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== Dark mode for ocean-theme ===== */
+/* Deep sea / abyss tones */
+[data-theme="ocean-theme"][data-mode="dark"] {
+  --tw-surface: #083344;
+  --tw-surface-alt: #164e63;
+  --tw-surface-hover: #164e63;
+  --tw-surface-raised: #042f2e;
+  --tw-bg-page: #042f2e;
+  --tw-bg-sidebar: #021a1a;
+  --tw-bg-sidebar-hover: #042f2e;
+  --tw-overlay: rgba(0, 0, 0, 0.7);
+
+  --tw-ring-focus: #22d3ee;
+
+  --tw-text-primary: #ccfbf1;
+  --tw-text-secondary: #5eead4;
+  --tw-text-tertiary: #14b8a6;
+  --tw-text-inverse: #042f2e;
+
+  --tw-border: #164e63;
+  --tw-border-light: #155e75;
+
+  --tw-badge-success-bg: #064e3b;
+  --tw-badge-success-text: #6ee7b7;
+  --tw-badge-warning-bg: #78350f;
+  --tw-badge-warning-text: #fcd34d;
+  --tw-badge-danger-bg: #881337;
+  --tw-badge-danger-text: #fda4af;
+  --tw-badge-info-bg: #164e63;
+  --tw-badge-info-text: #67e8f9;
+
+  --tw-blue-50: #164e63;
+  --tw-blue-100: #155e75;
+  --tw-blue-200: #0e7490;
+  --tw-blue-500: #22d3ee;
+  --tw-blue-600: #06b6d4;
+  --tw-blue-700: #0891b2;
+
+  --tw-green-100: #064e3b;
+  --tw-green-500: #34d399;
+  --tw-green-600: #10b981;
+  --tw-green-700: #059669;
+
+  --tw-yellow-50: #451a03;
+  --tw-yellow-100: #78350f;
+  --tw-yellow-500: #fbbf24;
+  --tw-yellow-600: #f59e0b;
+  --tw-yellow-700: #d97706;
+
+  --tw-red-100: #881337;
+  --tw-red-500: #fb7185;
+  --tw-red-600: #f43f5e;
+  --tw-red-700: #e11d48;
+
+  --tw-gray-50: #1e293b;
+  --tw-gray-100: #0f172a;
+  --tw-gray-200: #1e293b;
+  --tw-gray-300: #334155;
+  --tw-gray-400: #475569;
+  --tw-gray-500: #64748b;
+  --tw-gray-600: #94a3b8;
+  --tw-gray-700: #cbd5e1;
+  --tw-gray-900: #f1f5f9;
+
+  /* Dark mode shadow adjustments */
+  --tw-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+  --tw-shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.5);
+  --tw-shadow-lg: 0 10px 24px -4px rgba(0, 0, 0, 0.6);
+  --tw-shadow-xl: 0 20px 40px -6px rgba(0, 0, 0, 0.7);
+}

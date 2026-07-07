@@ -76,5 +76,8 @@
   "paymentSuccess": "支付成功",
   "waitingPayment": "等待支付",
   "paymentSuccessDesc": "支付成功",
-  "waitingPaymentDesc": "等待支付"
+  "waitingPaymentDesc": "等待支付",
+
+  "themeDefault": "默认主题",
+  "themeOcean": "海洋主题"
 }

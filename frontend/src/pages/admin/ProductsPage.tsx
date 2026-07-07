@@ -4,6 +4,8 @@ import { useTranslation } from "react-i18next";
 import { apiClient } from "../../lib/client.js";
 import { Pagination } from "../../components/Pagination.js";
 import { LoadingState } from "../../components/LoadingStates.js";
+import { Input } from "../../theme/components/form/Input.js";
+import { Select } from "../../theme/components/form/Select.js";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -40,13 +42,13 @@ export default function ProductsPage() {
       </div>
 
       <div className="mb-4 flex gap-2">
-        <input value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} placeholder={t("searchProduct")} className="rounded border border-border px-3 py-2 text-sm text-text-primary" />
-        <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="rounded border border-border px-3 py-2 text-sm text-text-primary">
-          <option value="">{t("allStatus")}</option>
-          <option value="draft">{t("draft")}</option>
-          <option value="active">{t("active")}</option>
-          <option value="inactive">{t("inactive")}</option>
-        </select>
+        <Input value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} placeholder={t("searchProduct")} className="max-w-xs" />
+        <Select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} options={[
+          { value: "", label: t("allStatus") },
+          { value: "draft", label: t("draft") },
+          { value: "active", label: t("active") },
+          { value: "inactive", label: t("inactive") },
+        ]} />
       </div>
 
       <table className="w-full rounded-lg bg-surface shadow">

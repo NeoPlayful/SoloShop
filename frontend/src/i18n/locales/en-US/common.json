@@ -76,5 +76,8 @@
   "paymentSuccess": "Payment Successful",
   "waitingPayment": "Awaiting Payment",
   "paymentSuccessDesc": "Payment successful",
-  "waitingPaymentDesc": "Awaiting payment"
+  "waitingPaymentDesc": "Awaiting payment",
+
+  "themeDefault": "Default Theme",
+  "themeOcean": "Ocean Theme"
 }

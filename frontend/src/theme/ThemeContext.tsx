@@ -27,20 +27,20 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 const THEME_ID_KEY = "soloshop-theme-id";
 const MODE_KEY = "soloshop-theme-mode";
 
-function getStoredThemeId(): string {
+function getStoredThemeIdRaw(): string | null {
   try {
-    return localStorage.getItem(THEME_ID_KEY) || "default-theme";
+    return localStorage.getItem(THEME_ID_KEY);
   } catch {
-    return "default-theme";
+    return null;
   }
 }
 
-function getStoredMode(): ThemeMode {
+function getStoredModeRaw(): ThemeMode | null {
   try {
     const stored = localStorage.getItem(MODE_KEY);
     if (stored === "light" || stored === "dark" || stored === "system") return stored;
   } catch {}
-  return "system";
+  return null;
 }
 
 function getSystemTheme(): "light" | "dark" {
@@ -55,10 +55,10 @@ function applyTheme(themeId: string, resolved: "light" | "dark") {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [themeId, setThemeIdState] = useState<string>(getStoredThemeId);
-  const [mode, setModeState] = useState<ThemeMode>(getStoredMode);
+  const [themeId, setThemeIdState] = useState<string>(() => getStoredThemeIdRaw() || "default-theme");
+  const [mode, setModeState] = useState<ThemeMode>(() => getStoredModeRaw() || "system");
   const [resolved, setResolved] = useState<"light" | "dark">(() => {
-    const m = getStoredMode();
+    const m = getStoredModeRaw() || "system";
     return m === "system" ? getSystemTheme() : m;
   });
 
@@ -79,6 +79,25 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const toggle = useCallback(() => {
     setMode(resolved === "dark" ? "light" : "dark");
   }, [resolved, setMode]);
+
+  // 方案B：localStorage 无值时，从服务器获取默认主题设置
+  useEffect(() => {
+    // 如果用户已有 localStorage 覆盖，不获取服务器默认值
+    if (getStoredThemeIdRaw() && getStoredModeRaw()) return;
+
+    fetch("/api/public/settings")
+      .then((r) => r.json())
+      .then((res) => {
+        if (!res.success || !res.data) return;
+        const serverThemeId: string = res.data.site_theme_id || "default-theme";
+        const serverMode: ThemeMode = res.data.site_theme_mode || "system";
+        setThemeIdState(serverThemeId);
+        setModeState(serverMode);
+      })
+      .catch(() => {
+        // 静默失败，保持硬编码默认值
+      });
+  }, []);
 
   // Apply theme whenever themeId or resolved changes
   useEffect(() => {

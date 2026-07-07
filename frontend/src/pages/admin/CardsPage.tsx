@@ -5,6 +5,8 @@ import { apiClient } from "../../lib/client.js";
 import { Pagination } from "../../components/Pagination.js";
 import { LoadingState } from "../../components/LoadingStates.js";
 import { Modal } from "../../components/Modal.js";
+import { Select } from "../../theme/components/form/Select.js";
+import { Textarea } from "../../theme/components/form/Textarea.js";
 import toast from "react-hot-toast";
 
 export default function CardsPage() {
@@ -53,17 +55,14 @@ export default function CardsPage() {
       </div>
 
       <div className="mb-4 flex gap-2">
-        <select value={productId} onChange={(e) => { setProductId(e.target.value); setPage(1); }} className="rounded border border-border px-3 py-2 text-sm text-text-primary">
-          <option value="">{t("common:all")}</option>
-          {products?.items?.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
-        </select>
-        <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="rounded border border-border px-3 py-2 text-sm text-text-primary">
-          <option value="">{t("common:all")}</option>
-          <option value="available">{t("available")}</option>
-          <option value="locked">{t("locked")}</option>
-          <option value="sold">{t("sold")}</option>
-          <option value="disabled">{t("common:disabled")}</option>
-        </select>
+        <Select value={productId} onChange={(e) => { setProductId(e.target.value); setPage(1); }} placeholderOption={t("common:all")} options={products?.items?.map((p: any) => ({ value: String(p.id), label: p.name })) || []} />
+        <Select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} options={[
+          { value: "", label: t("common:all") },
+          { value: "available", label: t("available") },
+          { value: "locked", label: t("locked") },
+          { value: "sold", label: t("sold") },
+          { value: "disabled", label: t("common:disabled") },
+        ]} />
       </div>
 
       <table className="w-full rounded-lg bg-surface shadow">
@@ -99,11 +98,8 @@ export default function CardsPage() {
 
       <Modal open={showImport} title={t("importCards")} onClose={() => setShowImport(false)}>
         <div className="space-y-4">
-          <select value={productId} onChange={(e) => setProductId(e.target.value)} className="w-full rounded border border-border px-3 py-2 text-sm text-text-primary">
-            <option value="">{t("common:all")}</option>
-            {products?.items?.map((p: any) => <option key={p.id} value={p.id}>{p.name}</option>)}
-          </select>
-          <textarea value={importText} onChange={(e) => setImportText(e.target.value)} rows={10} className="w-full rounded border border-border px-3 py-2 text-sm font-mono text-text-primary" placeholder={t("importHint")} />
+          <Select value={productId} onChange={(e) => setProductId(e.target.value)} placeholderOption={t("common:all")} options={products?.items?.map((p: any) => ({ value: String(p.id), label: p.name })) || []} />
+          <Textarea value={importText} onChange={(e) => setImportText(e.target.value)} rows={10} className="font-mono" placeholder={t("importHint")} />
           <button onClick={() => importMutation.mutate()} disabled={!productId || !importText || importMutation.isPending} className="w-full rounded bg-blue-500 py-2 text-white hover:bg-blue-600 disabled:opacity-50">{importMutation.isPending ? `${t("common:loading")}...` : t("importCards")}</button>
         </div>
       </Modal>

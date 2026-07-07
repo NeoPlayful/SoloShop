@@ -6,6 +6,7 @@ import { Modal } from "../../components/Modal.js";
 import { ConfirmDialog } from "../../components/ConfirmDialog.js";
 import { Pagination } from "../../components/Pagination.js";
 import { LoadingState } from "../../components/LoadingStates.js";
+import { Input } from "../../theme/components/form/Input.js";
 import toast from "react-hot-toast";
 
 export default function CategoriesPage() {
@@ -84,10 +85,10 @@ export default function CategoriesPage() {
 
       <Modal open={editId !== null} title={editId && editId > 0 ? t("editCategory") : t("addCategory")} onClose={() => { setEditId(null); setForm({ name: "", slug: "", description: "", sortOrder: 0 }); }}>
         <div className="space-y-4">
-          <div><label className="mb-1 block text-sm text-text-primary">{t("categoryName")}</label><input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full rounded border border-border px-3 py-2 text-text-primary" /></div>
-          <div><label className="mb-1 block text-sm text-text-primary">{t("categorySlug")}</label><input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className="w-full rounded border border-border px-3 py-2 text-text-primary" /></div>
-          <div><label className="mb-1 block text-sm text-text-primary">{t("categoryDescription")}</label><input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full rounded border border-border px-3 py-2 text-text-primary" /></div>
-          <div><label className="mb-1 block text-sm text-text-primary">{t("categorySort")}</label><input type="number" value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: parseInt(e.target.value) || 0 })} className="w-full rounded border border-border px-3 py-2 text-text-primary" /></div>
+          <Input label={t("categoryName")} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+          <Input label={t("categorySlug")} value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} />
+          <Input label={t("categoryDescription")} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+          <Input label={t("categorySort")} type="number" value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: parseInt(e.target.value) || 0 })} />
           <button onClick={() => saveMutation.mutate(form)} className="w-full rounded bg-blue-500 py-2 text-white hover:bg-blue-600">{t("save", { ns: "common" })}</button>
         </div>
       </Modal>

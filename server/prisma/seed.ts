@@ -36,6 +36,8 @@ async function main() {
     { key: "show_stock", value: true, description: "前台是否显示库存" },
     { key: "guest_checkout", value: true, description: "是否允许游客下单" },
     { key: "order_query_require_email", value: true, description: "订单查询是否需要邮箱" },
+    { key: "site_theme_id", value: "default-theme", description: "站点默认色系" },
+    { key: "site_theme_mode", value: "system", description: "站点默认亮暗模式" },
   ];
 
   for (const setting of defaultSettings) {
