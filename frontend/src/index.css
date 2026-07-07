@@ -1,135 +1,5 @@
 @import "tailwindcss";
-
-/* ===== Theme Token System ===== */
-/* Using `--tw-` prefix to avoid conflicts with TailwindCSS @theme variables */
-:root {
-  /* Surface colors */
-  --tw-surface: #ffffff;
-  --tw-surface-alt: #f9fafb;
-  --tw-surface-hover: #f9fafb;
-  --tw-surface-raised: #ffffff;
-  --tw-bg-page: #f3f4f6;
-  --tw-bg-sidebar: #111827;
-  --tw-bg-sidebar-hover: #374151;
-  --tw-overlay: rgba(0, 0, 0, 0.4);
-
-  /* Text colors */
-  --tw-text-primary: #111827;
-  --tw-text-secondary: #6b7280;
-  --tw-text-tertiary: #9ca3af;
-  --tw-text-inverse: #ffffff;
-
-  /* Border colors */
-  --tw-border: #e5e7eb;
-  --tw-border-light: #d1d5bd;
-
-  /* Semantic status badges */
-  --tw-badge-success-bg: #dcfce7;
-  --tw-badge-success-text: #15803d;
-  --tw-badge-warning-bg: #fef9c3;
-  --tw-badge-warning-text: #a16207;
-  --tw-badge-danger-bg: #fee2e2;
-  --tw-badge-danger-text: #b91c1c;
-  --tw-badge-info-bg: #dbeafe;
-  --tw-badge-info-text: #1d4ed8;
-
-  /* Primary (blue) scale */
-  --tw-blue-50: #eff6ff;
-  --tw-blue-100: #dbeafe;
-  --tw-blue-200: #bfdbfe;
-  --tw-blue-500: #3b82f6;
-  --tw-blue-600: #2563eb;
-  --tw-blue-700: #1d4ed8;
-  /* Success (green) scale */
-  --tw-green-100: #dcfce7;
-  --tw-green-500: #22c55e;
-  --tw-green-600: #16a34a;
-  --tw-green-700: #15803d;
-  /* Warning (yellow) scale */
-  --tw-yellow-50: #fffbeb;
-  --tw-yellow-100: #fef9c3;
-  --tw-yellow-500: #eab308;
-  --tw-yellow-600: #ca8a04;
-  --tw-yellow-700: #a16207;
-  /* Danger (red) scale */
-  --tw-red-100: #fee2e2;
-  --tw-red-500: #ef4444;
-  --tw-red-600: #dc2626;
-  --tw-red-700: #b91c1c;
-
-  /* Gray scale overrides for dark mode */
-  --tw-gray-50: #f9fafb;
-  --tw-gray-100: #f3f4f6;
-  --tw-gray-200: #e5e7eb;
-  --tw-gray-300: #d1d5db;
-  --tw-gray-400: #9ca3af;
-  --tw-gray-500: #6b7280;
-  --tw-gray-600: #4b5563;
-  --tw-gray-700: #374151;
-  --tw-gray-900: #111827;
-}
-
-/* ===== Dark Mode ===== */
-.dark {
-  --tw-surface: #1f2937;
-  --tw-surface-alt: #374151;
-  --tw-surface-hover: #374151;
-  --tw-surface-raised: #111827;
-  --tw-bg-page: #0f172a;
-  --tw-bg-sidebar: #0f172a;
-  --tw-bg-sidebar-hover: #1e293b;
-  --tw-overlay: rgba(0, 0, 0, 0.6);
-
-  --tw-text-primary: #f3f4f6;
-  --tw-text-secondary: #9ca3af;
-  --tw-text-tertiary: #6b7280;
-  --tw-text-inverse: #f3f4f6;
-
-  --tw-border: #374151;
-  --tw-border-light: #4b5563;
-
-  --tw-badge-success-bg: #166534;
-  --tw-badge-success-text: #86efac;
-  --tw-badge-warning-bg: #713f12;
-  --tw-badge-warning-text: #fde68a;
-  --tw-badge-danger-bg: #7f1d1d;
-  --tw-badge-danger-text: #fca5a5;
-  --tw-badge-info-bg: #1e3a5f;
-  --tw-badge-info-text: #93c5fd;
-
-  --tw-blue-50: #172554;
-  --tw-blue-100: #1e3a5f;
-  --tw-blue-200: #1e40af;
-  --tw-blue-500: #60a5fa;
-  --tw-blue-600: #3b82f6;
-  --tw-blue-700: #2563eb;
-
-  --tw-green-100: #166534;
-  --tw-green-500: #4ade80;
-  --tw-green-600: #22c55e;
-  --tw-green-700: #86efac;
-
-  --tw-yellow-50: #422006;
-  --tw-yellow-100: #713f12;
-  --tw-yellow-500: #facc15;
-  --tw-yellow-600: #eab308;
-  --tw-yellow-700: #fde68a;
-
-  --tw-red-100: #7f1d1d;
-  --tw-red-500: #f87171;
-  --tw-red-600: #ef4444;
-  --tw-red-700: #fca5a5;
-
-  --tw-gray-50: #1f2937;
-  --tw-gray-100: #111827;
-  --tw-gray-200: #1f2937;
-  --tw-gray-300: #374151;
-  --tw-gray-400: #6b7280;
-  --tw-gray-500: #9ca3af;
-  --tw-gray-600: #d1d5db;
-  --tw-gray-700: #e5e7eb;
-  --tw-gray-900: #f3f4f6;
-}
+@import "./theme/presets/default-theme/styles.css";
 
 /* ===== TailwindCSS 4 Theme Registration ===== */
 /* These make CSS variables available as Tailwind utility classes (bg-*, text-*, border-*) */
@@ -198,38 +68,37 @@
 /* ===== Base Styles ===== */
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    "Noto Sans SC", sans-serif;
+  font-family: var(--tw-font-sans);
   -webkit-font-smoothing: antialiased;
   background-color: var(--tw-bg-page);
   color: var(--tw-text-primary);
 }
 
 /* Smooth transition for theme changes (only bg, border, color) */
-html.dark,
-html.dark *,
-html.dark *::before,
-html.dark *::after {
+html[data-mode="dark"],
+html[data-mode="dark"] *,
+html[data-mode="dark"] *::before,
+html[data-mode="dark"] *::after {
   transition: background-color 0.25s ease, border-color 0.25s ease, color 0.2s ease !important;
 }
 
 /* Exclude transition for elements that would flicker */
-html.dark .no-theme-transition,
-html.dark .no-theme-transition * {
+html[data-mode="dark"] .no-theme-transition,
+html[data-mode="dark"] .no-theme-transition * {
   transition: none !important;
 }
 
 /* ===== Dark Mode Scrollbar ===== */
-.dark ::-webkit-scrollbar {
+[data-mode="dark"] ::-webkit-scrollbar {
   width: 8px;
 }
-.dark ::-webkit-scrollbar-track {
+[data-mode="dark"] ::-webkit-scrollbar-track {
   background: #0f172a;
 }
-.dark ::-webkit-scrollbar-thumb {
+[data-mode="dark"] ::-webkit-scrollbar-thumb {
   background: #4b5563;
   border-radius: 4px;
 }
-.dark ::-webkit-scrollbar-thumb:hover {
+[data-mode="dark"] ::-webkit-scrollbar-thumb:hover {
   background: #6b7280;
 }
