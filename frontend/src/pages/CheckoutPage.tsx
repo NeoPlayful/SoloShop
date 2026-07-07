@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "../api/client.js";
+import { apiClient } from "../lib/client.js";
 import { LoadingState } from "../components/LoadingStates.js";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 
 export default function CheckoutPage() {
+  const { t } = useTranslation("store");
   const { orderNo } = useParams();
   const navigate = useNavigate();
   const [channel, setChannel] = useState("mock");
@@ -48,11 +50,11 @@ export default function CheckoutPage() {
       if (res.data.success) {
         // Mock 支付直接回调
         await apiClient.post("/webhook/pay/mock", { orderNo });
-        toast.success("支付成功！");
+        toast.success("Payment successful!");
         navigate(`/order/${orderNo}`);
       }
     } catch {
-      toast.error("支付创建失败");
+      toast.error("Payment creation failed");
     }
   };
 
@@ -60,20 +62,20 @@ export default function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-md py-8">
-      <h1 className="mb-6 text-center text-xl font-bold">确认订单</h1>
-      <div className="mb-6 rounded-lg border bg-white p-6">
-        <p className="mb-2 text-sm text-gray-500">订单号</p>
+      <h1 className="mb-6 text-center text-xl font-bold">{t("confirmOrder")}</h1>
+      <div className="mb-6 rounded-lg border-border bg-surface p-6">
+        <p className="mb-2 text-sm text-text-secondary">{t("orderNo", { ns: "common" })}</p>
         <p className="mb-4 font-mono text-lg">{orderNo}</p>
-        <p className="mb-2 text-sm text-gray-500">支付方式</p>
-        <select value={channel} onChange={(e) => setChannel(e.target.value)} className="w-full rounded border px-3 py-2">
+        <p className="mb-2 text-sm text-text-secondary">{t("paymentMethod")}</p>
+        <select value={channel} onChange={(e) => setChannel(e.target.value)} className="w-full rounded border-border px-3 py-2">
           {channels?.map((ch: any) => <option key={ch.code} value={ch.code}>{ch.name}</option>)}
         </select>
       </div>
 
       <button onClick={handlePay} className="w-full rounded bg-green-500 py-3 text-lg font-medium text-white hover:bg-green-600">
-        确认支付
+        {t("payNow", { ns: "common" })}
       </button>
-      <p className="mt-4 text-center text-xs text-gray-400">支付成功后自动跳转</p>
+      <p className="mt-4 text-center text-xs text-text-tertiary">{t("autoRedirect")}</p>
     </div>
   );
 }

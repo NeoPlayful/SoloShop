@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "../../api/client.js";
+import { useTranslation } from "react-i18next";
+import { apiClient } from "../../lib/client.js";
 import { Pagination } from "../../components/Pagination.js";
 import { LoadingState } from "../../components/LoadingStates.js";
 import { Modal } from "../../components/Modal.js";
 import toast from "react-hot-toast";
 
 export default function OrdersPage() {
+  const { t } = useTranslation("admin");
   const [page, setPage] = useState(1);
   const [orderNo, setOrderNo] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("");
@@ -20,12 +22,12 @@ export default function OrdersPage() {
 
   const markPaidMutation = useMutation({
     mutationFn: (id: number) => apiClient.post(`/admin/orders/${id}/mark-paid`),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-orders"] }); toast.success("已标记支付成功"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-orders"] }); toast.success(t("saveSuccess", { ns: "common" })); },
   });
 
   const closeMutation = useMutation({
     mutationFn: (id: number) => apiClient.post(`/admin/orders/${id}/close`),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-orders"] }); toast.success("已关闭订单"); },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-orders"] }); toast.success(t("operationSuccess", { ns: "common" })); },
   });
 
   const viewDetail = async (id: number) => {
@@ -37,39 +39,39 @@ export default function OrdersPage() {
 
   return (
     <div>
-      <h1 className="mb-4 text-xl font-bold">订单管理</h1>
+      <h1 className="mb-4 text-xl font-bold text-text-primary">{t("orderManagement")}</h1>
       <div className="mb-4 flex gap-2">
-        <input value={orderNo} onChange={(e) => { setOrderNo(e.target.value); setPage(1); }} placeholder="订单号" className="rounded border px-3 py-2 text-sm" />
-        <select value={paymentStatus} onChange={(e) => { setPaymentStatus(e.target.value); setPage(1); }} className="rounded border px-3 py-2 text-sm">
-          <option value="">全部支付状态</option>
-          <option value="unpaid">未支付</option>
-          <option value="paid">已支付</option>
-          <option value="failed">失败</option>
+        <input value={orderNo} onChange={(e) => { setOrderNo(e.target.value); setPage(1); }} placeholder={t("orderSearch")} className="rounded border border-border px-3 py-2 text-sm text-text-primary" />
+        <select value={paymentStatus} onChange={(e) => { setPaymentStatus(e.target.value); setPage(1); }} className="rounded border border-border px-3 py-2 text-sm text-text-primary">
+          <option value="">{t("allPaymentStatus")}</option>
+          <option value="unpaid">{t("common:unpaid")}</option>
+          <option value="paid">{t("common:paid")}</option>
+          <option value="failed">{t("common:failed")}</option>
         </select>
       </div>
 
-      <table className="w-full rounded-lg bg-white shadow">
-        <thead className="border-b bg-gray-50"><tr>
-          <th className="px-4 py-3 text-left text-sm">订单号</th>
-          <th className="px-4 py-3 text-left text-sm">商品</th>
-          <th className="px-4 py-3 text-left text-sm">金额</th>
-          <th className="px-4 py-3 text-left text-sm">支付状态</th>
-          <th className="px-4 py-3 text-left text-sm">发货状态</th>
-          <th className="px-4 py-3 text-left text-sm">时间</th>
-          <th className="px-4 py-3 text-left text-sm">操作</th>
+      <table className="w-full rounded-lg bg-surface shadow">
+        <thead className="border-b border-border bg-surface-alt"><tr>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("common:orderNo")}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("product2")}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("amount2")}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("common:paymentStatus")}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("common:deliveryStatus")}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("time")}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("operation", { ns: "common" })}</th>
         </tr></thead>
         <tbody>
           {data?.items?.map((item: any) => (
-            <tr key={item.id} className="border-b hover:bg-gray-50">
-              <td className="px-4 py-3 text-sm font-mono">{item.orderNo}</td>
-              <td className="px-4 py-3 text-sm">{item.product?.name || "-"}</td>
-              <td className="px-4 py-3 text-sm">¥{item.totalAmount}</td>
-              <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.paymentStatus === "paid" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>{item.paymentStatus}</span></td>
-              <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.deliveryStatus === "delivered" ? "bg-green-100 text-green-700" : item.deliveryStatus === "failed" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-500"}`}>{item.deliveryStatus}</span></td>
-              <td className="px-4 py-3 text-sm text-gray-500">{item.createdAt?.substring(0, 16) || "-"}</td>
+            <tr key={item.id} className="border-b border-border hover:bg-surface-hover">
+              <td className="px-4 py-3 text-sm font-mono text-text-primary">{item.orderNo}</td>
+              <td className="px-4 py-3 text-sm text-text-primary">{item.product?.name || "-"}</td>
+              <td className="px-4 py-3 text-sm text-text-primary">¥{item.totalAmount}</td>
+              <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.paymentStatus === "paid" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>{item.paymentStatus === "paid" ? t("common:paid") : t("common:unpaid")}</span></td>
+              <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.deliveryStatus === "delivered" ? "bg-green-100 text-green-700" : item.deliveryStatus === "failed" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-500"}`}>{item.deliveryStatus === "delivered" ? t("common:delivered") : item.deliveryStatus === "failed" ? t("common:failed") : t("common:pending")}</span></td>
+              <td className="px-4 py-3 text-sm text-text-secondary">{item.createdAt?.substring(0, 16) || "-"}</td>
               <td className="px-4 py-3 text-sm">
-                <button onClick={() => viewDetail(item.id)} className="mr-2 text-blue-500 hover:text-blue-700">详情</button>
-                {item.paymentStatus === "unpaid" && <><button onClick={() => markPaidMutation.mutate(item.id)} className="mr-2 text-green-500 hover:text-green-700">标记支付</button><button onClick={() => closeMutation.mutate(item.id)} className="text-red-500 hover:text-red-700">关闭</button></>}
+                <button onClick={() => viewDetail(item.id)} className="mr-2 text-blue-500 hover:text-blue-700">{t("common:detail")}</button>
+                {item.paymentStatus === "unpaid" && <><button onClick={() => markPaidMutation.mutate(item.id)} className="mr-2 text-green-500 hover:text-green-700">{t("common:markPaid")}</button><button onClick={() => closeMutation.mutate(item.id)} className="text-red-500 hover:text-red-700">{t("common:closeOrder")}</button></>}
               </td>
             </tr>
           ))}
@@ -77,18 +79,18 @@ export default function OrdersPage() {
       </table>
       <Pagination page={page} pageSize={20} total={data?.total || 0} onChange={setPage} />
 
-      <Modal open={!!detail} title={`订单详情 ${detail?.orderNo || ""}`} onClose={() => setDetail(null)}>
+      <Modal open={!!detail} title={`${t("orderDetail2")} ${detail?.orderNo || ""}`} onClose={() => setDetail(null)}>
         {detail && (
-          <div className="space-y-3 text-sm">
-            <div><strong>商品：</strong>{detail.product?.name}</div>
-            <div><strong>数量：</strong>{detail.quantity}</div>
-            <div><strong>金额：</strong>¥{detail.totalAmount}</div>
-            <div><strong>邮箱：</strong>{detail.buyerEmail || "-"}</div>
-            <div><strong>订单状态：</strong>{detail.orderStatus}</div>
-            <div><strong>支付状态：</strong>{detail.paymentStatus}</div>
-            <div><strong>发货状态：</strong>{detail.deliveryStatus}</div>
+          <div className="space-y-3 text-sm text-text-primary">
+            <div><strong>{t("product2")}:</strong> {detail.product?.name}</div>
+            <div><strong>{t("quantity2")}:</strong> {detail.quantity}</div>
+            <div><strong>{t("amount2")}:</strong> ¥{detail.totalAmount}</div>
+            <div><strong>{t("email2")}:</strong> {detail.buyerEmail || "-"}</div>
+            <div><strong>{t("common:orderStatus")}:</strong> {detail.orderStatus}</div>
+            <div><strong>{t("common:paymentStatus")}:</strong> {detail.paymentStatus}</div>
+            <div><strong>{t("common:deliveryStatus")}:</strong> {detail.deliveryStatus}</div>
             {detail.deliveries?.length > 0 && (
-              <div><strong>发货内容：</strong><pre className="mt-1 rounded bg-gray-50 p-2 text-xs">{detail.deliveries[0]?.content || "-"}</pre></div>
+              <div><strong>{t("deliveryContent")}:</strong><pre className="mt-1 rounded bg-surface-alt p-2 text-xs text-text-primary">{detail.deliveries[0]?.content || "-"}</pre></div>
             )}
           </div>
         )}
