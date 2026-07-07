@@ -26,10 +26,10 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback;
       }
       return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50">
-          <div className="rounded-lg bg-white p-8 text-center shadow-lg">
+        <div className="flex min-h-screen items-center justify-center bg-page">
+          <div className="rounded-lg bg-surface p-8 text-center shadow-lg">
             <h2 className="mb-2 text-xl font-semibold text-red-600">页面出错了</h2>
-            <p className="mb-4 text-gray-600">{this.state.error?.message || "未知错误"}</p>
+            <p className="mb-4 text-text-secondary">{this.state.error?.message || "未知错误"}</p>
             <button
               onClick={() => window.location.reload()}
               className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"

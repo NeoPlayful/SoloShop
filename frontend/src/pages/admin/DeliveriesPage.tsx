@@ -1,10 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "../../api/client.js";
+import { useTranslation } from "react-i18next";
+import { apiClient } from "../../lib/client.js";
 import { Pagination } from "../../components/Pagination.js";
 import { LoadingState } from "../../components/LoadingStates.js";
 import { useState } from "react";
 
 export default function DeliveriesPage() {
+  const { t } = useTranslation("admin");
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("");
   const { data, isLoading } = useQuery({
@@ -14,33 +16,33 @@ export default function DeliveriesPage() {
   if (isLoading) return <LoadingState />;
   return (
     <div>
-      <h1 className="mb-4 text-xl font-bold">发货管理</h1>
+      <h1 className="mb-4 text-xl font-bold text-text-primary">{t("deliveryManagement")}</h1>
       <div className="mb-4">
-        <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="rounded border px-3 py-2 text-sm">
-          <option value="">全部</option>
-          <option value="pending">待发货</option>
-          <option value="delivered">已发货</option>
-          <option value="failed">失败</option>
+        <select value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }} className="rounded border border-border px-3 py-2 text-sm text-text-primary">
+          <option value="">{t("common:all")}</option>
+          <option value="pending">{t("common:pending")}</option>
+          <option value="delivered">{t("common:delivered")}</option>
+          <option value="failed">{t("common:failed")}</option>
         </select>
       </div>
-      <table className="w-full rounded-lg bg-white shadow">
-        <thead className="border-b bg-gray-50"><tr>
-          <th className="px-4 py-3 text-left text-sm">ID</th>
-          <th className="px-4 py-3 text-left text-sm">订单号</th>
-          <th className="px-4 py-3 text-left text-sm">类型</th>
-          <th className="px-4 py-3 text-left text-sm">状态</th>
-          <th className="px-4 py-3 text-left text-sm">重试</th>
-          <th className="px-4 py-3 text-left text-sm">时间</th>
+      <table className="w-full rounded-lg bg-surface shadow">
+        <thead className="border-b border-border bg-surface-alt"><tr>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("id", { ns: "common" })}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("common:orderNo")}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("deliveryType")}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("common:status")}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("common:retry")}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("common:createdAt")}</th>
         </tr></thead>
         <tbody>
           {data?.items?.map((item: any) => (
-            <tr key={item.id} className="border-b hover:bg-gray-50">
-              <td className="px-4 py-3 text-sm">{item.id}</td>
-              <td className="px-4 py-3 text-sm font-mono">{item.order?.orderNo || "-"}</td>
-              <td className="px-4 py-3 text-sm">{item.type}</td>
-              <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.status === "delivered" ? "bg-green-100 text-green-700" : item.status === "failed" ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"}`}>{item.status}</span></td>
-              <td className="px-4 py-3 text-sm">{item.retryCount}</td>
-              <td className="px-4 py-3 text-sm text-gray-500">{item.createdAt?.substring(0, 16) || "-"}</td>
+            <tr key={item.id} className="border-b border-border hover:bg-surface-hover">
+              <td className="px-4 py-3 text-sm text-text-primary">{item.id}</td>
+              <td className="px-4 py-3 text-sm font-mono text-text-primary">{item.order?.orderNo || "-"}</td>
+              <td className="px-4 py-3 text-sm text-text-primary">{item.type}</td>
+              <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.status === "delivered" ? "bg-green-100 text-green-700" : item.status === "failed" ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"}`}>{item.status === "delivered" ? t("common:delivered") : item.status === "failed" ? t("common:failed") : t("common:pending")}</span></td>
+              <td className="px-4 py-3 text-sm text-text-primary">{item.retryCount}</td>
+              <td className="px-4 py-3 text-sm text-text-secondary">{item.createdAt?.substring(0, 16) || "-"}</td>
             </tr>
           ))}
         </tbody>
