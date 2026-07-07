@@ -1,7 +1,7 @@
 import { Link, Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { SunIcon, MoonIcon } from "@heroicons/react/24/outline";
-import { useTheme } from "../contexts/ThemeContext.js";
+import { useTheme } from "../theme/index.js";
 
 export function AppLayout() {
   const { t, i18n } = useTranslation();

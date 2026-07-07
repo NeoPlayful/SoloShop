@@ -1,0 +1,32 @@
+/* ===== Design Token 骨架声明 ===== */
+/* 此文件仅声明变量名称，供主题开发者参考。 */
+/* 每个主题在 presets/*/styles.css 中覆盖这些变量值。 */
+
+/* ---- 颜色 Colors ---- */
+/* --tw-surface: 组件表面（卡片、弹窗、下拉菜单） */
+/* --tw-surface-alt: 次要表面（表格表头、hover 状态、代码块） */
+/* --tw-surface-hover: hover 状态的表面 */
+/* --tw-surface-raised: 提升表面（模态框） */
+/* --tw-bg-page: 页面背景 */
+/* --tw-bg-sidebar: 侧栏背景 */
+/* --tw-bg-sidebar-hover: 侧栏项 hover */
+/* --tw-overlay: 遮罩层颜色 */
+
+/* ---- 圆角 Radius ---- */
+/* --tw-radius-sm / --tw-radius-md / --tw-radius-lg / --tw-radius-xl */
+/* --tw-radius-2xl / --tw-radius-3xl / --tw-radius-full */
+/* --tw-radius-button / --tw-radius-card / --tw-radius-input / --tw-radius-modal / --tw-radius-badge */
+
+/* ---- 阴影 Shadow ---- */
+/* --tw-shadow-sm / --tw-shadow-md / --tw-shadow-lg / --tw-shadow-xl */
+/* --tw-shadow-card / --tw-shadow-modal / --tw-shadow-dropdown */
+
+/* ---- 字体 Typography ---- */
+/* --tw-font-sans / --tw-font-heading / --tw-font-mono */
+
+/* ---- 间距 Spacing ---- */
+/* --tw-page-padding / --tw-sidebar-width / --tw-content-max-width */
+
+/* ---- 动效 Motion ---- */
+/* --tw-duration-fast / --tw-duration-normal / --tw-duration-slow */
+/* --tw-easing-default / --tw-easing-bounce / --tw-easing-smooth */
