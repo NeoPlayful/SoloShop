@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { CubeIcon } from "@heroicons/react/24/outline";
 import { apiClient } from "../lib/client.js";
 import { LoadingState } from "../components/LoadingStates.js";
 import { Input } from "../theme/components/form/Input.js";
@@ -45,8 +44,12 @@ export default function ProductPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="mb-6 flex h-48 items-center justify-center rounded-lg bg-surface-alt">
-        <CubeIcon className="h-16 w-16 text-text-tertiary" />
+      <div className="mb-6 flex aspect-square max-w-md items-center justify-center overflow-hidden rounded-lg bg-surface-alt mx-auto">
+        {product.coverImage ? (
+          <img src={product.coverImage} alt={product.name} className="h-full w-full object-cover" />
+        ) : (
+          <img src="/images/default-product.png" alt="" className="h-full w-full object-cover" />
+        )}
       </div>
       <h1 className="mb-2 text-2xl font-bold">{product.name}</h1>
       <div className="mb-4 flex items-baseline gap-3">

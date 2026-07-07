@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { CubeIcon } from "@heroicons/react/24/outline";
 import { apiClient } from "../lib/client.js";
 import { LoadingState } from "../components/LoadingStates.js";
 import { useTranslation } from "react-i18next";
@@ -33,8 +32,12 @@ export default function StorePage() {
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {products?.map((product: any) => (
             <Link key={product.id} to={`/product/${product.slug}`} className="group rounded-lg border-border bg-surface p-4 shadow-sm transition-shadow hover:shadow-md">
-              <div className="mb-2 flex h-32 items-center justify-center rounded bg-surface-alt">
-                <CubeIcon className="h-12 w-12 text-text-tertiary" />
+              <div className="mb-2 flex aspect-square items-center justify-center overflow-hidden rounded bg-surface-alt">
+                {product.coverImage ? (
+                  <img src={product.coverImage} alt={product.name} className="h-full w-full object-cover" />
+                ) : (
+                  <img src="/images/default-product.png" alt="" className="h-full w-full object-cover" />
+                )}
               </div>
               <h3 className="mb-1 text-sm font-medium group-hover:text-blue-500">{product.name}</h3>
               <div className="flex items-center justify-between">

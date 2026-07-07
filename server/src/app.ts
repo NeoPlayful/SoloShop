@@ -1,10 +1,16 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import cookie from "@fastify/cookie";
+import staticFiles from "@fastify/static";
 import multipart from "@fastify/multipart";
 import rateLimit from "@fastify/rate-limit";
 import { PrismaClient } from "@prisma/client";
+import { fileURLToPath } from "node:url";
+import { join, dirname } from "node:path";
 import { redis } from "./lib/cache.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 import { healthRoutes } from "./routes/system/health.js";
 import { authRoutes } from "./routes/auth.js";
 import { adminCategoryRoutes } from "./routes/admin/categories.js";
@@ -19,6 +25,7 @@ import { adminSettingsRoutes } from "./routes/admin/settings.js";
 import { adminAdminsRoutes } from "./routes/admin/admins.js";
 import { adminLogRoutes } from "./routes/admin/logs.js";
 import { adminSecurityRoutes } from "./routes/admin/security.js";
+import { adminUploadRoutes } from "./routes/admin/upload.js";
 import { publicSettingsRoutes } from "./routes/public/settings.js";
 import { publicCategoryRoutes } from "./routes/public/categories.js";
 import { publicProductRoutes } from "./routes/public/products.js";
@@ -59,6 +66,13 @@ await app.register(rateLimit, {
   keyGenerator: (request) => request.ip,
 });
 
+// ─── 静态文件服务 ───
+await app.register(staticFiles, {
+  root: join(__dirname, "../uploads"),
+  prefix: "/uploads/",
+  decorateReply: false,
+});
+
 // ─── Prisma 客户端 ───
 const prisma = new PrismaClient();
 app.decorate("prisma", prisma);
@@ -78,6 +92,7 @@ await app.register(adminSettingsRoutes, { prefix: "/api/admin/settings" });
 await app.register(adminAdminsRoutes, { prefix: "/api/admin/admins" });
 await app.register(adminLogRoutes, { prefix: "/api/admin/logs" });
 await app.register(adminSecurityRoutes, { prefix: "/api/admin/security" });
+await app.register(adminUploadRoutes, { prefix: "/api/admin/upload" });
 await app.register(publicSettingsRoutes, { prefix: "/api/public/settings" });
 await app.register(publicCategoryRoutes, { prefix: "/api/public/categories" });
 await app.register(publicProductRoutes, { prefix: "/api/public/products" });

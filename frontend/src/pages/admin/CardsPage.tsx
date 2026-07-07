@@ -68,7 +68,7 @@ export default function CardsPage() {
       <table className="w-full rounded-lg bg-surface shadow">
         <thead className="border-b border-border bg-surface-alt"><tr>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("id", { ns: "common" })}</th>
-          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("common:name")}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("belongingProduct")}</th>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("cardContent")}</th>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("batchNo")}</th>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("cardStatus")}</th>

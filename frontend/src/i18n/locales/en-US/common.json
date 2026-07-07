@@ -79,5 +79,7 @@
   "waitingPaymentDesc": "Awaiting payment",
 
   "themeDefault": "Default Theme",
-  "themeOcean": "Ocean Theme"
+  "themeOcean": "Ocean Theme",
+  "uploadImage": "Upload Image",
+  "removeImage": "Remove Image"
 }

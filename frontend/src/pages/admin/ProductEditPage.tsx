@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
@@ -15,7 +15,9 @@ export default function ProductEditPage() {
   const isNew = id === "new";
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [form, setForm] = useState({ name: "", slug: "", categoryId: 0, price: 0, originalPrice: 0, description: "", deliveryType: "auto_card", minQuantity: 1, maxQuantity: 1, purchaseNotes: "" });
+  const [form, setForm] = useState({ name: "", slug: "", categoryId: 0, price: 0, originalPrice: 0, description: "", deliveryType: "auto_card", minQuantity: 1, maxQuantity: 1, purchaseNotes: "", coverImage: "" });
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data: product, isLoading } = useQuery({
     queryKey: ["admin-product", id],
@@ -29,13 +31,33 @@ export default function ProductEditPage() {
   });
 
   useEffect(() => {
-    if (product) setForm({ name: product.name, slug: product.slug, categoryId: product.categoryId, price: Number(product.price), originalPrice: Number(product.originalPrice || 0), description: product.description || "", deliveryType: product.deliveryType, minQuantity: product.minQuantity, maxQuantity: product.maxQuantity, purchaseNotes: product.purchaseNotes || "" });
+    if (product) setForm({ name: product.name, slug: product.slug, categoryId: product.categoryId, price: Number(product.price), originalPrice: Number(product.originalPrice || 0), description: product.description || "", deliveryType: product.deliveryType, minQuantity: product.minQuantity, maxQuantity: product.maxQuantity, purchaseNotes: product.purchaseNotes || "", coverImage: product.coverImage || "" });
   }, [product]);
 
   const saveMutation = useMutation({
     mutationFn: () => isNew ? apiClient.post("/admin/products", form) : apiClient.patch(`/admin/products/${id}`, form),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-products"] }); toast.success(t("saveSuccess", { ns: "common" })); navigate("/admin/products"); },
   });
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await apiClient.post("/admin/upload", fd);
+      if (res.data.success) {
+        setForm({ ...form, coverImage: res.data.data.url });
+        toast.success(t("saveSuccess", { ns: "common" }));
+      }
+    } catch {
+      toast.error("上传失败");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
 
   if (!isNew && isLoading) return <LoadingState />;
 
@@ -46,6 +68,29 @@ export default function ProductEditPage() {
         <Input label={t("productName")} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
         <Input label={t("productSlug")} value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} />
         <Select label={t("category")} value={form.categoryId} onChange={(e) => setForm({ ...form, categoryId: parseInt(e.target.value) })} placeholderOption={t("common:all")} options={categories?.items?.map((c: any) => ({ value: String(c.id), label: c.name })) || []} />
+
+        {/* 封面图片 */}
+        <div>
+          <label className="mb-1 block text-sm font-medium text-text-primary">{t("coverImage")}</label>
+          <div className="flex items-start gap-4">
+            <div className="flex h-24 w-24 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border bg-surface-alt">
+              {form.coverImage ? (
+                <img src={form.coverImage} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <img src="/images/default-product.png" alt="" className="h-full w-full object-cover" />
+              )}
+            </div>
+            <div className="flex flex-col gap-2">
+              <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" onChange={handleUpload} className="hidden" />
+              <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading} className="rounded bg-blue-500 px-4 py-1.5 text-sm text-white hover:bg-blue-600 disabled:opacity-50">
+                {uploading ? `${t("common:loading")}...` : t("uploadImage", { ns: "common" })}
+              </button>
+              {form.coverImage && (
+                <button type="button" onClick={() => setForm({ ...form, coverImage: "" })} className="text-left text-sm text-red-500 hover:text-red-700">{t("removeImage", { ns: "common" }) || "移除图片"}</button>
+              )}
+            </div>
+          </div>
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <Input label={t("price")} type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })} />
           <Input label={t("originalPrice")} type="number" step="0.01" value={form.originalPrice} onChange={(e) => setForm({ ...form, originalPrice: parseFloat(e.target.value) || 0 })} />
