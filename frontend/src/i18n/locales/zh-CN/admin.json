@@ -60,6 +60,7 @@
   "expired": "已过期",
   "batchImport": "批量导入",
   "batchNo": "批次号",
+  "belongingProduct": "所属商品",
   "importCards": "导入卡密",
   "importHint": "每行一个卡密",
   "reveal": "查看",

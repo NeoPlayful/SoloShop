@@ -60,6 +60,7 @@
   "expired": "Expired",
   "batchImport": "Batch Import",
   "batchNo": "Batch No.",
+  "belongingProduct": "Product",
   "importCards": "Import Cards",
   "importHint": "One card per line",
   "reveal": "Reveal",

@@ -79,5 +79,7 @@
   "waitingPaymentDesc": "等待支付",
 
   "themeDefault": "默认主题",
-  "themeOcean": "海洋主题"
+  "themeOcean": "海洋主题",
+  "uploadImage": "上传图片",
+  "removeImage": "移除图片"
 }
