@@ -43,43 +43,55 @@ export default function ProductPage() {
   if (!product) return <div className="py-16 text-center text-text-secondary">{t("productNotExist")}</div>;
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="mb-6 flex aspect-square max-w-md items-center justify-center overflow-hidden rounded-lg bg-surface-alt mx-auto">
-        {product.coverImage ? (
-          <img src={product.coverImage} alt={product.name} className="h-full w-full object-cover" />
-        ) : (
-          <img src="/images/default-product.png" alt="" className="h-full w-full object-cover" />
-        )}
-      </div>
-      <h1 className="mb-2 text-2xl font-bold">{product.name}</h1>
-      <div className="mb-4 flex items-baseline gap-3">
-        <span className="text-3xl font-bold text-red-500">¥{product.price}</span>
-        {product.originalPrice > 0 && <span className="text-text-tertiary line-through">¥{product.originalPrice}</span>}
-      </div>
-      <p className="mb-4 text-sm text-text-secondary">{t("stockInfo", { stock: product.stock, sales: product.salesCount || 0 })}</p>
-      {product.category && <p className="mb-4 text-sm text-text-secondary">{t("categoryLabel", { name: product.category.name })}</p>}
+    <div className="mx-auto max-w-5xl">
+      {/* 左右分栏：主图(左) + 信息/购买区(右) */}
+      <div className="flex flex-col gap-6 md:flex-row md:items-start">
+        {/* 左：商品主图 */}
+        <div className="w-full md:w-1/2">
+          <div className="flex aspect-square items-center justify-center overflow-hidden rounded-lg bg-surface-alt">
+            {product.coverImage ? (
+              <img src={product.coverImage} alt={product.name} className="h-full w-full object-cover" />
+            ) : (
+              <img src="/images/default-product.png" alt="" className="h-full w-full object-cover" />
+            )}
+          </div>
+        </div>
 
+        {/* 右：商品信息 + 购买区 */}
+        <div className="flex w-full flex-col gap-3 md:w-1/2">
+          <h1 className="text-xl font-bold">{product.name}</h1>
+          <div className="flex items-baseline gap-3">
+            <span className="text-2xl font-bold text-red-500">¥{product.price}</span>
+            {product.originalPrice > 0 && <span className="text-text-tertiary line-through">¥{product.originalPrice}</span>}
+          </div>
+          <p className="text-sm text-text-secondary">{t("stockInfo", { stock: product.stock, sales: product.salesCount || 0 })}</p>
+          {product.category && <p className="text-sm text-text-secondary">{t("categoryLabel", { name: product.category.name })}</p>}
+
+          {/* 购买卡片 */}
+          <div className="md:sticky md:top-8 mt-2 space-y-2.5 rounded-lg border border-border bg-surface p-4">
+            <div>
+              <label className="mb-1 block text-sm font-medium">{t("quantity")}</label>
+              <Input type="number" value={quantity} min={product.minQuantity} max={product.maxQuantity} onChange={(e) => setQuantity(parseInt(e.target.value) || 1)} className="w-24 text-center" />
+              <span className="ml-2 text-xs text-text-tertiary">{t("quantityRange", { min: product.minQuantity, max: product.maxQuantity })}</span>
+            </div>
+            <div>
+              <label className="mb-1 block text-sm font-medium">{t("email")}</label>
+              <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("emailPlaceholder")} />
+            </div>
+            {product.purchaseNotes && (
+              <div className="rounded bg-yellow-50 p-3 text-xs text-yellow-700">{product.purchaseNotes}</div>
+            )}
+            <button onClick={handleBuy} disabled={product.stock <= 0} className="w-full rounded bg-blue-500 py-2.5 text-lg font-medium text-white hover:bg-blue-600 disabled:opacity-50">
+              {product.stock > 0 ? t("buyNow", { price: (Number(product.price) * quantity).toFixed(2) }) : t("outOfStock")}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 底部：商品说明 */}
       {product.description && (
-        <div className="mb-6 rounded-lg bg-surface-alt p-4 text-sm" dangerouslySetInnerHTML={{ __html: product.description }} />
+        <div className="mt-8 rounded-lg bg-surface-alt p-4 text-sm" dangerouslySetInnerHTML={{ __html: product.description }} />
       )}
-
-      <div className="space-y-4 rounded-lg border-border bg-surface p-6">
-        <div>
-          <label className="mb-1 block text-sm font-medium">{t("quantity")}</label>
-          <Input type="number" value={quantity} min={product.minQuantity} max={product.maxQuantity} onChange={(e) => setQuantity(parseInt(e.target.value) || 1)} className="w-24 text-center" />
-          <span className="ml-2 text-xs text-text-tertiary">{t("quantityRange", { min: product.minQuantity, max: product.maxQuantity })}</span>
-        </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium">{t("email")}</label>
-          <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("emailPlaceholder")} />
-        </div>
-        {product.purchaseNotes && (
-          <div className="rounded bg-yellow-50 p-3 text-xs text-yellow-700">{product.purchaseNotes}</div>
-        )}
-        <button onClick={handleBuy} disabled={product.stock <= 0} className="w-full rounded bg-blue-500 py-3 text-lg font-medium text-white hover:bg-blue-600 disabled:opacity-50">
-          {product.stock > 0 ? t("buyNow", { price: (Number(product.price) * quantity).toFixed(2) }) : t("outOfStock")}
-        </button>
-      </div>
     </div>
   );
 }
