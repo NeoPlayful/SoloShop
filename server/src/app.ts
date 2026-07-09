@@ -22,15 +22,17 @@ import { adminPaymentRoutes } from "./routes/admin/payments.js";
 import { adminDeliveryRoutes } from "./routes/admin/deliveries.js";
 import { adminPaymentChannelRoutes } from "./routes/admin/payment-channels.js";
 import { adminSettingsRoutes } from "./routes/admin/settings.js";
-import { adminAdminsRoutes } from "./routes/admin/admins.js";
+import { adminUsersRoutes } from "./routes/admin/users.js";
 import { adminLogRoutes } from "./routes/admin/logs.js";
 import { adminSecurityRoutes } from "./routes/admin/security.js";
 import { adminUploadRoutes } from "./routes/admin/upload.js";
+import { adminPromotionRoutes } from "./routes/admin/promotion.js";
 import { publicSettingsRoutes } from "./routes/public/settings.js";
 import { publicCategoryRoutes } from "./routes/public/categories.js";
 import { publicProductRoutes } from "./routes/public/products.js";
 import { publicOrderRoutes } from "./routes/public/orders.js";
 import { publicPaymentRoutes } from "./routes/public/payment.js";
+import { publicPromotionRoutes } from "./routes/public/promotion.js";
 import { webhookPayRoutes } from "./routes/webhook/pay.js";
 
 const envToLogger: Record<string, object> = {
@@ -89,15 +91,17 @@ await app.register(adminPaymentRoutes, { prefix: "/api/admin/payments" });
 await app.register(adminDeliveryRoutes, { prefix: "/api/admin/deliveries" });
 await app.register(adminPaymentChannelRoutes, { prefix: "/api/admin/payment-channels" });
 await app.register(adminSettingsRoutes, { prefix: "/api/admin/settings" });
-await app.register(adminAdminsRoutes, { prefix: "/api/admin/admins" });
+await app.register(adminUsersRoutes, { prefix: "/api/admin/users" });
 await app.register(adminLogRoutes, { prefix: "/api/admin/logs" });
 await app.register(adminSecurityRoutes, { prefix: "/api/admin/security" });
 await app.register(adminUploadRoutes, { prefix: "/api/admin/upload" });
+await app.register(adminPromotionRoutes, { prefix: "/api/admin/promotion" });
 await app.register(publicSettingsRoutes, { prefix: "/api/public/settings" });
 await app.register(publicCategoryRoutes, { prefix: "/api/public/categories" });
 await app.register(publicProductRoutes, { prefix: "/api/public/products" });
 await app.register(publicOrderRoutes, { prefix: "/api/public/orders" });
 await app.register(publicPaymentRoutes, { prefix: "/api/public/payment" });
+await app.register(publicPromotionRoutes, { prefix: "/api/public/promotion" });
 await app.register(webhookPayRoutes, { prefix: "/api/webhook/pay" });
 
 // ─── 启动 ───

@@ -68,7 +68,7 @@ export async function adminCardRoutes(app: FastifyInstance) {
     if (!card) return success(null);
     // 记录日志
     await prisma.operationLog.create({
-      data: { adminId: (request as any).admin?.adminId, action: "card.reveal", targetType: "card", targetId: card.id, detail: { content: card.content } },
+      data: { userId: (request as any).user?.userId, action: "card.reveal", targetType: "card", targetId: card.id, detail: { content: card.content } },
     });
     return success({ content: card.content });
   });

@@ -14,6 +14,27 @@ export async function webhookPayRoutes(app: FastifyInstance) {
     await prisma.$transaction(async (tx) => {
       await tx.order.update({ where: { id: order.id }, data: { paymentStatus: "paid", paidAt: new Date(), orderStatus: "completed" } });
       await tx.payment.updateMany({ where: { orderId: order.id, isActive: true }, data: { status: "success", paidAmount: order.totalAmount, paidAt: new Date() } });
+
+      // ─── 推广佣金处理 ───
+      if (order.referralCode) {
+        const info = await tx.promotionInfo.findUnique({ where: { referralCode: order.referralCode } });
+        if (info) {
+          // 检查推广人是否有效
+          const promoter = await tx.user.findUnique({ where: { id: info.userId } });
+          if (promoter && promoter.isActive && promoter.role === "promoter") {
+            // 检查商品绑定（PromotionInfo 全站通用，不做细粒度绑定）
+            let commission = Number(order.totalAmount) * Number(info.commissionRate);
+            const commissionAmount = Math.round(commission * 100) / 100;
+
+            await tx.order.update({ where: { id: order.id }, data: { commissionAmount, commissionStatus: "pending" } });
+            await tx.promotionInfo.update({ where: { id: info.id }, data: {
+              orderCount: { increment: 1 },
+              totalSales: { increment: Number(order.totalAmount) },
+              totalCommission: { increment: commissionAmount },
+            } });
+          }
+        }
+      }
     });
 
     // 发货

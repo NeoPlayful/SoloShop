@@ -17,6 +17,7 @@
   "submit": "提交",
   "reset": "重置",
   "operation": "操作",
+  "actions": "操作",
   "status": "状态",
   "enabled": "启用",
   "disabled": "禁用",
@@ -77,6 +78,10 @@
   "waitingPayment": "等待支付",
   "paymentSuccessDesc": "支付成功",
   "waitingPaymentDesc": "等待支付",
+
+  "email": "邮箱",
+  "role": "角色",
+  "buyer": "买家",
 
   "themeDefault": "默认主题",
   "themeOcean": "海洋主题",

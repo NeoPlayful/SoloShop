@@ -17,6 +17,7 @@
   "submit": "Submit",
   "reset": "Reset",
   "operation": "Actions",
+  "actions": "Actions",
   "status": "Status",
   "enabled": "Enabled",
   "disabled": "Disabled",
@@ -77,6 +78,10 @@
   "waitingPayment": "Awaiting Payment",
   "paymentSuccessDesc": "Payment successful",
   "waitingPaymentDesc": "Awaiting payment",
+
+  "email": "Email",
+  "role": "Role",
+  "buyer": "Buyer",
 
   "themeDefault": "Default Theme",
   "themeOcean": "Ocean Theme",

@@ -26,8 +26,22 @@
   "orderQueryError": "Please enter order number and email",
   "orderQueryFail": "Order not found or email does not match",
   "orderCreateFail": "Failed to create order. Please try again.",
+  "promotionCenter": "Promotion Center",
+  "promotionNotFound": "Promotion link not found",
+  "yourPromotionLink": "My Promotion Link",
+  "copy": "Copy",
+  "copied": "Copied",
+  "recentPromotionOrders": "Recent Promotion Orders",
+  "noPromotionOrders": "No promotion orders yet",
+  "commissionRateInfo": "Commission rate: {{rate}}%. Commission is calculated automatically after each successful payment.",
+  "promotionFooterHint": "Data updates in real-time after each successful payment",
   "autoRedirect": "Auto redirect after payment",
   "productNotExist": "Product not found",
   "paymentCreateFail": "Failed to create payment",
-  "allRightsReserved": "© 2026 SoloShop. All rights reserved."
+  "allRightsReserved": "© 2026 SoloShop. All rights reserved.",
+  "orderNo": "Order No.",
+  "product": "Product",
+  "amount": "Amount",
+  "commission": "Commission",
+  "time": "Time"
 }
