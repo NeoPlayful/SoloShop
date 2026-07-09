@@ -8,8 +8,9 @@
   --tw-surface-hover: #ccfbf1;
   --tw-surface-raised: #ffffff;
   --tw-bg-page: #f0fdfa;
-  --tw-bg-sidebar: #0f172a;
-  --tw-bg-sidebar-hover: #1e293b;
+  --tw-bg-sidebar: #f0fdfa;
+  --tw-bg-sidebar-hover: #ccfbf1;
+  --tw-sidebar-border: #ccfbf1;
   --tw-overlay: rgba(0, 0, 0, 0.4);
 
   /* Focus ring */
@@ -19,7 +20,7 @@
   --tw-text-primary: #0f172a;
   --tw-text-secondary: #64748b;
   --tw-text-tertiary: #94a3b8;
-  --tw-text-inverse: #f0fdfa;
+  --tw-text-inverse: #0f172a;
 
   /* Border colors */
   --tw-border: #ccfbf1;
@@ -127,6 +128,7 @@
   --tw-bg-page: #042f2e;
   --tw-bg-sidebar: #021a1a;
   --tw-bg-sidebar-hover: #042f2e;
+  --tw-sidebar-border: #042f2e;
   --tw-overlay: rgba(0, 0, 0, 0.7);
 
   --tw-ring-focus: #22d3ee;

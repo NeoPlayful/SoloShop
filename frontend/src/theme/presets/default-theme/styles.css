@@ -7,8 +7,9 @@
   --tw-surface-hover: #f9fafb;
   --tw-surface-raised: #ffffff;
   --tw-bg-page: #f3f4f6;
-  --tw-bg-sidebar: #111827;
-  --tw-bg-sidebar-hover: #374151;
+  --tw-bg-sidebar: #f8fafc;
+  --tw-bg-sidebar-hover: #f1f5f9;
+  --tw-sidebar-border: #e2e8f0;
   --tw-overlay: rgba(0, 0, 0, 0.4);
 
   /* Focus ring */
@@ -18,7 +19,7 @@
   --tw-text-primary: #111827;
   --tw-text-secondary: #6b7280;
   --tw-text-tertiary: #9ca3af;
-  --tw-text-inverse: #ffffff;
+  --tw-text-inverse: #111827;
 
   /* Border colors */
   --tw-border: #e5e7eb;
@@ -125,6 +126,7 @@
   --tw-bg-page: #0f172a;
   --tw-bg-sidebar: #0f172a;
   --tw-bg-sidebar-hover: #1e293b;
+  --tw-sidebar-border: #1e293b;
   --tw-overlay: rgba(0, 0, 0, 0.6);
 
   --tw-ring-focus: #60a5fa;

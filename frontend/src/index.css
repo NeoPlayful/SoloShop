@@ -12,6 +12,7 @@
   --color-page: var(--tw-bg-page);
   --color-sidebar: var(--tw-bg-sidebar);
   --color-sidebar-hover: var(--tw-bg-sidebar-hover);
+  --color-sidebar-border: var(--tw-sidebar-border);
   --color-overlay: var(--tw-overlay);
 
   --color-ring-focus: var(--tw-ring-focus);
