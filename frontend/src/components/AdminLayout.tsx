@@ -14,6 +14,7 @@ import {
   Cog6ToothIcon,
   DocumentTextIcon,
   UserIcon,
+  MegaphoneIcon,
   SunIcon,
   MoonIcon,
   ChevronDownIcon,
@@ -23,18 +24,42 @@ import { useTheme } from "../theme/index.js";
 import { SidebarLayout } from "../theme/components/layouts/SidebarLayout.js";
 import { version } from "../../package.json";
 
-const navItems = [
-  { path: "/admin", label: "dashboard", icon: ChartBarSquareIcon },
-  { path: "/admin/categories", label: "categories", icon: FolderOpenIcon },
-  { path: "/admin/products", label: "products", icon: CubeIcon },
-  { path: "/admin/cards", label: "cards", icon: KeyIcon },
-  { path: "/admin/orders", label: "orders", icon: ClipboardDocumentListIcon },
-  { path: "/admin/payments", label: "payments", icon: BanknotesIcon },
-  { path: "/admin/deliveries", label: "deliveries", icon: TruckIcon },
-  { path: "/admin/payment-channels", label: "paymentChannels", icon: BoltIcon },
-  { path: "/admin/settings", label: "settings", icon: Cog6ToothIcon },
-  { path: "/admin/logs", label: "logs", icon: DocumentTextIcon },
-  { path: "/admin/admins", label: "admins", icon: UserIcon },
+const navGroups = [
+  {
+    label: "overview",
+    items: [{ path: "/admin", label: "dashboard", icon: ChartBarSquareIcon }],
+  },
+  {
+    label: "productMgmt",
+    items: [
+      { path: "/admin/categories", label: "categories", icon: FolderOpenIcon },
+      { path: "/admin/products", label: "products", icon: CubeIcon },
+      { path: "/admin/cards", label: "cards", icon: KeyIcon },
+    ],
+  },
+  {
+    label: "orderMgmt",
+    items: [
+      { path: "/admin/orders", label: "orders", icon: ClipboardDocumentListIcon },
+      { path: "/admin/payments", label: "payments", icon: BanknotesIcon },
+      { path: "/admin/deliveries", label: "deliveries", icon: TruckIcon },
+    ],
+  },
+  {
+    label: "promotionGroup",
+    items: [
+      { path: "/admin/promotion", label: "promotionManagement", icon: MegaphoneIcon },
+    ],
+  },
+  {
+    label: "systemMgmt",
+    items: [
+      { path: "/admin/payment-channels", label: "paymentChannels", icon: BoltIcon },
+      { path: "/admin/users", label: "users", icon: UserIcon },
+      { path: "/admin/settings", label: "settings", icon: Cog6ToothIcon },
+      { path: "/admin/logs", label: "logs", icon: DocumentTextIcon },
+    ],
+  },
 ];
 
 export function AdminLayout() {
@@ -46,7 +71,7 @@ export function AdminLayout() {
   const langRef = useRef<HTMLDivElement>(null);
   const userRef = useRef<HTMLDivElement>(null);
 
-  const { data: admin } = useQuery({
+  const { data: user } = useQuery({
     queryKey: ["admin-me"],
     queryFn: () => apiClient.get("/auth/me").then((r) => r.data.data),
   });
@@ -57,7 +82,7 @@ export function AdminLayout() {
   };
 
   const currentLang = i18n.language?.startsWith("zh") ? "zh-CN" : "en-US";
-  const displayName = admin?.nickname || admin?.username || "";
+  const displayName = user?.username || "";
 
   const handleLangChange = (lang: string) => {
     i18n.changeLanguage(lang);
@@ -84,9 +109,10 @@ export function AdminLayout() {
   return (
     <SidebarLayout
       title={t("adminPanel")}
-      navItems={navItems}
+      navGroups={navGroups}
       sidebarFooter={sidebarFooter}
-      renderNavLabel={(item) => t(item.label)}
+      renderItemLabel={(item) => t(item.label)}
+      renderGroupLabel={(group) => t(group.label)}
     >
       {/* 顶部状态栏 */}
       <div className="mb-4 flex items-center justify-end gap-1 border-b border-border pb-3">

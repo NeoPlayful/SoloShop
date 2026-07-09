@@ -7,7 +7,7 @@ import { getAvailableStock, lockCards, releaseCards } from "../../lib/card-pool.
 export async function publicOrderRoutes(app: FastifyInstance) {
   // 创建订单
   app.post("/", async (request, reply) => {
-    const body = request.body as { productId: number; quantity: number; buyerEmail?: string; buyerContact?: string };
+    const body = request.body as { productId: number; quantity: number; buyerEmail?: string; buyerContact?: string; referralCode?: string };
     if (!body.productId || !body.quantity) return reply.code(400).send(error("VALIDATION_ERROR", "参数错误"));
 
     const product = await prisma.product.findFirst({ where: { id: body.productId, status: "active", deletedAt: null } });
@@ -34,11 +34,23 @@ export async function publicOrderRoutes(app: FastifyInstance) {
           orderNo, productId: product.id,
           productSnapshot: { name: product.name, price: product.price, deliveryType: product.deliveryType },
           quantity: body.quantity, totalAmount, buyerEmail: body.buyerEmail, buyerContact: body.buyerContact, buyerIp,
+          referralCode: body.referralCode || null,
           expiredAt: dayjs().add(30, "minute").toDate(),
         },
       });
       // 关联卡密到订单
       await prisma.card.updateMany({ where: { id: { in: lockedIds } }, data: { orderId: order.id } });
+
+      // 通过 buyerEmail 关联用户
+      if (body.buyerEmail) {
+        const user = await prisma.user.upsert({
+          where: { email: body.buyerEmail },
+          update: { lastLoginAt: new Date() },
+          create: { email: body.buyerEmail, role: "buyer" },
+        });
+        await prisma.order.update({ where: { id: order.id }, data: { userId: user.id } });
+      }
+
       return success({ orderNo: order.orderNo, totalAmount });
     } catch (err) {
       await releaseCards(lockedIds, product.id);

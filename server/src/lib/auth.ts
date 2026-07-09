@@ -9,9 +9,9 @@ const JWT_SECRET = new TextEncoder().encode(
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "24h";
 
 interface JwtPayload {
-  adminId: number;
+  userId: number;
   username: string;
-  isSuperAdmin: boolean;
+  role: string;
 }
 
 // ─── 生成 JWT ───
@@ -43,13 +43,13 @@ async function authMiddleware(request: FastifyRequest, _reply: FastifyReply) {
   }
 
   const payload = await verifyToken(token);
-  (request as any).admin = payload;
+  (request as any).user = payload;
 }
 
 // ─── 超级管理员中间件 ───
 async function superAdminMiddleware(request: FastifyRequest, _reply: FastifyReply) {
-  const admin = (request as any).admin;
-  if (!admin?.isSuperAdmin) {
+  const user = (request as any).user;
+  if (user?.role !== "super_admin") {
     throw new AppError(403, "FORBIDDEN", "无权限执行此操作");
   }
 }

@@ -26,8 +26,10 @@ export default function ProductPage() {
       return;
     }
     try {
+      const promoRef = localStorage.getItem("promo_ref") || undefined;
       const res = await apiClient.post("/public/orders", {
         productId: product.id, quantity, buyerEmail: email,
+        referralCode: promoRef,
       });
       if (res.data.success) {
         navigate(`/checkout/${res.data.data.orderNo}`);

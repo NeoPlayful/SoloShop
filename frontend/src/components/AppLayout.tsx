@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { SunIcon, MoonIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { useTheme } from "../theme/index.js";
@@ -7,6 +7,17 @@ import { useTheme } from "../theme/index.js";
 export function AppLayout() {
   const { t, i18n } = useTranslation();
   const { resolved, toggle } = useTheme();
+  const [searchParams] = useSearchParams();
+
+  // 检测 ?ref= 参数并存入 localStorage（推广来源追踪）
+  useEffect(() => {
+    const ref = searchParams.get("ref");
+    if (ref) {
+      localStorage.setItem("promo_ref", ref);
+      // 通知后端记录点击
+      fetch(`/api/public/promotion/${encodeURIComponent(ref)}/click`, { method: "POST" }).catch(() => {});
+    }
+  }, [searchParams]);
   const [langOpen, setLangOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
 

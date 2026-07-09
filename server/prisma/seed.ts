@@ -6,23 +6,22 @@ const prisma = new PrismaClient();
 async function main() {
   console.log("🌱 开始种子数据初始化...");
 
-  // 创建默认管理员
+  // 创建默认管理员用户
   const adminUsername = process.env.ADMIN_USERNAME || "admin";
   const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
   const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
-  const admin = await prisma.admin.upsert({
+  const admin = await prisma.user.upsert({
     where: { username: adminUsername },
     update: {},
     create: {
       username: adminUsername,
       password: hashedPassword,
-      nickname: "超级管理员",
-      isSuperAdmin: true,
+      role: "super_admin",
       isActive: true,
     },
   });
-  console.log(`✅ 管理员创建成功: ${admin.username}`);
+  console.log(`✅ 管理员用户创建成功: ${admin.username}`);
 
   // 创建默认系统设置
   const defaultSettings = [

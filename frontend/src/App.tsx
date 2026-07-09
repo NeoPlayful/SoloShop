@@ -19,7 +19,9 @@ import DeliveriesPage from "./pages/admin/DeliveriesPage.js";
 import PaymentChannelsPage from "./pages/admin/PaymentChannelsPage.js";
 import SettingsPage from "./pages/admin/SettingsPage.js";
 import LogsPage from "./pages/admin/LogsPage.js";
-import AdminsPage from "./pages/admin/AdminsPage.js";
+import UsersPage from "./pages/admin/UsersPage.js";
+import PromotionPage from "./pages/admin/PromotionPage.js";
+import PromotionStatsPage from "./pages/PromotionStatsPage.js";
 
 export default function App() {
   return (
@@ -32,6 +34,7 @@ export default function App() {
           <Route path="/checkout/:orderNo" element={<CheckoutPage />} />
           <Route path="/order/:orderNo" element={<OrderDetailPage />} />
           <Route path="/order/query" element={<OrderQueryPage />} />
+          <Route path="/promotion/:code" element={<PromotionStatsPage />} />
         </Route>
 
         {/* 后台管理 */}
@@ -48,8 +51,9 @@ export default function App() {
           <Route path="payment-channels" element={<PaymentChannelsPage />} />
           <Route path="deliveries" element={<DeliveriesPage />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="promotion" element={<PromotionPage />} />
           <Route path="logs" element={<LogsPage />} />
-          <Route path="admins" element={<AdminsPage />} />
+          <Route path="users" element={<UsersPage />} />
         </Route>
       </Routes>
     </ErrorBoundary>
