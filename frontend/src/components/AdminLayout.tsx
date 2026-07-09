@@ -78,7 +78,7 @@ export function AdminLayout() {
   }, []);
 
   const sidebarFooter = (
-    <div className="text-center text-xs text-gray-500">v{version}</div>
+    <div className="text-center text-xs text-gray-500">版本 v{version}</div>
   );
 
   return (
