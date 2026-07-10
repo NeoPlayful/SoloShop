@@ -54,7 +54,7 @@ export function AppLayout() {
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
           <Link to="/" className="flex items-center gap-2 text-lg font-bold text-text-primary">
             <img src="/images/logo.png" alt="SoloShop" className="h-7 w-7" />
-            {t("appName")}
+            SoloShop
           </Link>
           <nav className="flex items-center gap-3">
             <Link to="/" className="text-sm text-text-secondary hover:text-text-primary">{t("store:home")}</Link>

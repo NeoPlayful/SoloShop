@@ -43,15 +43,17 @@ export default function App() {
           <Route path="/order/query" element={<OrderQueryPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/merchant" element={<MerchantLayout />}>
-            <Route index element={<Navigate to="/merchant/overview" replace />} />
-            <Route path="overview" element={<MerchantOverview />} />
-            <Route path="promotion-link" element={<MerchantPromotionLink />} />
-            <Route path="promotion-orders" element={<MerchantPromotionOrders />} />
-            <Route path="settings" element={<MerchantSettings />} />
-          </Route>
           <Route path="/promotion/apply" element={<Navigate to="/merchant" replace />} />
           <Route path="/promotion/:code" element={<PromotionStatsPage />} />
+        </Route>
+
+        {/* 商家中心 */}
+        <Route path="/merchant" element={<MerchantLayout />}>
+          <Route index element={<Navigate to="/merchant/overview" replace />} />
+          <Route path="overview" element={<MerchantOverview />} />
+          <Route path="promotion-link" element={<MerchantPromotionLink />} />
+          <Route path="promotion-orders" element={<MerchantPromotionOrders />} />
+          <Route path="settings" element={<MerchantSettings />} />
         </Route>
 
         {/* 后台管理 */}
