@@ -113,6 +113,12 @@ export async function adminUsersRoutes(app: FastifyInstance) {
     const existing = await prisma.user.findUnique({ where: { id: parseInt(id) } });
     if (!existing) return reply.code(404).send(error("VALIDATION_ERROR", "用户不存在"));
 
+    // 检查 email 唯一性
+    if (body.email && body.email !== existing.email) {
+      const emailExists = await prisma.user.findUnique({ where: { email: body.email } });
+      if (emailExists) return reply.code(400).send(error("VALIDATION_ERROR", "邮箱已存在"));
+    }
+
     const data: Record<string, unknown> = {};
     if (body.contact !== undefined) data.contact = body.contact;
     if (body.isActive !== undefined) data.isActive = body.isActive;

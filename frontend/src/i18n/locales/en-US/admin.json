@@ -36,6 +36,13 @@
   "autoGenerate": "Auto-generate",
   "codeAutoGenerateHint": "Leave empty to auto-generate",
   "contact": "Contact",
+  "pendingApproval": "Pending Approval",
+  "approve": "Approve",
+  "reject": "Reject",
+  "approved": "Approved",
+  "approveConfirm": "Approve this promoter application?",
+  "rejectConfirm": "Reject this application? The user will be reverted to buyer role.",
+  "commissionRatePlaceholder": "Commission rate (%)",
 
   "dashboardTitle": "Dashboard",
   "todayOrders": "Today's Orders",

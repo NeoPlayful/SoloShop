@@ -86,5 +86,8 @@
   "themeDefault": "默认主题",
   "themeOcean": "海洋主题",
   "uploadImage": "上传图片",
-  "removeImage": "移除图片"
+  "removeImage": "移除图片",
+  "passwordMismatch": "两次密码输入不一致",
+  "passwordTooShort": "密码至少6位",
+  "operationFailed": "操作失败"
 }

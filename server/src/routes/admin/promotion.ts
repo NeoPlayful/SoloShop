@@ -2,7 +2,6 @@ import type { FastifyInstance } from "fastify";
 import { prisma } from "../../lib/db.js";
 import { authMiddleware } from "../../lib/auth.js";
 import { success, error } from "../../lib/api-utils.js";
-import bcrypt from "bcryptjs";
 
 export async function adminPromotionRoutes(app: FastifyInstance) {
   app.addHook("preHandler", authMiddleware);
@@ -34,48 +33,6 @@ export async function adminPromotionRoutes(app: FastifyInstance) {
       orderBy: { createdAt: "desc" },
     });
     return success(promoters);
-  });
-
-  // ─── 创建推广人（User + PromotionInfo） ───
-  app.post("/", async (request, reply) => {
-    const body = request.body as {
-      contact?: string;
-      email?: string;
-      commissionRate?: number;
-      referralCode?: string;
-    };
-
-    const code = body.referralCode || generateReferralCode();
-    const existingCode = await prisma.promotionInfo.findUnique({ where: { referralCode: code } });
-    if (existingCode) return reply.code(400).send(error("VALIDATION_ERROR", "推广码已存在"));
-
-    if (body.email) {
-      const existing = await prisma.user.findUnique({ where: { email: body.email } });
-      if (existing) return reply.code(400).send(error("VALIDATION_ERROR", "邮箱已存在"));
-    }
-
-    const user = await prisma.user.create({
-      data: {
-        email: body.email,
-        contact: body.contact,
-        role: "promoter",
-      },
-    });
-
-    const info = await prisma.promotionInfo.create({
-      data: {
-        userId: user.id,
-        referralCode: code,
-        commissionRate: body.commissionRate ?? 0.1,
-      },
-    });
-
-    return success({
-      id: user.id,
-      email: user.email,
-      referralCode: info.referralCode,
-      commissionRate: info.commissionRate,
-    });
   });
 
   // ─── 获取推广详情 ───
@@ -113,6 +70,53 @@ export async function adminPromotionRoutes(app: FastifyInstance) {
 
     const updated = await prisma.promotionInfo.update({ where: { id: info.id }, data });
     return success(updated);
+  });
+
+  // ─── 审批通过（自动生成推广码 + 创建 PromotionInfo） ───
+  app.post("/:id/approve", async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const body = request.body as { commissionRate?: number };
+
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(id), role: "promoter" },
+      include: { promotionInfo: true },
+    });
+    if (!user) return reply.code(404).send(error("VALIDATION_ERROR", "用户不存在"));
+    if (user.promotionInfo) return reply.code(400).send(error("VALIDATION_ERROR", "该用户已是推广人"));
+
+    const code = generateReferralCode();
+    const existingCode = await prisma.promotionInfo.findUnique({ where: { referralCode: code } });
+    if (existingCode) return reply.code(500).send(error("INTERNAL_ERROR", "推广码生成冲突，请重试"));
+
+    const info = await prisma.promotionInfo.create({
+      data: {
+        userId: user.id,
+        referralCode: code,
+        commissionRate: body.commissionRate ?? 0.1,
+      },
+    });
+
+    return success({
+      id: user.id,
+      email: user.email,
+      referralCode: info.referralCode,
+      commissionRate: info.commissionRate,
+    });
+  });
+
+  // ─── 拒绝申请（角色改回 buyer） ───
+  app.post("/:id/reject", async (request, reply) => {
+    const { id } = request.params as { id: string };
+
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(id), role: "promoter" },
+      include: { promotionInfo: true },
+    });
+    if (!user) return reply.code(404).send(error("VALIDATION_ERROR", "用户不存在"));
+    if (user.promotionInfo) return reply.code(400).send(error("VALIDATION_ERROR", "该用户已是推广人，无法拒绝"));
+
+    await prisma.user.update({ where: { id: user.id }, data: { role: "buyer" } });
+    return success(null);
   });
 
   // ─── 删除推广人 ───

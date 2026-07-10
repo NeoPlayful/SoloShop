@@ -7,7 +7,7 @@ import ProductPage from "./pages/ProductPage.js";
 import CheckoutPage from "./pages/CheckoutPage.js";
 import OrderQueryPage from "./pages/OrderQueryPage.js";
 import OrderDetailPage from "./pages/OrderDetailPage.js";
-import LoginPage from "./pages/admin/LoginPage.js";
+import AdminLoginPage from "./pages/admin/LoginPage.js";
 import DashboardPage from "./pages/admin/DashboardPage.js";
 import CategoriesPage from "./pages/admin/CategoriesPage.js";
 import ProductsPage from "./pages/admin/ProductsPage.js";
@@ -22,6 +22,9 @@ import LogsPage from "./pages/admin/LogsPage.js";
 import UsersPage from "./pages/admin/UsersPage.js";
 import PromotionPage from "./pages/admin/PromotionPage.js";
 import PromotionStatsPage from "./pages/PromotionStatsPage.js";
+import RegisterPage from "./pages/RegisterPage.js";
+import LoginPage from "./pages/LoginPage.js";
+import PromoterApplyPage from "./pages/PromoterApplyPage.js";
 
 export default function App() {
   return (
@@ -34,11 +37,14 @@ export default function App() {
           <Route path="/checkout/:orderNo" element={<CheckoutPage />} />
           <Route path="/order/:orderNo" element={<OrderDetailPage />} />
           <Route path="/order/query" element={<OrderQueryPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/promotion/apply" element={<PromoterApplyPage />} />
           <Route path="/promotion/:code" element={<PromotionStatsPage />} />
         </Route>
 
         {/* 后台管理 */}
-        <Route path="/admin/login" element={<LoginPage />} />
+        <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<DashboardPage />} />
           <Route path="categories" element={<CategoriesPage />} />
