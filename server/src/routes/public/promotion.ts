@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { prisma } from "../../lib/db.js";
 import { success, error } from "../../lib/api-utils.js";
+import { authMiddleware } from "../../lib/auth.js";
 
 export async function publicPromotionRoutes(app: FastifyInstance) {
   // ─── 记录点击 ───
@@ -15,6 +16,28 @@ export async function publicPromotionRoutes(app: FastifyInstance) {
       data: { clickCount: { increment: 1 } },
     });
     return success({ referralCode: info.referralCode });
+  });
+
+  // ─── 用户申请成为推广人 ───
+  app.post("/apply", { preHandler: [authMiddleware] }, async (request, reply) => {
+    const { userId } = (request as any).user;
+    const body = request.body as { contact?: string };
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return reply.code(404).send(error("VALIDATION_ERROR", "用户不存在"));
+    if (user.role === "admin" || user.role === "super_admin") {
+      return reply.code(400).send(error("VALIDATION_ERROR", "管理员无需申请推广"));
+    }
+    if (user.role === "promoter") {
+      return reply.code(400).send(error("VALIDATION_ERROR", "您已经是推广人"));
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { role: "promoter", contact: body.contact ?? user.contact },
+    });
+
+    return success(null);
   });
 
   // ─── 推广人查看统计数据 ───

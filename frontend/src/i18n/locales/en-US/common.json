@@ -86,5 +86,8 @@
   "themeDefault": "Default Theme",
   "themeOcean": "Ocean Theme",
   "uploadImage": "Upload Image",
-  "removeImage": "Remove Image"
+  "removeImage": "Remove Image",
+  "passwordMismatch": "Passwords do not match",
+  "passwordTooShort": "Password must be at least 6 characters",
+  "operationFailed": "Operation failed"
 }
