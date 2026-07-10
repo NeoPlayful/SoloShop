@@ -15,7 +15,7 @@ export function AppLayout() {
 
   // 获取当前用户
   const { data: user } = useQuery({
-    queryKey: ["auth-me"],
+    queryKey: ["me"],
     queryFn: () => apiClient.get("/auth/me").then((r) => r.data.data),
     retry: false,
     staleTime: 60_000,
@@ -50,7 +50,7 @@ export function AppLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-page">
-      <header className="border-b border-border bg-surface shadow-sm">
+      <header className="sticky top-0 z-10 border-b border-border bg-surface shadow-sm">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
           <Link to="/" className="flex items-center gap-2 text-lg font-bold text-text-primary">
             <img src="/images/logo.png" alt="SoloShop" className="h-7 w-7" />
@@ -95,7 +95,7 @@ export function AppLayout() {
           </nav>
         </div>
       </header>
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">
+      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col px-4 py-6">
         <Outlet />
       </main>
       <footer className="border-t border-border bg-surface-alt py-4 text-center text-sm text-text-tertiary">

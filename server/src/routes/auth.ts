@@ -144,6 +144,19 @@ export async function authRoutes(app: FastifyInstance) {
     });
   });
 
+  // 更新个人信息（联系方式）
+  app.patch("/profile", { preHandler: [authMiddleware] }, async (request, reply) => {
+    const { userId } = (request as any).user;
+    const body = request.body as { contact?: string };
+
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { contact: body.contact ?? undefined },
+    });
+
+    return success({ contact: user.contact });
+  });
+
   // 修改密码
   app.post("/change-password", { preHandler: [authMiddleware] }, async (request, reply) => {
     const { userId } = (request as any).user;

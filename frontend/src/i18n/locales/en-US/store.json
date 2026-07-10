@@ -54,6 +54,7 @@
   "sidebarOverview": "Overview",
   "sidebarPromotionLink": "Promotion Link",
   "sidebarPromotionOrders": "Promotion Orders",
+  "sidebarAccountSettings": "Account Settings",
   "sidebarAdminPanel": "Admin Panel",
   "logout": "Logout",
   "username": "Username",
@@ -76,5 +77,19 @@
   "approvedStatus": "Approved",
   "registerNow": "Register Now",
   "noAccount": "Don't have an account?",
-  "hasAccount": "Already have an account?"
+  "hasAccount": "Already have an account?",
+  "accountSettings": "Account Settings",
+  "basicInfo": "Basic Info",
+  "role": "Role",
+  "buyer": "Buyer",
+  "promoter": "Promoter",
+  "admin": "Admin",
+  "superAdmin": "Super Admin",
+  "contactInfo": "Contact Info",
+  "save": "Save",
+  "changePassword": "Change Password",
+  "oldPassword": "Old Password",
+  "newPassword": "New Password",
+  "passwordMismatch": "Passwords do not match",
+  "passwordTooShort": "Password must be at least 6 characters"
 }
