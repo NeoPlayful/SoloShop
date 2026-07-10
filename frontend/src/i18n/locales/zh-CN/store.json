@@ -54,6 +54,7 @@
   "sidebarOverview": "推广总览",
   "sidebarPromotionLink": "推广链接",
   "sidebarPromotionOrders": "推广订单",
+  "sidebarAccountSettings": "账号设置",
   "sidebarAdminPanel": "后台管理",
   "logout": "退出登录",
   "username": "用户名",
@@ -76,5 +77,19 @@
   "approvedStatus": "已通过",
   "registerNow": "立即注册",
   "noAccount": "还没有账号？",
-  "hasAccount": "已有账号？"
+  "hasAccount": "已有账号？",
+  "accountSettings": "账号设置",
+  "basicInfo": "基本信息",
+  "role": "角色",
+  "buyer": "买家",
+  "promoter": "推广人",
+  "admin": "管理员",
+  "superAdmin": "超级管理员",
+  "contactInfo": "联系方式",
+  "save": "保存",
+  "changePassword": "修改密码",
+  "oldPassword": "旧密码",
+  "newPassword": "新密码",
+  "passwordMismatch": "两次密码输入不一致",
+  "passwordTooShort": "密码至少6位"
 }

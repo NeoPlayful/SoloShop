@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../../lib/client.js";
@@ -53,7 +54,11 @@ export default function MerchantPromotionOrders() {
             <tbody>
               {orders.map((order: any, i: number) => (
                 <tr key={i} className="border-b border-border text-sm hover:bg-surface-hover">
-                  <td className="px-4 py-2.5 font-mono text-xs text-text-primary">{order.orderNo}</td>
+                  <td className="px-4 py-2.5 font-mono text-xs">
+                    <Link to={`/order/${order.orderNo}`} className="text-blue-500 hover:text-blue-600 hover:underline">
+                      {order.orderNo}
+                    </Link>
+                  </td>
                   <td className="px-4 py-2.5 text-text-primary">{order.productSnapshot?.name || "-"}</td>
                   <td className="px-4 py-2.5 text-right text-text-primary">
                     ¥{Number(order.totalAmount).toFixed(2)}

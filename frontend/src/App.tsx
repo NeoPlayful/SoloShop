@@ -25,10 +25,10 @@ import MerchantLayout from "./pages/merchant/MerchantLayout.js";
 import MerchantOverview from "./pages/merchant/MerchantOverview.js";
 import MerchantPromotionLink from "./pages/merchant/MerchantPromotionLink.js";
 import MerchantPromotionOrders from "./pages/merchant/MerchantPromotionOrders.js";
+import MerchantSettings from "./pages/merchant/MerchantSettings.js";
 import PromotionStatsPage from "./pages/PromotionStatsPage.js";
 import RegisterPage from "./pages/RegisterPage.js";
 import LoginPage from "./pages/LoginPage.js";
-import PromoterApplyPage from "./pages/PromoterApplyPage.js";
 
 export default function App() {
   return (
@@ -48,8 +48,9 @@ export default function App() {
             <Route path="overview" element={<MerchantOverview />} />
             <Route path="promotion-link" element={<MerchantPromotionLink />} />
             <Route path="promotion-orders" element={<MerchantPromotionOrders />} />
+            <Route path="settings" element={<MerchantSettings />} />
           </Route>
-          <Route path="/promotion/apply" element={<PromoterApplyPage />} />
+          <Route path="/promotion/apply" element={<Navigate to="/merchant" replace />} />
           <Route path="/promotion/:code" element={<PromotionStatsPage />} />
         </Route>
 
