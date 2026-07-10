@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { ErrorBoundary } from "./components/ErrorBoundary.js";
 import { AppLayout } from "./components/AppLayout.js";
 import { AdminLayout } from "./components/AdminLayout.js";
@@ -21,6 +21,10 @@ import SettingsPage from "./pages/admin/SettingsPage.js";
 import LogsPage from "./pages/admin/LogsPage.js";
 import UsersPage from "./pages/admin/UsersPage.js";
 import PromotionPage from "./pages/admin/PromotionPage.js";
+import MerchantLayout from "./pages/merchant/MerchantLayout.js";
+import MerchantOverview from "./pages/merchant/MerchantOverview.js";
+import MerchantPromotionLink from "./pages/merchant/MerchantPromotionLink.js";
+import MerchantPromotionOrders from "./pages/merchant/MerchantPromotionOrders.js";
 import PromotionStatsPage from "./pages/PromotionStatsPage.js";
 import RegisterPage from "./pages/RegisterPage.js";
 import LoginPage from "./pages/LoginPage.js";
@@ -39,6 +43,12 @@ export default function App() {
           <Route path="/order/query" element={<OrderQueryPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/merchant" element={<MerchantLayout />}>
+            <Route index element={<Navigate to="/merchant/overview" replace />} />
+            <Route path="overview" element={<MerchantOverview />} />
+            <Route path="promotion-link" element={<MerchantPromotionLink />} />
+            <Route path="promotion-orders" element={<MerchantPromotionOrders />} />
+          </Route>
           <Route path="/promotion/apply" element={<PromoterApplyPage />} />
           <Route path="/promotion/:code" element={<PromotionStatsPage />} />
         </Route>
