@@ -23,7 +23,7 @@ interface SidebarLayoutProps {
 
 export function SidebarLayout({ title, navGroups, sidebarFooter, children, renderItemLabel, renderGroupLabel }: SidebarLayoutProps) {
   return (
-    <div className="flex min-h-screen bg-page">
+    <div className="flex h-screen overflow-hidden bg-page">
       <aside className="w-56 shrink-0 bg-sidebar text-text-inverse flex flex-col border-r border-border">
         <div className="flex items-center gap-2 border-b border-sidebar-border p-4 text-lg font-bold">
           <img src="/images/logo.png" alt="SoloShop" className="h-7 w-7" />
