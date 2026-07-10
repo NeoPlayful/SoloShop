@@ -27,7 +27,7 @@ export default function LoginPage() {
         if (role === "admin" || role === "super_admin") {
           navigate("/admin");
         } else {
-          navigate("/promotion/apply");
+          navigate("/merchant");
         }
       } else {
         toast.error(res.data.error?.message || t("common:operationFailed"));
