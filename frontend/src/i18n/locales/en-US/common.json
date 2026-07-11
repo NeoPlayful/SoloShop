@@ -24,6 +24,7 @@
   "all": "All",
   "yes": "Yes",
   "no": "No",
+  "totalRecords": "Total {{total}} records",
   "prevPage": "Previous",
   "nextPage": "Next",
   "pageInfo": "{{page}} / {{total}}",
