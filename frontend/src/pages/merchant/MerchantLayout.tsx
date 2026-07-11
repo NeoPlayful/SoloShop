@@ -32,11 +32,12 @@ export default function MerchantLayout() {
       {/* 顶部导航 */}
       <SiteHeader sticky={false} merchantHref="/merchant" showUserStatus />
 
-      {/* 主体区域：侧边栏 + 内容区 */}
-      <div className="mx-auto flex w-full max-w-5xl flex-1 overflow-hidden px-4">
-        {/* 侧边栏 */}
-        <aside className="flex w-48 shrink-0 flex-col py-6">
-          <div className="flex h-full flex-col rounded-xl border border-sidebar-border bg-sidebar p-2">
+      {/* 主体区域：全宽滚动容器 — 滚动条在页面最右侧 */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="mx-auto flex w-full max-w-5xl px-4">
+          {/* 侧边栏 - sticky 固定 */}
+          <aside className="sticky top-0 self-start w-48 shrink-0 py-6">
+            <div className="flex h-[calc(100vh-6.5rem)] flex-col rounded-xl border border-sidebar-border bg-sidebar p-2">
             <div className="mb-3 px-3 pb-2 pt-1 text-xs font-semibold uppercase tracking-wider text-text-tertiary border-b border-sidebar-border">
               {t("merchantCenter")}
             </div>
@@ -99,11 +100,12 @@ export default function MerchantLayout() {
           </div>
         </aside>
 
-        {/* 内容区 */}
-        <div className="min-w-0 flex-1 overflow-y-auto py-6 pl-6">
+        {/* 内容区 - 跟随外层滚动 */}
+        <div className="min-w-0 flex-1 py-6 pl-6">
           <Outlet />
         </div>
       </div>
+    </div>
     </div>
   );
 }
