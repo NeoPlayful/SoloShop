@@ -6,40 +6,106 @@ import { success, error } from "../../lib/api-utils.js";
 export async function adminPromotionRoutes(app: FastifyInstance) {
   app.addHook("preHandler", authMiddleware);
 
-  // ─── 推广人列表（含 User + PromotionInfo） ───
-  app.get("/", async () => {
-    const promoters = await prisma.user.findMany({
-      where: { role: "promoter" },
-      select: {
-        id: true,
-        contact: true,
-        email: true,
-        isActive: true,
-        createdAt: true,
-        promotionInfo: {
-          select: {
-            id: true,
-            referralCode: true,
-            commissionRate: true,
-            clickCount: true,
-            orderCount: true,
-            totalSales: true,
-            totalCommission: true,
-            createdAt: true,
-          },
-        },
-        _count: { select: { orders: true } },
-      },
-      orderBy: { createdAt: "desc" },
+  // ─── 推广总览统计 ───
+  app.get("/overview", async () => {
+    const [promoterCount, pendingCount, aggregations] = await Promise.all([
+      // 有推广信息的用户，不限角色（含管理员）
+      prisma.user.count({ where: { promotionInfo: { isNot: null } } }),
+      // 已申请推广但尚未审批的（role=promoter 且无 promotionInfo）
+      prisma.user.count({ where: { role: "promoter", promotionInfo: null } }),
+      prisma.promotionInfo.aggregate({
+        _sum: { clickCount: true, orderCount: true, totalSales: true, totalCommission: true },
+      }),
+    ]);
+
+    return success({
+      promoterCount,
+      pendingCount,
+      totalSales: aggregations._sum.totalSales ?? 0,
+      totalCommission: aggregations._sum.totalCommission ?? 0,
+      totalClicks: aggregations._sum.clickCount ?? 0,
+      totalOrders: aggregations._sum.orderCount ?? 0,
     });
-    return success(promoters);
+  });
+
+  // ─── 推广人列表（含 User + PromotionInfo，支持搜索/筛选/分页） ───
+  app.get("/", async (request) => {
+    const query = request.query as {
+      search?: string;
+      status?: string;
+      page?: string;
+      pageSize?: string;
+    };
+
+    const page = Math.max(1, parseInt(query.page || "1"));
+    const pageSize = Math.min(100, Math.max(1, parseInt(query.pageSize || "20")));
+    const skip = (page - 1) * pageSize;
+
+    const where: any = {};
+
+    // 基础过滤：推广人角色 或 有推广信息的用户
+    const promoterFilter = [
+      { role: "promoter" },
+      { promotionInfo: { isNot: null } },
+    ];
+
+    // 搜索：按邮箱或推广码
+    if (query.search) {
+      where.AND = [
+        { OR: promoterFilter },
+        {
+          OR: [
+            { email: { contains: query.search } },
+            { promotionInfo: { referralCode: { contains: query.search.toUpperCase() } } },
+          ],
+        },
+      ];
+    } else {
+      where.OR = promoterFilter;
+    }
+
+    // 状态筛选
+    if (query.status === "active") where.isActive = true;
+    else if (query.status === "inactive") where.isActive = false;
+
+    const [promoters, total] = await Promise.all([
+      prisma.user.findMany({
+        where,
+        select: {
+          id: true,
+          contact: true,
+          email: true,
+          isActive: true,
+          createdAt: true,
+          promotionInfo: {
+            select: {
+              id: true,
+              referralCode: true,
+              commissionRate: true,
+              clickCount: true,
+              orderCount: true,
+              totalSales: true,
+              totalCommission: true,
+              createdAt: true,
+            },
+          },
+          _count: { select: { orders: true } },
+        },
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: pageSize,
+      }),
+      prisma.user.count({ where }),
+    ]);
+
+    return success({ list: promoters, total, page, pageSize });
   });
 
   // ─── 获取推广详情 ───
   app.get("/:id", async (request, reply) => {
     const { id } = request.params as { id: string };
     const user = await prisma.user.findUnique({
-      where: { id: parseInt(id), role: "promoter" },
+      where: { id: parseInt(id), OR: [{ role: "promoter" }, { promotionInfo: { isNot: null } }] },
       select: {
         id: true,
         contact: true,
@@ -59,7 +125,7 @@ export async function adminPromotionRoutes(app: FastifyInstance) {
       commissionRate?: number;
     };
 
-    const user = await prisma.user.findUnique({ where: { id: parseInt(id), role: "promoter" } });
+    const user = await prisma.user.findUnique({ where: { id: parseInt(id), OR: [{ role: "promoter" }, { promotionInfo: { isNot: null } }] } });
     if (!user) return reply.code(404).send(error("VALIDATION_ERROR", "推广人不存在"));
 
     const info = await prisma.promotionInfo.findUnique({ where: { userId: user.id } });
@@ -78,7 +144,7 @@ export async function adminPromotionRoutes(app: FastifyInstance) {
     const body = request.body as { commissionRate?: number };
 
     const user = await prisma.user.findUnique({
-      where: { id: parseInt(id), role: "promoter" },
+      where: { id: parseInt(id), OR: [{ role: "promoter" }, { promotionInfo: { isNot: null } }] },
       include: { promotionInfo: true },
     });
     if (!user) return reply.code(404).send(error("VALIDATION_ERROR", "用户不存在"));
@@ -109,7 +175,7 @@ export async function adminPromotionRoutes(app: FastifyInstance) {
     const { id } = request.params as { id: string };
 
     const user = await prisma.user.findUnique({
-      where: { id: parseInt(id), role: "promoter" },
+      where: { id: parseInt(id), OR: [{ role: "promoter" }, { promotionInfo: { isNot: null } }] },
       include: { promotionInfo: true },
     });
     if (!user) return reply.code(404).send(error("VALIDATION_ERROR", "用户不存在"));
@@ -122,7 +188,7 @@ export async function adminPromotionRoutes(app: FastifyInstance) {
   // ─── 删除推广人 ───
   app.delete("/:id", async (request, reply) => {
     const { id } = request.params as { id: string };
-    const user = await prisma.user.findUnique({ where: { id: parseInt(id), role: "promoter" } });
+    const user = await prisma.user.findUnique({ where: { id: parseInt(id), OR: [{ role: "promoter" }, { promotionInfo: { isNot: null } }] } });
     if (!user) return reply.code(404).send(error("VALIDATION_ERROR", "推广人不存在"));
 
     // 删除推广信息
@@ -135,7 +201,7 @@ export async function adminPromotionRoutes(app: FastifyInstance) {
   // ─── 禁用推广人 ───
   app.post("/:id/disable", async (request, reply) => {
     const { id } = request.params as { id: string };
-    const existing = await prisma.user.findUnique({ where: { id: parseInt(id), role: "promoter" } });
+    const existing = await prisma.user.findUnique({ where: { id: parseInt(id), OR: [{ role: "promoter" }, { promotionInfo: { isNot: null } }] } });
     if (!existing) return reply.code(404).send(error("VALIDATION_ERROR", "推广人不存在"));
     await prisma.user.update({ where: { id: parseInt(id) }, data: { isActive: false } });
     return success(null);
@@ -144,10 +210,46 @@ export async function adminPromotionRoutes(app: FastifyInstance) {
   // ─── 启用推广人 ───
   app.post("/:id/enable", async (request, reply) => {
     const { id } = request.params as { id: string };
-    const existing = await prisma.user.findUnique({ where: { id: parseInt(id), role: "promoter" } });
+    const existing = await prisma.user.findUnique({ where: { id: parseInt(id), OR: [{ role: "promoter" }, { promotionInfo: { isNot: null } }] } });
     if (!existing) return reply.code(404).send(error("VALIDATION_ERROR", "推广人不存在"));
     await prisma.user.update({ where: { id: parseInt(id) }, data: { isActive: true } });
     return success(null);
+  });
+
+  // ─── 推广人的推广订单列表（管理员查看） ───
+  app.get("/:id/orders", async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const query = request.query as { page?: string; pageSize?: string };
+    const page = Math.max(1, parseInt(query.page || "1"));
+    const pageSize = Math.min(100, Math.max(1, parseInt(query.pageSize || "20")));
+    const skip = (page - 1) * pageSize;
+
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(id), OR: [{ role: "promoter" }, { promotionInfo: { isNot: null } }] },
+      select: { promotionInfo: { select: { referralCode: true } } },
+    });
+    if (!user?.promotionInfo) return reply.code(404).send(error("VALIDATION_ERROR", "推广人不存在"));
+
+    const [orders, total] = await Promise.all([
+      prisma.order.findMany({
+        where: { referralCode: user.promotionInfo.referralCode },
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: pageSize,
+        select: {
+          orderNo: true,
+          totalAmount: true,
+          commissionAmount: true,
+          commissionStatus: true,
+          paymentStatus: true,
+          createdAt: true,
+          productSnapshot: true,
+        },
+      }),
+      prisma.order.count({ where: { referralCode: user.promotionInfo.referralCode } }),
+    ]);
+
+    return success({ list: orders, total, page, pageSize });
   });
 }
 

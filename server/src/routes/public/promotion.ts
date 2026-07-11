@@ -23,15 +23,35 @@ export async function publicPromotionRoutes(app: FastifyInstance) {
     const { userId } = (request as any).user;
     const body = request.body as { contact?: string };
 
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { promotionInfo: true },
+    });
     if (!user) return reply.code(404).send(error("VALIDATION_ERROR", "用户不存在"));
-    if (user.role === "admin" || user.role === "super_admin") {
-      return reply.code(400).send(error("VALIDATION_ERROR", "管理员无需申请推广"));
-    }
-    if (user.role === "promoter") {
+    if (user.role === "promoter" || user.promotionInfo) {
       return reply.code(400).send(error("VALIDATION_ERROR", "您已经是推广人"));
     }
 
+    const isAdmin = user.role === "admin" || user.role === "super_admin";
+
+    // 管理员：自动创建推广信息（自审批），不改变角色
+    if (isAdmin) {
+      const code = generateReferralCode();
+      await prisma.promotionInfo.create({
+        data: {
+          userId: user.id,
+          referralCode: code,
+          commissionRate: 0.1,
+        },
+      });
+      await prisma.user.update({
+        where: { id: userId },
+        data: { contact: body.contact ?? user.contact },
+      });
+      return success({ autoApproved: true, referralCode: code });
+    }
+
+    // 普通用户：改为 promoter 角色，等待管理员审批
     await prisma.user.update({
       where: { id: userId },
       data: { role: "promoter", contact: body.contact ?? user.contact },
@@ -84,4 +104,13 @@ export async function publicPromotionRoutes(app: FastifyInstance) {
 
     return success(orders);
   });
+}
+
+function generateReferralCode(): string {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
 }

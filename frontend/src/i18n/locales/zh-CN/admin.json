@@ -43,6 +43,8 @@
   "approveConfirm": "确认审批通过此推广申请？",
   "rejectConfirm": "确认拒绝？用户角色将恢复为买家。",
   "commissionRatePlaceholder": "佣金比例（%）",
+  "searchPromoter": "搜索推广人邮箱或推广码...",
+  "promoterOrders": "推广订单",
 
   "dashboardTitle": "仪表板",
   "todayOrders": "今日订单",
