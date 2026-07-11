@@ -67,6 +67,7 @@
   "applyPromoter": "Apply as Promoter",
   "alreadyPromoter": "You are already a promoter",
   "applySubmitted": "Application submitted. Waiting for admin approval.",
+  "approveSuccess": "Promoter application approved! You can start promoting now.",
   "applyFormTitle": "Apply as Promoter",
   "contactLabel": "Contact Info",
   "contactPlaceholder": "Optional contact info",
@@ -91,5 +92,7 @@
   "oldPassword": "Old Password",
   "newPassword": "New Password",
   "passwordMismatch": "Passwords do not match",
-  "passwordTooShort": "Password must be at least 6 characters"
+  "passwordTooShort": "Password must be at least 6 characters",
+  "notPromoterYet": "You are not a promoter yet. Please apply first.",
+  "goToApply": "Apply Now"
 }
