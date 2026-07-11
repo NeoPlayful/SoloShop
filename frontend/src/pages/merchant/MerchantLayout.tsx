@@ -30,7 +30,7 @@ export default function MerchantLayout() {
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-page">
       {/* 顶部导航 */}
-      <SiteHeader sticky={false} merchantHref="/merchant" />
+      <SiteHeader sticky={false} merchantHref="/merchant" showUserStatus />
 
       {/* 主体区域：侧边栏 + 内容区 */}
       <div className="mx-auto flex w-full max-w-5xl flex-1 overflow-hidden px-4">
