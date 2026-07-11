@@ -23,12 +23,7 @@ export default function LoginPage() {
       const res = await apiClient.post("/auth/login", { username: credential, password });
       if (res.data.success) {
         toast.success(t("loginSuccess"));
-        const role = res.data.data?.user?.role;
-        if (role === "admin" || role === "super_admin") {
-          navigate("/admin");
-        } else {
-          navigate("/merchant");
-        }
+        navigate("/merchant");
       } else {
         toast.error(res.data.error?.message || t("common:operationFailed"));
       }
