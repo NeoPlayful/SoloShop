@@ -1,49 +1,17 @@
-import { useState, useRef, useEffect } from "react";
-import { Link, Navigate, NavLink, Outlet, useSearchParams } from "react-router-dom";
+import { Navigate, NavLink, Outlet } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
-import { SunIcon, MoonIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
-import { useTheme } from "../../theme/index.js";
 import { apiClient } from "../../lib/client.js";
 import { LoadingState } from "../../components/LoadingStates.js";
+import { SiteHeader } from "../../components/SiteHeader.js";
 
 export default function MerchantLayout() {
-  const { t, i18n } = useTranslation("store");
-  const { resolved, toggle } = useTheme();
-  const [searchParams] = useSearchParams();
-  const [langOpen, setLangOpen] = useState(false);
-  const langRef = useRef<HTMLDivElement>(null);
-
+  const { t } = useTranslation("store");
   const { data: user, isLoading } = useQuery({
     queryKey: ["me"],
     queryFn: () => apiClient.get("/auth/me").then((r) => r.data.data),
     retry: false,
   });
-
-  useEffect(() => {
-    const ref = searchParams.get("ref");
-    if (ref) {
-      localStorage.setItem("promo_ref", ref);
-      fetch(`/api/public/promotion/${encodeURIComponent(ref)}/click`, { method: "POST" }).catch(() => {});
-    }
-  }, [searchParams]);
-
-  const currentLang = i18n.language?.startsWith("zh") ? "zh-CN" : "en-US";
-
-  const handleLangChange = (lang: string) => {
-    i18n.changeLanguage(lang);
-    setLangOpen(false);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (langRef.current && !langRef.current.contains(e.target as Node)) {
-        setLangOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   if (isLoading) return <LoadingState />;
   if (!user) return <Navigate to="/login" replace />;
@@ -62,51 +30,7 @@ export default function MerchantLayout() {
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-page">
       {/* 顶部导航 */}
-      <header className="shrink-0 border-b border-border bg-surface shadow-sm">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-          <Link to="/" className="flex items-center gap-2 text-lg font-bold text-text-primary">
-            <img src="/images/logo.png" alt="SoloShop" className="h-7 w-7" />
-            SoloShop
-          </Link>
-          <nav className="flex items-center gap-3">
-            <Link to="/" className="text-sm text-text-secondary hover:text-text-primary">{t("home")}</Link>
-            <Link to="/order/query" className="text-sm text-text-secondary hover:text-text-primary">{t("orderQuery")}</Link>
-
-            {/* 语言切换 */}
-            <div ref={langRef} className="relative">
-              <button onClick={() => setLangOpen(!langOpen)} className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs text-text-secondary hover:bg-surface-hover">
-                {currentLang === "zh-CN" ? "简体中文" : "English"}
-                <ChevronDownIcon className={`h-3 w-3 transition-transform ${langOpen ? "rotate-180" : ""}`} />
-              </button>
-              {langOpen && (
-                <div className="absolute right-0 top-full z-50 mt-1 w-28 rounded-lg border border-border bg-surface py-1 shadow-lg">
-                  <button onClick={() => handleLangChange("zh-CN")} className={`flex w-full items-center justify-between px-3 py-1.5 text-xs ${currentLang === "zh-CN" ? "text-blue-500" : "text-text-secondary hover:bg-surface-hover"}`}>
-                    简体中文
-                    {currentLang === "zh-CN" && <span>✓</span>}
-                  </button>
-                  <button onClick={() => handleLangChange("en-US")} className={`flex w-full items-center justify-between px-3 py-1.5 text-xs ${currentLang === "en-US" ? "text-blue-500" : "text-text-secondary hover:bg-surface-hover"}`}>
-                    English
-                    {currentLang === "en-US" && <span>✓</span>}
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* 主题切换 */}
-            <button onClick={toggle} className="rounded p-1.5 text-text-secondary hover:bg-surface-hover" title={resolved === "dark" ? "Switch to light" : "Switch to dark"}>
-              {resolved === "dark" ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
-            </button>
-
-            {/* 商家中心 */}
-            <Link
-              to="/merchant"
-              className="rounded-lg border border-border px-3 py-1.5 text-sm text-text-secondary hover:bg-surface-hover transition-colors"
-            >
-              {t("merchantCenter")}
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader sticky={false} merchantHref="/merchant" />
 
       {/* 主体区域：侧边栏 + 内容区 */}
       <div className="mx-auto flex w-full max-w-5xl flex-1 overflow-hidden px-4">
