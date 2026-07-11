@@ -40,7 +40,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="mx-auto max-w-sm py-12">
+    <div className="mx-auto w-full max-w-sm py-12">
       <form onSubmit={handleSubmit} className="rounded-lg bg-surface p-8 shadow-lg">
         <h1 className="mb-6 text-center text-2xl font-bold text-text-primary">{t("login")}</h1>
 
