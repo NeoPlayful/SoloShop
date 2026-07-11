@@ -27,8 +27,13 @@ export default function MerchantOverview() {
   // 申请推广
   const applyMutation = useMutation({
     mutationFn: (body: { contact?: string }) => apiClient.post("/public/promotion/apply", body),
-    onSuccess: () => {
-      toast.success(t("applySubmitted"));
+    onSuccess: (resp) => {
+      const isAdmin = user?.role === "admin" || user?.role === "super_admin";
+      if (isAdmin && resp.data?.data?.autoApproved) {
+        toast.success(t("approveSuccess"));
+      } else {
+        toast.success(t("applySubmitted"));
+      }
       refetch();
     },
     onError: (err: any) => {
@@ -37,6 +42,7 @@ export default function MerchantOverview() {
   });
 
   const isAdmin = user?.role === "admin" || user?.role === "super_admin";
+  const hasPromotionInfo = !!user?.promotionInfo;
 
   if (isLoading) return <LoadingState />;
   if (!user) return null;
@@ -49,7 +55,7 @@ export default function MerchantOverview() {
   return (
     <div>
       {/* ─── 管理员/已通过推广人：KPI 卡片 ─── */}
-      {(isAdmin || (user.role === "promoter" && user.promotionInfo)) && (
+      {hasPromotionInfo && (
         <>
           {statsLoading ? (
             <LoadingState />
@@ -101,8 +107,8 @@ export default function MerchantOverview() {
         </div>
       )}
 
-      {/* ─── 买家：申请推广 ─── */}
-      {user.role === "buyer" && (
+      {/* ─── 买家/管理员（非推广人）：申请推广 ─── */}
+      {!hasPromotionInfo && user.role !== "promoter" && (
         <div className="mx-auto max-w-md rounded-lg bg-surface p-8 shadow">
           <h1 className="mb-6 text-center text-xl font-bold text-text-primary">{t("applyFormTitle")}</h1>
           <form onSubmit={handleSubmit} className="space-y-4">

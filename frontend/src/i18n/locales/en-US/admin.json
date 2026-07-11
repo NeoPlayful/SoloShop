@@ -43,6 +43,8 @@
   "approveConfirm": "Approve this promoter application?",
   "rejectConfirm": "Reject this application? The user will be reverted to buyer role.",
   "commissionRatePlaceholder": "Commission rate (%)",
+  "searchPromoter": "Search by email or promo code...",
+  "promoterOrders": "Promotion Orders",
 
   "dashboardTitle": "Dashboard",
   "todayOrders": "Today's Orders",

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../../lib/client.js";
@@ -26,7 +27,10 @@ export default function MerchantPromotionLink() {
   if (!referralCode || !stats) {
     return (
       <div className="rounded-lg bg-surface p-8 text-center shadow">
-        <p className="text-sm text-text-secondary">{t("noPromotionOrders")}</p>
+        <p className="mb-3 text-sm text-text-secondary">{t("notPromoterYet")}</p>
+        <Link to="/merchant/overview" className="inline-block rounded-lg bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600 transition-colors">
+          {t("goToApply")}
+        </Link>
       </div>
     );
   }

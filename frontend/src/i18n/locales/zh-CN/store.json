@@ -67,6 +67,7 @@
   "applyPromoter": "申请成为推广人",
   "alreadyPromoter": "您已经是推广人",
   "applySubmitted": "申请已提交，等待管理员审核。",
+  "approveSuccess": "推广申请已通过，您可以开始推广了！",
   "applyFormTitle": "申请成为推广人",
   "contactLabel": "联系方式",
   "contactPlaceholder": "选填，方便管理员联系您",
@@ -91,5 +92,7 @@
   "oldPassword": "旧密码",
   "newPassword": "新密码",
   "passwordMismatch": "两次密码输入不一致",
-  "passwordTooShort": "密码至少6位"
+  "passwordTooShort": "密码至少6位",
+  "notPromoterYet": "您还不是推广人，请先申请成为推广人",
+  "goToApply": "前往申请"
 }
