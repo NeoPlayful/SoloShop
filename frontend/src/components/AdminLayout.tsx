@@ -115,7 +115,7 @@ export function AdminLayout() {
       renderGroupLabel={(group) => t(group.label)}
     >
       {/* 顶部状态栏 */}
-      <div className="mb-4 flex items-center justify-end gap-1 border-b border-border pb-3">
+      <div className="sticky top-0 z-10 flex items-center justify-end gap-1 border-b border-border bg-page px-6 pt-4 pb-4">
         <div ref={langRef} className="relative">
           <button onClick={() => setLangOpen(!langOpen)} className="flex items-center gap-1 rounded border border-border px-2 py-1 text-xs text-text-secondary hover:bg-surface-hover transition-colors">
             {currentLang === "zh-CN" ? "简体中文" : "English"}
@@ -155,7 +155,9 @@ export function AdminLayout() {
         </div>
       </div>
 
-      <Outlet />
+      <div className="p-6 pt-4">
+        <Outlet />
+      </div>
     </SidebarLayout>
   );
 }
