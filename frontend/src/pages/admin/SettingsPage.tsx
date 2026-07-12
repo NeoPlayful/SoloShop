@@ -91,6 +91,16 @@ export default function SettingsPage() {
     },
   });
 
+  // ─── 推广设置 ───
+  const [promotionForm, setPromotionForm] = useState<Record<string, any>>({});
+  const promotionMutation = useMutation({
+    mutationFn: (body: Record<string, any>) => apiClient.patch("/admin/settings/promotion", body),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-settings"] });
+      toast.success(t("operationSuccess"));
+    },
+  });
+
   // ─── 主题设置 ───
   const themeMutation = useMutation({
     mutationFn: (body: Record<string, any>) => apiClient.patch("/admin/settings/site", body),
@@ -127,6 +137,10 @@ export default function SettingsPage() {
       guest_checkout: data.guest_checkout ?? true,
       order_query_require_email: data.order_query_require_email ?? true,
       order_show_stock: data.order_show_stock ?? true,
+    });
+    setPromotionForm({
+      default_commission_rate: data.promotion_default_commission_rate != null ? Number(data.promotion_default_commission_rate) * 100 : 10,
+      max_commission_per_order: data.promotion_max_commission_per_order != null ? String(Number(data.promotion_max_commission_per_order)) : "",
     });
   }
 
@@ -330,6 +344,51 @@ export default function SettingsPage() {
               className="rounded bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600 disabled:opacity-50"
             >
               {orderMutation.isPending ? tc("saving") : tc("save")}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ─── 推广设置 ─── */}
+      <div className="mb-6 rounded-lg bg-surface p-6 shadow">
+        <h2 className="mb-4 text-lg font-semibold text-text-primary">{t("promotionSettings")}</h2>
+        <div className="space-y-4">
+          <Input
+            label={t("commissionRate")}
+            type="number"
+            min={0}
+            max={100}
+            step={0.1}
+            value={promotionForm.default_commission_rate ?? 10}
+            onChange={(e) => setPromotionForm({ ...promotionForm, default_commission_rate: parseFloat(e.target.value) || 0 })}
+            placeholder={t("commissionRatePlaceholder")}
+          />
+          <Input
+            label={t("maxCommissionPerOrder")}
+            type="number"
+            min={0}
+            step={0.01}
+            value={promotionForm.max_commission_per_order ?? ""}
+            onChange={(e) => setPromotionForm({ ...promotionForm, max_commission_per_order: e.target.value })}
+            placeholder={t("maxCommissionHint")}
+          />
+          <div className="pt-2">
+            <button
+              onClick={() => {
+                const body: Record<string, any> = {
+                  default_commission_rate: Number(promotionForm.default_commission_rate) / 100,
+                };
+                if (promotionForm.max_commission_per_order !== "") {
+                  body.max_commission_per_order = Number(promotionForm.max_commission_per_order);
+                } else {
+                  body.max_commission_per_order = null;
+                }
+                promotionMutation.mutate(body);
+              }}
+              disabled={promotionMutation.isPending}
+              className="rounded bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600 disabled:opacity-50"
+            >
+              {promotionMutation.isPending ? tc("saving") : tc("save")}
             </button>
           </div>
         </div>

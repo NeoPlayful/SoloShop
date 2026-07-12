@@ -1,5 +1,6 @@
 {
   "adminPanel": "SoloShop 管理",
+  "adminPanelSuffix": "管理",
   "dashboard": "仪表板",
   "categories": "分类管理",
   "products": "商品管理",
@@ -172,6 +173,7 @@
   "orderQueryRequireEmail": "订单查询需要邮箱",
   "showStock": "前台显示库存",
   "securitySettings": "安全设置",
+  "promotionSettings": "推广设置",
 
   "operationLogs": "操作日志",
   "action": "操作",

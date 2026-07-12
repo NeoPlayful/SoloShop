@@ -23,4 +23,5 @@ export async function adminSettingsRoutes(app: FastifyInstance) {
   app.patch("/site", async (request) => updateSettings("site", request.body as any));
   app.patch("/order", async (request) => updateSettings("order", request.body as any));
   app.patch("/security", async (request) => updateSettings("security", request.body as any));
+  app.patch("/promotion", async (request) => updateSettings("promotion", request.body as any));
 }

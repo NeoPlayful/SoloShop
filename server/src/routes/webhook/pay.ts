@@ -22,9 +22,18 @@ export async function webhookPayRoutes(app: FastifyInstance) {
           // 检查推广人是否有效
           const promoter = await tx.user.findUnique({ where: { id: info.userId } });
           if (promoter && promoter.isActive && promoter.role === "promoter") {
-            // 检查商品绑定（PromotionInfo 全站通用，不做细粒度绑定）
+            // 读取单笔佣金上限设置
+            const maxSetting = await tx.systemSetting.findUnique({ where: { key: "promotion_max_commission_per_order" } });
+            const maxCommission = maxSetting ? Number(maxSetting.value) : null;
+
+            // 计算佣金（按比例）
             let commission = Number(order.totalAmount) * Number(info.commissionRate);
-            const commissionAmount = Math.round(commission * 100) / 100;
+            let commissionAmount = Math.round(commission * 100) / 100;
+
+            // 如果设置了上限，取较小值
+            if (maxCommission !== null && maxCommission > 0) {
+              commissionAmount = Math.min(commissionAmount, Number(maxCommission));
+            }
 
             await tx.order.update({ where: { id: order.id }, data: { commissionAmount, commissionStatus: "pending" } });
             await tx.promotionInfo.update({ where: { id: info.id }, data: {
