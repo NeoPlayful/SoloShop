@@ -74,7 +74,8 @@ export async function adminOrderRoutes(app: FastifyInstance) {
     const { id } = request.params as { id: string };
     const order = await prisma.order.findUnique({ where: { id: parseInt(id) } });
     if (!order) return error("ORDER_NOT_FOUND", "订单不存在");
-    await prisma.order.update({ where: { id: order.id }, data: { orderStatus: "closed" } });
+    if (order.orderStatus === "closed") return error("ORDER_CLOSED", "订单已关闭，请勿重复操作");
+    await prisma.order.update({ where: { id: order.id }, data: { orderStatus: "closed", paymentStatus: "failed" } });
     // 释放卡密
     const lockedCards = await prisma.card.findMany({ where: { orderId: order.id, status: "locked" } });
     if (lockedCards.length > 0) {

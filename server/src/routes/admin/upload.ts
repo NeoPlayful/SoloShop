@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp", "image/svg+xml"];
-const UPLOAD_DIR = join(__dirname, "../../../uploads/products");
+const UPLOAD_BASE = join(__dirname, "../../../uploads");
 
 export async function adminUploadRoutes(app: FastifyInstance) {
   app.addHook("preHandler", authMiddleware);
@@ -26,20 +26,25 @@ export async function adminUploadRoutes(app: FastifyInstance) {
         return reply.code(400).send(error("INVALID_FILE_TYPE", "仅支持 PNG、JPG、WebP、SVG 格式"));
       }
 
+      // 根据 type 参数选择子目录
+      const type = (request.query as any)?.type || "product";
+      const subDir = type === "logo" ? "logos" : "products";
+      const uploadDir = join(UPLOAD_BASE, subDir);
+
       // 确保目录存在
-      await mkdir(UPLOAD_DIR, { recursive: true });
+      await mkdir(uploadDir, { recursive: true });
 
       // 生成唯一文件名
       const ext = extname(file.filename) || ".png";
       const filename = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`;
-      const filePath = join(UPLOAD_DIR, filename);
+      const filePath = join(uploadDir, filename);
 
       // 写入文件
       const buffer = await file.toBuffer();
       await writeFile(filePath, buffer);
 
       // 返回可访问的 URL
-      const url = `/uploads/products/${filename}`;
+      const url = `/uploads/${subDir}/${filename}`;
       return success({ url, filename });
     } catch (err) {
       request.log.error(err);
