@@ -28,6 +28,73 @@ export async function adminPromotionRoutes(app: FastifyInstance) {
     });
   });
 
+  // ─── 全局推广订单日志 ───
+  app.get("/orders", async (request) => {
+    const query = request.query as {
+      search?: string;
+      commissionStatus?: string;
+      page?: string;
+      pageSize?: string;
+    };
+
+    const page = Math.max(1, parseInt(query.page || "1"));
+    const pageSize = Math.min(100, Math.max(1, parseInt(query.pageSize || "20")));
+    const skip = (page - 1) * pageSize;
+
+    const where: any = { referralCode: { not: null } };
+
+    if (query.commissionStatus) {
+      where.commissionStatus = query.commissionStatus;
+    }
+
+    if (query.search) {
+      where.OR = [
+        { orderNo: { contains: query.search } },
+        { referralCode: { contains: query.search.toUpperCase() } },
+        { buyerEmail: { contains: query.search } },
+        { productSnapshot: { path: ["name"], string_contains: query.search } },
+      ];
+    }
+
+    const [orders, total] = await Promise.all([
+      prisma.order.findMany({
+        where,
+        select: {
+          orderNo: true,
+          totalAmount: true,
+          commissionAmount: true,
+          commissionStatus: true,
+          paymentStatus: true,
+          referralCode: true,
+          buyerEmail: true,
+          createdAt: true,
+          productSnapshot: true,
+        },
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: pageSize,
+      }),
+      prisma.order.count({ where }),
+    ]);
+
+    // 批量查询推广人信息
+    const codes = [...new Set(orders.filter((o) => o.referralCode).map((o) => o.referralCode as string))];
+    const infos = codes.length > 0
+      ? await prisma.promotionInfo.findMany({
+          where: { referralCode: { in: codes } },
+          select: { referralCode: true, user: { select: { email: true } } },
+        })
+      : [];
+    const infoMap = new Map(infos.map((i) => [i.referralCode, i.user.email]));
+
+    const list = orders.map((o) => ({
+      ...o,
+      promoterEmail: o.referralCode ? infoMap.get(o.referralCode) || null : null,
+    }));
+
+    return success({ list, total, page, pageSize });
+  });
+
   // ─── 推广人列表（含 User + PromotionInfo，支持搜索/筛选/分页） ───
   app.get("/", async (request) => {
     const query = request.query as {

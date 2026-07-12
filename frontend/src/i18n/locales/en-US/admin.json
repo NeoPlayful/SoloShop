@@ -46,6 +46,11 @@
   "commissionRatePlaceholder": "Commission rate (%)",
   "searchPromoter": "Search by email or promo code...",
   "promoterOrders": "Promotion Orders",
+  "orderLogTab": "Order Log",
+  "promoterTab": "Promoters",
+  "promoter2": "Promoter",
+  "commissionStatus": "Commission Status",
+  "settled": "Settled",
 
   "dashboardTitle": "Dashboard",
   "todayOrders": "Today's Orders",
