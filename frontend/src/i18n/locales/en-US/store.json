@@ -89,6 +89,7 @@
   "contactInfo": "Contact Info",
   "save": "Save",
   "changePassword": "Change Password",
+  "language": "Language",
   "oldPassword": "Old Password",
   "newPassword": "New Password",
   "passwordMismatch": "Passwords do not match",
