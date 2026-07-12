@@ -89,6 +89,7 @@
   "contactInfo": "联系方式",
   "save": "保存",
   "changePassword": "修改密码",
+  "language": "语言",
   "oldPassword": "旧密码",
   "newPassword": "新密码",
   "passwordMismatch": "两次密码输入不一致",
