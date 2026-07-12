@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "../../lib/client.js";
@@ -147,6 +147,19 @@ function ApproveModal({ item, onClose }: { item: any; onClose: () => void }) {
   const queryClient = useQueryClient();
 
   const [commissionRate, setCommissionRate] = useState(10);
+
+  const { data: settings } = useQuery({
+    queryKey: ["admin-settings"],
+    queryFn: () => apiClient.get("/admin/settings").then((r) => r.data.data),
+    staleTime: 300_000,
+  });
+
+  // 设置加载后更新默认佣金比例
+  useEffect(() => {
+    if (settings?.promotion_default_commission_rate != null) {
+      setCommissionRate(Number(settings.promotion_default_commission_rate) * 100);
+    }
+  }, [settings]);
 
   const saveMutation = useMutation({
     mutationFn: (body: any) => apiClient.post(`/admin/promotion/${item.id}/approve`, body),

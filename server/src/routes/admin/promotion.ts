@@ -150,6 +150,10 @@ export async function adminPromotionRoutes(app: FastifyInstance) {
     if (!user) return reply.code(404).send(error("VALIDATION_ERROR", "用户不存在"));
     if (user.promotionInfo) return reply.code(400).send(error("VALIDATION_ERROR", "该用户已是推广人"));
 
+    // 读取系统设置的默认佣金比例
+    const defaultRateSetting = await prisma.systemSetting.findUnique({ where: { key: "promotion_default_commission_rate" } });
+    const defaultRate = defaultRateSetting ? Number(defaultRateSetting.value) : 0.1;
+
     const code = generateReferralCode();
     const existingCode = await prisma.promotionInfo.findUnique({ where: { referralCode: code } });
     if (existingCode) return reply.code(500).send(error("INTERNAL_ERROR", "推广码生成冲突，请重试"));
@@ -158,7 +162,7 @@ export async function adminPromotionRoutes(app: FastifyInstance) {
       data: {
         userId: user.id,
         referralCode: code,
-        commissionRate: body.commissionRate ?? 0.1,
+        commissionRate: body.commissionRate ?? defaultRate,
       },
     });
 

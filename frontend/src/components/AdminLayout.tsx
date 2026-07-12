@@ -76,6 +76,16 @@ export function AdminLayout() {
     queryFn: () => apiClient.get("/auth/me").then((r) => r.data.data),
   });
 
+  const { data: siteSettings } = useQuery({
+    queryKey: ["admin-settings"],
+    queryFn: () => apiClient.get("/admin/settings").then((r) => r.data.data),
+    staleTime: 300_000,
+  });
+
+  const siteName = (siteSettings as any)?.site_name
+    ? `${(siteSettings as any).site_name} ${t("adminPanelSuffix")}`
+    : t("adminPanel");
+
   const handleLogout = async () => {
     await apiClient.post("/auth/logout");
     navigate("/admin/login");
@@ -108,7 +118,7 @@ export function AdminLayout() {
 
   return (
     <SidebarLayout
-      title={t("adminPanel")}
+      title={siteName}
       navGroups={navGroups}
       sidebarFooter={sidebarFooter}
       renderItemLabel={(item) => t(item.label)}

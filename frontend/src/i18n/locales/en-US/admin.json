@@ -1,5 +1,6 @@
 {
   "adminPanel": "SoloShop Admin",
+  "adminPanelSuffix": "Admin",
   "dashboard": "Dashboard",
   "categories": "Categories",
   "products": "Products",
@@ -172,6 +173,7 @@
   "orderQueryRequireEmail": "Require Email for Order Query",
   "showStock": "Show Stock in Storefront",
   "securitySettings": "Security Settings",
+  "promotionSettings": "Promotion Settings",
 
   "operationLogs": "Operation Logs",
   "action": "Action",

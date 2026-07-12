@@ -34,6 +34,14 @@ export function SiteHeader({ sticky, merchantHref, showUserStatus }: SiteHeaderP
     staleTime: 60_000,
   });
 
+  const { data: siteSettings } = useQuery({
+    queryKey: ["public-settings"],
+    queryFn: () => apiClient.get("/public/settings").then((r) => r.data.data),
+    staleTime: 300_000,
+  });
+
+  const siteName = (siteSettings as any)?.site_name || "SoloShop";
+
   // 检测 ?aff= 参数并存入 localStorage（推广来源追踪）
   useEffect(() => {
     const ref = searchParams.get("aff");
@@ -96,8 +104,8 @@ export function SiteHeader({ sticky, merchantHref, showUserStatus }: SiteHeaderP
     >
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2 text-lg font-bold text-text-primary">
-          <img src="/images/logo.png" alt="SoloShop" className="h-7 w-7" />
-          SoloShop
+          <img src="/images/logo.png" alt={siteName} className="h-7 w-7" />
+          {siteName}
         </Link>
         <div className="flex items-center gap-1">
           <nav className="hidden md:flex items-center gap-3">
@@ -205,7 +213,7 @@ export function SiteHeader({ sticky, merchantHref, showUserStatus }: SiteHeaderP
       >
         {/* 抽屉头部 */}
         <div className="flex h-14 shrink-0 items-center justify-between border-b border-border px-4">
-          <span className="text-lg font-bold text-text-primary">SoloShop</span>
+          <span className="text-lg font-bold text-text-primary">{siteName}</span>
           <button onClick={() => setDrawerOpen(false)} className="rounded p-1.5 text-text-secondary hover:bg-surface-hover">
             <XMarkIcon className="h-6 w-6" />
           </button>
