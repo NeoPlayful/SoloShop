@@ -26,7 +26,7 @@ export default function OrderQueryPage() {
   };
 
   return (
-    <div className="mx-auto max-w-md py-16">
+    <div className="mx-auto w-full max-w-md py-16">
       <h1 className="mb-8 text-center text-2xl font-bold">{t("orderQueryTitle")}</h1>
       <div className="space-y-4 rounded-lg border-border bg-surface p-6">
         <div>

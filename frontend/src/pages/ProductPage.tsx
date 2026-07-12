@@ -49,7 +49,7 @@ export default function ProductPage() {
   if (!product) return <div className="py-16 text-center text-text-secondary">{t("productNotExist")}</div>;
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className="mx-auto w-full max-w-5xl">
       {/* 左右分栏：主图(左) + 信息/购买区(右) */}
       <div className="flex flex-col gap-6 md:flex-row md:items-start">
         {/* 左：商品主图 */}

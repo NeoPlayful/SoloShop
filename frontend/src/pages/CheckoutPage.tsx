@@ -62,7 +62,7 @@ export default function CheckoutPage() {
   if (!orderNo) return null;
 
   return (
-    <div className="mx-auto max-w-md py-8">
+    <div className="mx-auto w-full max-w-md py-8">
       <h1 className="mb-6 text-center text-xl font-bold">{t("confirmOrder")}</h1>
       <div className="mb-6 rounded-lg border-border bg-surface p-6">
         <p className="mb-2 text-sm text-text-secondary">{t("orderNo", { ns: "common" })}</p>
