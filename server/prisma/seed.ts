@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { rebuildPool } from "../src/lib/card-pool.js";
 
 const prisma = new PrismaClient();
 
@@ -13,10 +14,11 @@ async function main() {
 
   const admin = await prisma.user.upsert({
     where: { username: adminUsername },
-    update: {},
+    update: { email: "admin@soloshop.com" },
     create: {
       username: adminUsername,
       password: hashedPassword,
+      email: "admin@soloshop.com",
       role: "super_admin",
       isActive: true,
     },
@@ -261,6 +263,14 @@ async function main() {
     }
   }
   console.log(`✅ 示例卡密创建完成`);
+
+  // 重建 Redis 卡密池（忽略 Redis 不可用的错误）
+  try {
+    await rebuildPool();
+    console.log("✅ Redis 卡密池已同步");
+  } catch {
+    console.warn("⚠️ Redis 不可用，卡密池未同步");
+  }
 
   console.log("🎉 种子数据初始化完成");
 }

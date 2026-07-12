@@ -57,6 +57,7 @@ export default function ProductsPage() {
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("name", { ns: "common" })}</th>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("category")}</th>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("price")}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("stock")}</th>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("salesCount")}</th>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("status", { ns: "common" })}</th>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("operation", { ns: "common" })}</th>
@@ -68,6 +69,7 @@ export default function ProductsPage() {
               <td className="px-4 py-3 text-sm font-medium text-text-primary">{item.name}</td>
               <td className="px-4 py-3 text-sm text-text-secondary">{item.category?.name || "-"}</td>
               <td className="px-4 py-3 text-sm text-text-primary">¥{item.price}</td>
+              <td className="px-4 py-3 text-sm text-text-primary">{item.stock}</td>
               <td className="px-4 py-3 text-sm text-text-primary">{item.salesCount}</td>
               <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.status === "active" ? "bg-green-100 text-green-700" : item.status === "draft" ? "bg-gray-100 text-gray-500" : "bg-yellow-100 text-yellow-700"}`}>{item.status === "active" ? t("active") : item.status === "draft" ? t("draft") : t("inactive")}</span></td>
               <td className="px-4 py-3 text-sm">

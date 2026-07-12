@@ -25,8 +25,12 @@ export default function ProductPage() {
       toast.error(`Purchase quantity must be between ${product.minQuantity} and ${product.maxQuantity}`);
       return;
     }
+    if (quantity > product.stock) {
+      toast.error("Insufficient stock");
+      return;
+    }
     try {
-      const promoRef = localStorage.getItem("promo_ref") || undefined;
+      const promoRef = localStorage.getItem("soloshop_promo_ref") || undefined;
       const res = await apiClient.post("/public/orders", {
         productId: product.id, quantity, buyerEmail: email,
         referralCode: promoRef,
@@ -36,8 +40,8 @@ export default function ProductPage() {
       } else {
         toast.error(res.data.error?.message || "Order creation failed");
       }
-    } catch {
-      toast.error("Order creation failed, please try again");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.error?.message || "Order creation failed, please try again");
     }
   };
 
@@ -73,7 +77,7 @@ export default function ProductPage() {
           <div className="md:sticky md:top-8 mt-2 space-y-2.5 rounded-lg border border-border bg-surface p-4">
             <div>
               <label className="mb-1 block text-sm font-medium">{t("quantity")}</label>
-              <Input type="number" value={quantity} min={product.minQuantity} max={product.maxQuantity} onChange={(e) => setQuantity(parseInt(e.target.value) || 1)} className="w-24 text-center" />
+              <Input type="number" value={quantity} min={product.minQuantity} max={Math.min(product.maxQuantity, product.stock)} onChange={(e) => setQuantity(parseInt(e.target.value) || 1)} className="w-24 text-center" />
               <span className="ml-2 text-xs text-text-tertiary">{t("quantityRange", { min: product.minQuantity, max: product.maxQuantity })}</span>
             </div>
             <div>

@@ -1,7 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { prisma } from "../../lib/db.js";
 import { success, error, AppError } from "../../lib/api-utils.js";
-import { getAvailableStock } from "../../lib/card-pool.js";
 
 export async function publicProductRoutes(app: FastifyInstance) {
   // 商品列表
@@ -15,7 +14,18 @@ export async function publicProductRoutes(app: FastifyInstance) {
       where, orderBy: { sortOrder: "asc" },
       select: { id: true, name: true, slug: true, price: true, originalPrice: true, coverImage: true, salesCount: true, status: true, categoryId: true, minQuantity: true, maxQuantity: true },
     });
-    return success(products);
+
+    // 批量统计可用库存
+    const productIds = products.map((p) => p.id);
+    const counts = productIds.length > 0 ? await prisma.card.groupBy({
+      by: ["productId"],
+      where: { productId: { in: productIds }, status: "available" },
+      _count: { id: true },
+    }) : [];
+    const stockMap = new Map(counts.map((c) => [c.productId, c._count.id]));
+    const enriched = products.map((p) => ({ ...p, stock: stockMap.get(p.id) || 0 }));
+
+    return success(enriched);
   });
 
   // 商品详情
@@ -26,7 +36,9 @@ export async function publicProductRoutes(app: FastifyInstance) {
       include: { category: { select: { name: true } } },
     });
     if (!product) return reply.code(404).send(error("PRODUCT_NOT_FOUND", "商品不存在"));
-    const stock = await getAvailableStock(product.id);
+    const stock = await prisma.card.count({
+      where: { productId: product.id, status: "available" },
+    });
     return success({ ...product, stock });
   });
 }

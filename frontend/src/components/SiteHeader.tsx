@@ -33,11 +33,11 @@ export function SiteHeader({ sticky, merchantHref, showUserStatus }: SiteHeaderP
     staleTime: 60_000,
   });
 
-  // 检测 ?ref= 参数并存入 localStorage（推广来源追踪）
+  // 检测 ?aff= 参数并存入 localStorage（推广来源追踪）
   useEffect(() => {
-    const ref = searchParams.get("ref");
+    const ref = searchParams.get("aff");
     if (ref) {
-      localStorage.setItem("promo_ref", ref);
+      localStorage.setItem("soloshop_promo_ref", ref);
       fetch(`/api/public/promotion/${encodeURIComponent(ref)}/click`, { method: "POST" }).catch(() => {});
     }
   }, [searchParams]);

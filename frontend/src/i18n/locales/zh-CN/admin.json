@@ -105,6 +105,7 @@
   "unpublish": "下架",
   "category": "分类",
   "price": "价格",
+  "stock": "库存",
   "salesCount": "销量",
 
   "cardManagement": "卡密库存",

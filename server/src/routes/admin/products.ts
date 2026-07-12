@@ -26,7 +26,18 @@ export async function adminProductRoutes(app: FastifyInstance) {
       }),
       prisma.product.count({ where }),
     ]);
-    return success({ items, total, page, pageSize });
+
+    // 批量统计可用库存
+    const productIds = items.map((p) => p.id);
+    const counts = productIds.length > 0 ? await prisma.card.groupBy({
+      by: ["productId"],
+      where: { productId: { in: productIds }, status: "available" },
+      _count: { id: true },
+    }) : [];
+    const stockMap = new Map(counts.map((c) => [c.productId, c._count.id]));
+    const enriched = items.map((p) => ({ ...p, stock: stockMap.get(p.id) || 0 }));
+
+    return success({ items: enriched, total, page, pageSize });
   });
 
   // 创建

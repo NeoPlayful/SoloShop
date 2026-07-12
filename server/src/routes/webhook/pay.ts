@@ -45,7 +45,7 @@ export async function webhookPayRoutes(app: FastifyInstance) {
       await prisma.delivery.create({ data: { orderId: order.id, type: "card", content, status: "delivered", deliveredAt: new Date() } });
       await prisma.order.update({ where: { id: order.id }, data: { deliveryStatus: "delivered", deliveredAt: new Date() } });
       // 更新销量
-      await prisma.product.update({ where: { id: order.productId }, data: { salesCount: { increment: 1 } } });
+      await prisma.product.update({ where: { id: order.productId }, data: { salesCount: { increment: order.quantity } } });
     }
 
     return { success: true };

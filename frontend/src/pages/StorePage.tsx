@@ -44,7 +44,7 @@ export default function StorePage() {
                 <span className="text-lg font-bold text-red-500">¥{product.price}</span>
                 {product.originalPrice > 0 && <span className="text-xs text-text-tertiary line-through">¥{product.originalPrice}</span>}
               </div>
-              <p className="mt-1 text-xs text-text-tertiary">{t("soldCount", { count: product.salesCount || 0 })}</p>
+              <p className="mt-1 text-xs text-text-tertiary">{t("stockInfo", { stock: product.stock ?? 0, sales: product.salesCount || 0 })}</p>
             </Link>
           ))}
         </div>

@@ -105,6 +105,7 @@
   "unpublish": "Unpublish",
   "category": "Category",
   "price": "Price",
+  "stock": "Stock",
   "salesCount": "Sales",
 
   "cardManagement": "Card Inventory",
