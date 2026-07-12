@@ -46,10 +46,11 @@
   "commissionRatePlaceholder": "佣金比例（%）",
   "searchPromoter": "搜索推广人邮箱或推广码...",
   "promoterOrders": "推广订单",
-  "orderLogTab": "推广订单日志",
+  "orderLogTab": "订单日志",
   "promoterTab": "推广人列表",
   "promoter2": "推广人",
   "commissionStatus": "佣金状态",
+  "allCommissionStatus": "全部",
   "settled": "已结算",
 
   "dashboardTitle": "仪表板",

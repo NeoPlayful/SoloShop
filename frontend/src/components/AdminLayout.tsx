@@ -43,6 +43,7 @@ const navGroups = [
       { path: "/admin/orders", label: "orders", icon: ClipboardDocumentListIcon },
       { path: "/admin/payments", label: "payments", icon: BanknotesIcon },
       { path: "/admin/deliveries", label: "deliveries", icon: TruckIcon },
+      { path: "/admin/orders-logs", label: "orderLogTab", icon: DocumentTextIcon },
     ],
   },
   {
