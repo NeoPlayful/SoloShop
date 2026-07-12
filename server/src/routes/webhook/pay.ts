@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { prisma } from "../../lib/db.js";
 import { confirmSale } from "../../lib/card-pool.js";
+import { createOrderLog } from "../../lib/order-log.js";
 
 export async function webhookPayRoutes(app: FastifyInstance) {
   // mock支付回调
@@ -46,15 +47,53 @@ export async function webhookPayRoutes(app: FastifyInstance) {
       }
     });
 
+    // ─── 记录支付成功日志 ───
+    await createOrderLog({
+      orderId: order.id,
+      eventType: "payment.success",
+      message: `支付成功，金额 ¥${Number(order.totalAmount).toFixed(2)}`,
+      metadata: { channel: "mock", amount: order.totalAmount },
+    });
+
     // 发货
     const cards = await prisma.card.findMany({ where: { orderId: order.id, status: "locked" } });
     if (cards.length > 0) {
       await confirmSale(cards.map((c) => c.id));
       const content = cards.map((c) => c.content).join("\n");
-      await prisma.delivery.create({ data: { orderId: order.id, type: "card", content, status: "delivered", deliveredAt: new Date() } });
+      const delivery = await prisma.delivery.create({ data: { orderId: order.id, type: "card", content, status: "delivered", deliveredAt: new Date() } });
       await prisma.order.update({ where: { id: order.id }, data: { deliveryStatus: "delivered", deliveredAt: new Date() } });
       // 更新销量
       await prisma.product.update({ where: { id: order.productId }, data: { salesCount: { increment: order.quantity } } });
+
+      // ─── 记录自动发卡日志 ───
+      await createOrderLog({
+        orderId: order.id,
+        eventType: "card.delivered",
+        message: `自动发卡 ${cards.length} 条`,
+        metadata: { deliveryId: delivery.id, cardCount: cards.length, content },
+      });
+    }
+
+    // ─── 记录订单完成日志 ───
+    await createOrderLog({
+      orderId: order.id,
+      eventType: "order.completed",
+      message: "订单已完成",
+    });
+
+    // ─── 记录佣金日志 ───
+    const updatedOrder = await prisma.order.findUnique({
+      where: { id: order.id },
+      select: { commissionAmount: true },
+    });
+    const amount = updatedOrder?.commissionAmount ? Number(updatedOrder.commissionAmount) : 0;
+    if (amount > 0) {
+      await createOrderLog({
+        orderId: order.id,
+        eventType: "commission.pending",
+        message: `佣金待结算 ¥${amount.toFixed(2)}`,
+        metadata: { commissionAmount: amount },
+      });
     }
 
     return { success: true };

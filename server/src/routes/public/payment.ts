@@ -1,5 +1,6 @@
 import type { FastifyInstance } from "fastify";
 import { prisma } from "../../lib/db.js";
+import { createOrderLog } from "../../lib/order-log.js";
 
 export async function publicPaymentRoutes(app: FastifyInstance) {
   // 可用支付渠道
@@ -17,6 +18,15 @@ export async function publicPaymentRoutes(app: FastifyInstance) {
 
     // 模拟支付创建
     const payUrl = `/mock/pay?orderNo=${orderNo}&amount=${order.totalAmount}&channel=${channel}`;
+
+    // 记录支付发起日志
+    await createOrderLog({
+      orderId: order.id,
+      eventType: "payment.initiated",
+      message: `发起支付：${channel}`,
+      metadata: { channel, amount: order.totalAmount },
+    });
+
     return { success: true, data: { payUrl, orderNo, amount: order.totalAmount } };
   });
 

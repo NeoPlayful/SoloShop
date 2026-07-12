@@ -79,6 +79,8 @@
   "paymentStatus": "Payment Status",
   "deliveryStatus": "Delivery Status",
   "paymentSuccess": "Payment Successful",
+  "paymentRecord": "Payment Record",
+  "unknown": "Unknown",
   "waitingPayment": "Awaiting Payment",
   "paymentSuccessDesc": "Payment successful",
   "waitingPaymentDesc": "Awaiting payment",
@@ -93,5 +95,7 @@
   "removeImage": "Remove Image",
   "passwordMismatch": "Passwords do not match",
   "passwordTooShort": "Password must be at least 6 characters",
-  "operationFailed": "Operation failed"
+  "operationFailed": "Operation failed",
+  "system": "System",
+  "operator": "Operator"
 }

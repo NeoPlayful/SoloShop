@@ -10,33 +10,33 @@ datasource db {
 // ─── 用户（统一买家/推广人/管理员，角色区分） ───
 model User {
   id          Int       @id @default(autoincrement())
-  email       String?   @unique             // 买家/推广人身份凭证
-  username    String?   @unique             // 管理员登录名
-  password    String?                       // bcrypt 加密（管理员/有密码的推广人）
-  contact     String?                       // 联系方式
-  role        String    @default("buyer")   // buyer / promoter / admin / super_admin
+  email       String?   @unique // 买家/推广人身份凭证
+  username    String?   @unique // 管理员登录名
+  password    String? // bcrypt 加密（管理员/有密码的推广人）
+  contact     String? // 联系方式
+  role        String    @default("buyer") // buyer / promoter / admin / super_admin
   isActive    Boolean   @default(true)
   lastLoginAt DateTime?
-  remark      String?                       // 后台备注
+  remark      String? // 后台备注
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  promotionInfo PromotionInfo?              // 推广信息（role=promoter 时有）
+  promotionInfo PromotionInfo? // 推广信息（role=promoter 时有）
   orders        Order[]
   operationLogs OperationLog[]
 }
 
 // ─── 推广信息（与 User 1:1） ───
 model PromotionInfo {
-  id              Int       @id @default(autoincrement())
-  userId          Int       @unique           // 关联用户
-  referralCode    String    @unique           // 推广码，如 "ABC123"
-  commissionRate  Decimal   @db.Decimal(5, 4) // 佣金比例，如 0.1000 = 10%
-  clickCount      Int       @default(0)
-  orderCount      Int       @default(0)
-  totalSales      Decimal   @default(0)    @db.Decimal(12, 2)
-  totalCommission Decimal   @default(0)    @db.Decimal(12, 2)
-  createdAt       DateTime  @default(now())
+  id              Int      @id @default(autoincrement())
+  userId          Int      @unique // 关联用户
+  referralCode    String   @unique // 推广码，如 "ABC123"
+  commissionRate  Decimal  @db.Decimal(5, 4) // 佣金比例，如 0.1000 = 10%
+  clickCount      Int      @default(0)
+  orderCount      Int      @default(0)
+  totalSales      Decimal  @default(0) @db.Decimal(12, 2)
+  totalCommission Decimal  @default(0) @db.Decimal(12, 2)
+  createdAt       DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
 
@@ -45,16 +45,16 @@ model PromotionInfo {
 
 // ─── 商品分类 ───
 model Category {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
-  slug        String    @unique
+  slug        String   @unique
   description String?
-  sortOrder   Int       @default(0)
-  isVisible   Boolean   @default(true)   // 前台是否显示
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  sortOrder   Int      @default(0)
+  isVisible   Boolean  @default(true) // 前台是否显示
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  products    Product[]
+  products Product[]
 }
 
 // ─── 商品 ───
@@ -63,27 +63,27 @@ model Product {
   name            String
   slug            String    @unique
   categoryId      Int
-  description     String?   // 商品详情（富文本 HTML）
-  coverImage      String?   // 封面图 URL
+  description     String? // 商品详情（富文本 HTML）
+  coverImage      String? // 封面图 URL
   price           Decimal   @db.Decimal(10, 2)
-  originalPrice   Decimal?  @db.Decimal(10, 2)  // 划线价
-  costPrice       Decimal?  @db.Decimal(10, 2)  // 成本价
-  salesCount      Int       @default(0)          // 销量（冗余）
+  originalPrice   Decimal?  @db.Decimal(10, 2) // 划线价
+  costPrice       Decimal?  @db.Decimal(10, 2) // 成本价
+  salesCount      Int       @default(0) // 销量（冗余）
   deliveryType    String    @default("auto_card") // auto_card / text / manual
-  deliveryContent String?   // 固定文本发货内容（text 类型时使用）
+  deliveryContent String? // 固定文本发货内容（text 类型时使用）
   minQuantity     Int       @default(1)
   maxQuantity     Int       @default(1)
-  status          String    @default("draft")    // draft / active / inactive / sold_out
+  status          String    @default("draft") // draft / active / inactive / sold_out
   sortOrder       Int       @default(0)
-  isHidden        Boolean   @default(false)      // 隐藏后前台不可见
-  purchaseNotes   String?   // 购买须知
+  isHidden        Boolean   @default(false) // 隐藏后前台不可见
+  purchaseNotes   String? // 购买须知
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   deletedAt       DateTime? // 软删除
 
-  category    Category @relation(fields: [categoryId], references: [id])
-  cards       Card[]
-  orders      Order[]
+  category Category @relation(fields: [categoryId], references: [id])
+  cards    Card[]
+  orders   Order[]
 
   @@index([categoryId])
   @@index([status])
@@ -94,10 +94,10 @@ model Product {
 model Card {
   id        Int       @id @default(autoincrement())
   productId Int
-  content   String    // 卡密内容
+  content   String // 卡密内容
   status    String    @default("available") // available / locked / sold / disabled / expired
-  batchNo   String?   // 批次号
-  orderId   Int?      // 锁定或售出时关联订单
+  batchNo   String? // 批次号
+  orderId   Int? // 锁定或售出时关联订单
   lockedAt  DateTime? // 锁定时间（用于超时释放判断）
   soldAt    DateTime?
   createdAt DateTime  @default(now())
@@ -113,34 +113,35 @@ model Card {
 
 // ─── 订单 ───
 model Order {
-  id              Int       @id @default(autoincrement())
-  orderNo         String    @unique
-  productId       Int
-  productSnapshot Json      // 下单时商品快照（名称、价格等）
-  quantity        Int
-  totalAmount     Decimal   @db.Decimal(10, 2)
-  buyerEmail      String?   // 买家邮箱（订单查询用）
-  buyerContact    String?   // 买家联系方式
-  buyerIp         String?
-  userAgent       String?
-  orderStatus     String    @default("pending")  // pending / completed / cancelled / closed
-  paymentStatus   String    @default("unpaid")   // unpaid / paid / failed / refunded
-  deliveryStatus  String    @default("pending")  // pending / delivering / delivered / failed
-  paidAt          DateTime?
-  deliveredAt     DateTime?
-  note            String?   // 后台备注
-  userId          Int?                           // 关联买家用户
-  referralCode    String?   // 推广码（订单来源追踪）
-  commissionAmount Decimal? @db.Decimal(10, 2) // 该订单佣金
-  commissionStatus String?  @default("pending") // pending / settled / cancelled
-  createdAt       DateTime  @default(now())
-  expiredAt       DateTime? // 订单过期时间
+  id               Int       @id @default(autoincrement())
+  orderNo          String    @unique
+  productId        Int
+  productSnapshot  Json // 下单时商品快照（名称、价格等）
+  quantity         Int
+  totalAmount      Decimal   @db.Decimal(10, 2)
+  buyerEmail       String? // 买家邮箱（订单查询用）
+  buyerContact     String? // 买家联系方式
+  buyerIp          String?
+  userAgent        String?
+  orderStatus      String    @default("pending") // pending / completed / cancelled / closed
+  paymentStatus    String    @default("unpaid") // unpaid / paid / failed / refunded
+  deliveryStatus   String    @default("pending") // pending / delivering / delivered / failed
+  paidAt           DateTime?
+  deliveredAt      DateTime?
+  note             String? // 后台备注
+  userId           Int? // 关联买家用户
+  referralCode     String? // 推广码（订单来源追踪）
+  commissionAmount Decimal?  @db.Decimal(10, 2) // 该订单佣金
+  commissionStatus String?   @default("pending") // pending / settled / cancelled
+  createdAt        DateTime  @default(now())
+  expiredAt        DateTime? // 订单过期时间
 
-  product    Product        @relation(fields: [productId], references: [id])
-  user       User?          @relation(fields: [userId], references: [id])
+  product    Product    @relation(fields: [productId], references: [id])
+  user       User?      @relation(fields: [userId], references: [id])
   cards      Card[]
   payments   Payment[]
   deliveries Delivery[]
+  orderLogs  OrderLog[]
 
   @@index([orderNo])
   @@index([productId])
@@ -153,14 +154,14 @@ model Order {
 model Payment {
   id             Int       @id @default(autoincrement())
   orderId        Int
-  channel        String    // 支付渠道编码 yipay / stripe
-  tradeNo        String?   // 平台订单号
-  channelOrderNo String?   // 支付渠道订单号
+  channel        String // 支付渠道编码 yipay / stripe
+  tradeNo        String? // 平台订单号
+  channelOrderNo String? // 支付渠道订单号
   amount         Decimal   @db.Decimal(10, 2)
-  paidAmount     Decimal?  @db.Decimal(10, 2)  // 实际支付金额
-  status         String    @default("pending")  // pending / success / failed
-  rawData        Json?     // 回调原始数据
-  isActive       Boolean   @default(true)       // 当前生效的支付记录
+  paidAmount     Decimal?  @db.Decimal(10, 2) // 实际支付金额
+  status         String    @default("pending") // pending / success / failed
+  rawData        Json? // 回调原始数据
+  isActive       Boolean   @default(true) // 当前生效的支付记录
   createdAt      DateTime  @default(now())
   paidAt         DateTime?
 
@@ -174,9 +175,9 @@ model Payment {
 model Delivery {
   id          Int       @id @default(autoincrement())
   orderId     Int
-  type        String    // card / text / manual
-  content     String?   // 发货内容（卡密原文 / 固定文本 / 人工填写）
-  status      String    @default("pending")  // pending / delivered / failed
+  type        String // card / text / manual
+  content     String? // 发货内容（卡密原文 / 固定文本 / 人工填写）
+  status      String    @default("pending") // pending / delivered / failed
   failReason  String?
   retryCount  Int       @default(0)
   createdAt   DateTime  @default(now())
@@ -193,7 +194,7 @@ model PaymentChannel {
   id        Int      @id @default(autoincrement())
   code      String   @unique // yipay / stripe
   name      String
-  config    Json     // 渠道配置（密钥、URL等），前端返回时脱敏
+  config    Json // 渠道配置（密钥、URL等），前端返回时脱敏
   isEnabled Boolean  @default(false)
   sortOrder Int      @default(0)
   createdAt DateTime @default(now())
@@ -204,8 +205,8 @@ model PaymentChannel {
 model OperationLog {
   id         Int      @id @default(autoincrement())
   userId     Int?
-  action     String   // product.create / order.mark-paid 等
-  targetType String   // product / order / card 等
+  action     String // product.create / order.mark-paid 等
+  targetType String // product / order / card 等
   targetId   Int?
   detail     Json?
   ip         String?
@@ -215,6 +216,21 @@ model OperationLog {
 
   @@index([targetType, targetId])
   @@index([createdAt])
+}
+
+// ─── 订单日志（记录订单全生命周期事件） ───
+model OrderLog {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  eventType String // order.created / payment.success / card.delivered / order.closed / commission.settled / ...
+  message   String?
+  metadata  Json?
+  operator  String? // "system" / admin username / null（买家触发）
+  createdAt DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id])
+
+  @@index([orderId, createdAt])
 }
 
 // ─── 系统设置 ───

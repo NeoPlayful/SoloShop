@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { prisma } from "../../lib/db.js";
 import { success, error } from "../../lib/api-utils.js";
 import { getAvailableStock, lockCards, releaseCards } from "../../lib/card-pool.js";
+import { createOrderLog } from "../../lib/order-log.js";
 
 export async function publicOrderRoutes(app: FastifyInstance) {
   // 创建订单
@@ -50,6 +51,14 @@ export async function publicOrderRoutes(app: FastifyInstance) {
         });
         await prisma.order.update({ where: { id: order.id }, data: { userId: user.id } });
       }
+
+      // 记录订单日志
+      await createOrderLog({
+        orderId: order.id,
+        eventType: "order.created",
+        message: `商品「${product.name}」x${body.quantity}，金额 ¥${totalAmount.toFixed(2)}`,
+        metadata: { productName: product.name, quantity: body.quantity, totalAmount, buyerIp, buyerEmail: body.buyerEmail },
+      });
 
       return success({ orderNo: order.orderNo, totalAmount });
     } catch (err) {
