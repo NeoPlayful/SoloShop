@@ -21,7 +21,7 @@ export async function webhookPayRoutes(app: FastifyInstance) {
         if (info) {
           // 检查推广人是否有效
           const promoter = await tx.user.findUnique({ where: { id: info.userId } });
-          if (promoter && promoter.isActive && promoter.role === "promoter") {
+          if (promoter && promoter.isActive && promoter.role !== "buyer") {
             // 读取单笔佣金上限设置
             const maxSetting = await tx.systemSetting.findUnique({ where: { key: "promotion_max_commission_per_order" } });
             const maxCommission = maxSetting ? Number(maxSetting.value) : null;
