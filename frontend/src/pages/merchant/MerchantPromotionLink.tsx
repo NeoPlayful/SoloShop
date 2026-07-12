@@ -35,7 +35,7 @@ export default function MerchantPromotionLink() {
     );
   }
 
-  const promoLink = `${window.location.origin}/?ref=${referralCode}`;
+  const promoLink = `${window.location.origin}/?aff=${referralCode}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(promoLink).then(() => {

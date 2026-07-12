@@ -44,7 +44,7 @@ export async function authRoutes(app: FastifyInstance) {
       data: { lastLoginAt: new Date() },
     });
 
-    reply.setCookie("token", token, {
+    reply.setCookie("soloshop_token", token, {
       path: "/",
       httpOnly: true,
       sameSite: "lax",
@@ -89,7 +89,7 @@ export async function authRoutes(app: FastifyInstance) {
         },
       });
       const token = await signToken({ userId: user.id, username: user.username || "", role: user.role });
-      reply.setCookie("token", token, { path: "/", httpOnly: true, sameSite: "lax", maxAge: 24 * 60 * 60 });
+      reply.setCookie("soloshop_token", token, { path: "/", httpOnly: true, sameSite: "lax", maxAge: 24 * 60 * 60 });
       return success({ user: { id: user.id, username: user.username, email: user.email, role: user.role } });
     }
 
@@ -105,13 +105,13 @@ export async function authRoutes(app: FastifyInstance) {
     });
 
     const token = await signToken({ userId: user.id, username: user.username || "", role: user.role });
-    reply.setCookie("token", token, { path: "/", httpOnly: true, sameSite: "lax", maxAge: 24 * 60 * 60 });
+    reply.setCookie("soloshop_token", token, { path: "/", httpOnly: true, sameSite: "lax", maxAge: 24 * 60 * 60 });
     return success({ user: { id: user.id, username: user.username, email: user.email, role: user.role } });
   });
 
   // 退出登录
   app.post("/logout", async (_request, reply) => {
-    reply.clearCookie("token", { path: "/" });
+    reply.clearCookie("soloshop_token", { path: "/" });
     return success(null);
   });
 

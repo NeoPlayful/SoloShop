@@ -36,7 +36,7 @@ async function verifyToken(token: string): Promise<JwtPayload> {
 
 // ─── 认证中间件（从 Cookie 读取 JWT） ───
 async function authMiddleware(request: FastifyRequest, _reply: FastifyReply) {
-  const token = request.cookies?.token;
+  const token = request.cookies?.soloshop_token;
 
   if (!token) {
     throw new AppError(401, "UNAUTHORIZED", "请先登录");

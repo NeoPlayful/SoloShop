@@ -26,7 +26,7 @@ export default function PromotionStatsPage() {
   if (!stats) return <div className="py-12 text-center text-text-secondary">{t("promotionNotFound")}</div>;
 
   const siteUrl = window.location.origin;
-  const promoLink = `${siteUrl}/?ref=${stats.referralCode}`;
+  const promoLink = `${siteUrl}/?aff=${stats.referralCode}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(promoLink).then(() => {
