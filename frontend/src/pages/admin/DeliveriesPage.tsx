@@ -5,6 +5,7 @@ import { Pagination } from "../../components/Pagination.js";
 import { LoadingState } from "../../components/LoadingStates.js";
 import { useState } from "react";
 import { Select } from "../../theme/components/form/Select.js";
+import { formatDate } from "../../utils/format.js";
 
 export default function DeliveriesPage() {
   const { t } = useTranslation("admin");
@@ -43,7 +44,7 @@ export default function DeliveriesPage() {
               <td className="px-4 py-3 text-sm text-text-primary">{item.type}</td>
               <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.status === "delivered" ? "bg-green-100 text-green-700" : item.status === "failed" ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"}`}>{item.status === "delivered" ? t("common:delivered") : item.status === "failed" ? t("common:failed") : t("common:pending")}</span></td>
               <td className="px-4 py-3 text-sm text-text-primary">{item.retryCount}</td>
-              <td className="px-4 py-3 text-sm text-text-secondary">{item.createdAt?.substring(0, 16) || "-"}</td>
+              <td className="px-4 py-3 text-sm text-text-secondary">{formatDate(item.createdAt)}</td>
             </tr>
           ))}
         </tbody>

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "../../lib/client.js";
 import { NumberedPagination } from "../../theme/components/navigation/NumberedPagination.js";
+import { formatDate } from "../../utils/format.js";
 import {
   ShoppingCartIcon,
   CreditCardIcon,
@@ -122,7 +123,7 @@ function OrderTimeline({
                 <div className={`rounded-lg border border-border p-3 ${colorKey === "log" ? "" : colors.bg}`}>
                   <div className="flex items-start gap-3">
                     <span className="shrink-0 pt-0.5 text-xs text-text-tertiary">
-                      {entry.createdAt?.substring(0, 16)}
+                      {formatDate(entry.createdAt)}
                     </span>
                     <span className="text-sm font-medium text-text-primary">
                       {entry.message || entry.eventType}
@@ -284,64 +285,58 @@ export default function PromotionOrdersPage() {
                 {list.map((order: any) => {
                   const isExpanded = expandedId === order.id;
                   return (
-                    <tr key={order.id}>
-                      <td colSpan={9} className="p-0">
-                        <table className="w-full">
-                          <tbody>
-                            <tr
-                              onClick={() => handleRowClick(order.id)}
-                              className={`cursor-pointer border-b border-border text-sm transition-colors hover:bg-surface-hover ${isExpanded ? "bg-surface-alt" : ""}`}
-                            >
-                              <td className="w-8 px-4 py-3">
-                                <svg
-                                  className={`h-3 w-3 text-text-tertiary transition-transform ${isExpanded ? "rotate-90" : ""}`}
-                                  fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                                >
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                </svg>
-                              </td>
-                              <td className="px-4 py-3 font-mono text-xs text-text-primary">{order.orderNo}</td>
-                              <td className="px-4 py-3 text-text-primary">{order.promoterEmail || order.referralCode || "-"}</td>
-                              <td className="px-4 py-3 text-text-primary">{order.productSnapshot?.name || "-"}</td>
-                              <td className="px-4 py-3 text-right text-text-primary">¥{Number(order.totalAmount).toFixed(2)}</td>
-                              <td className="px-4 py-3 text-right text-text-primary">
-                                {order.commissionAmount != null ? `¥${Number(order.commissionAmount).toFixed(2)}` : "-"}
-                              </td>
-                              <td className="px-4 py-3 text-center">
-                                {order.commissionStatus ? (
-                                  <span className={`inline-block rounded px-2 py-0.5 text-xs ${commissionStatusColors[order.commissionStatus] || "bg-gray-100 text-gray-700"}`}>
-                                    {commissionStatusLabels[order.commissionStatus] || order.commissionStatus}
-                                  </span>
-                                ) : (
-                                  <span className="text-xs text-text-tertiary">-</span>
-                                )}
-                              </td>
-                              <td className="px-4 py-3 text-center">
-                                <span className={`inline-block rounded px-2 py-0.5 text-xs ${
-                                  order.paymentStatus === "paid" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"
-                                }`}>
-                                  {order.paymentStatus === "paid" ? tc("paid") : tc("unpaid")}
-                                </span>
-                              </td>
-                              <td className="px-4 py-3 text-right text-xs text-text-secondary">
-                                {order.createdAt?.substring(0, 16)}
-                              </td>
-                            </tr>
+                    <Fragment key={order.id}>
+                      <tr
+                        onClick={() => handleRowClick(order.id)}
+                        className={`cursor-pointer border-b border-border text-sm transition-colors hover:bg-surface-hover ${isExpanded ? "bg-surface-alt" : ""}`}
+                      >
+                        <td className="w-8 px-4 py-3">
+                          <svg
+                            className={`h-3 w-3 text-text-tertiary transition-transform ${isExpanded ? "rotate-90" : ""}`}
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </td>
+                        <td className="px-4 py-3 font-mono text-xs text-text-primary">{order.orderNo}</td>
+                        <td className="px-4 py-3 text-text-primary">{order.promoterEmail || order.referralCode || "-"}</td>
+                        <td className="px-4 py-3 text-text-primary">{order.productSnapshot?.name || "-"}</td>
+                        <td className="px-4 py-3 text-right text-text-primary">¥{Number(order.totalAmount).toFixed(2)}</td>
+                        <td className="px-4 py-3 text-right text-text-primary">
+                          {order.commissionAmount != null ? `¥${Number(order.commissionAmount).toFixed(2)}` : "-"}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {order.commissionStatus ? (
+                            <span className={`inline-block rounded px-2 py-0.5 text-xs ${commissionStatusColors[order.commissionStatus] || "bg-gray-100 text-gray-700"}`}>
+                              {commissionStatusLabels[order.commissionStatus] || order.commissionStatus}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-text-tertiary">-</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          <span className={`inline-block rounded px-2 py-0.5 text-xs ${
+                            order.paymentStatus === "paid" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"
+                          }`}>
+                            {order.paymentStatus === "paid" ? tc("paid") : tc("unpaid")}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right text-xs text-text-secondary">
+                          {formatDate(order.createdAt)}
+                        </td>
+                      </tr>
 
-                            {isExpanded && (
-                              <tr>
-                                <td colSpan={9} className="border-b border-border bg-surface-alt px-4 pb-4">
-                                  <OrderTimeline
-                                    orderId={order.id}
-                                    onClose={() => setExpandedId(null)}
-                                  />
-                                </td>
-                              </tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
+                      {isExpanded && (
+                        <tr>
+                          <td colSpan={9} className="border-b border-border bg-surface-alt px-4 pb-4">
+                            <OrderTimeline
+                              orderId={order.id}
+                              onClose={() => setExpandedId(null)}
+                            />
+                          </td>
+                        </tr>
+                      )}
+                    </Fragment>
                   );
                 })}
               </tbody>

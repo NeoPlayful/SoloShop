@@ -19,12 +19,23 @@ export async function publicPaymentRoutes(app: FastifyInstance) {
     // 模拟支付创建
     const payUrl = `/mock/pay?orderNo=${orderNo}&amount=${order.totalAmount}&channel=${channel}`;
 
+    // 创建支付记录（pending）
+    const payment = await prisma.payment.create({
+      data: {
+        orderId: order.id,
+        channel,
+        amount: order.totalAmount,
+        status: "pending",
+        isActive: true,
+      },
+    });
+
     // 记录支付发起日志
     await createOrderLog({
       orderId: order.id,
       eventType: "payment.initiated",
       message: `发起支付：${channel}`,
-      metadata: { channel, amount: order.totalAmount },
+      metadata: { channel, amount: order.totalAmount, paymentId: payment.id },
     });
 
     return { success: true, data: { payUrl, orderNo, amount: order.totalAmount } };

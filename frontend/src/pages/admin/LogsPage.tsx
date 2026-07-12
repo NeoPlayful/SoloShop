@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { apiClient } from "../../lib/client.js";
 import { Pagination } from "../../components/Pagination.js";
 import { LoadingState } from "../../components/LoadingStates.js";
+import { formatDate } from "../../utils/format.js";
 
 export default function LogsPage() {
   const { t } = useTranslation("admin");
@@ -34,7 +35,7 @@ export default function LogsPage() {
               <td className="px-4 py-3 text-text-primary">{item.action}</td>
               <td className="px-4 py-3 text-text-primary">{item.targetType}#{item.targetId}</td>
               <td className="px-4 py-3 text-text-primary">{item.admin?.username || "-"}</td>
-              <td className="px-4 py-3 text-text-secondary">{item.createdAt?.substring(0, 16) || "-"}</td>
+              <td className="px-4 py-3 text-text-secondary">{formatDate(item.createdAt)}</td>
             </tr>
           ))}
         </tbody>

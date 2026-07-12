@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { apiClient } from "../../lib/client.js";
 import { LoadingState } from "../../components/LoadingStates.js";
 import toast from "react-hot-toast";
+import { formatDate } from "../../utils/format.js";
 
 const roleOptions = ["", "buyer", "promoter", "admin", "super_admin"] as const;
 
@@ -81,7 +82,7 @@ export default function UsersPage() {
                     {item.isActive ? tc("enabled") : tc("disabled")}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-text-secondary text-xs">{item.lastLoginAt?.substring(0, 16) || "-"}</td>
+                <td className="px-4 py-3 text-text-secondary text-xs">{formatDate(item.lastLoginAt)}</td>
                 <td className="px-4 py-3">
                   {item.isActive ? (
                     <button onClick={() => disableMutation.mutate(item.id)} className="rounded px-2 py-1 text-xs text-yellow-500 hover:bg-surface-hover">{tc("disabled")}</button>

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "../lib/client.js";
 import { LoadingState } from "../components/LoadingStates.js";
+import { formatDate } from "../utils/format.js";
 import { useState } from "react";
 
 export default function PromotionStatsPage() {
@@ -106,7 +107,7 @@ export default function PromotionStatsPage() {
                   <td className="px-4 py-2.5 text-right text-text-primary">
                     {order.commissionAmount ? `¥${Number(order.commissionAmount).toFixed(2)}` : "-"}
                   </td>
-                  <td className="px-4 py-2.5 text-right text-text-secondary text-xs">{order.createdAt?.substring(0, 16)}</td>
+                  <td className="px-4 py-2.5 text-right text-text-secondary text-xs">{formatDate(order.createdAt)}</td>
                 </tr>
               ))}
             </tbody>

@@ -97,5 +97,6 @@
   "passwordTooShort": "Password must be at least 6 characters",
   "operationFailed": "Operation failed",
   "system": "System",
-  "operator": "Operator"
+  "operator": "Operator",
+  "time": "Time"
 }

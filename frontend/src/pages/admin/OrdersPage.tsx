@@ -7,6 +7,7 @@ import { LoadingState } from "../../components/LoadingStates.js";
 import { Modal } from "../../components/Modal.js";
 import { Input } from "../../theme/components/form/Input.js";
 import { Select } from "../../theme/components/form/Select.js";
+import { formatDate } from "../../utils/format.js";
 import toast from "react-hot-toast";
 
 export default function OrdersPage() {
@@ -72,7 +73,7 @@ export default function OrdersPage() {
               <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.orderStatus === "closed" ? "bg-red-100 text-red-700" : item.orderStatus === "completed" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>{t("common:" + item.orderStatus)}</span></td>
               <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.paymentStatus === "paid" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>{item.paymentStatus === "paid" ? t("common:paid") : t("common:unpaid")}</span></td>
               <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.deliveryStatus === "delivered" ? "bg-green-100 text-green-700" : item.deliveryStatus === "failed" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-500"}`}>{item.deliveryStatus === "delivered" ? t("common:delivered") : item.deliveryStatus === "failed" ? t("common:failed") : t("common:pending")}</span></td>
-              <td className="px-4 py-3 text-sm text-text-secondary">{item.createdAt?.substring(0, 16) || "-"}</td>
+              <td className="px-4 py-3 text-sm text-text-secondary">{formatDate(item.createdAt)}</td>
               <td className="px-4 py-3 text-sm">
                 <button onClick={() => viewDetail(item.id)} className="mr-2 text-blue-500 hover:text-blue-700">{t("common:detail")}</button>
                 {item.paymentStatus === "unpaid" && <><button onClick={() => markPaidMutation.mutate(item.id)} className="mr-2 text-green-500 hover:text-green-700">{t("common:markPaid")}</button><button onClick={() => closeMutation.mutate(item.id)} className="text-red-500 hover:text-red-700">{t("common:closeOrder")}</button></>}
