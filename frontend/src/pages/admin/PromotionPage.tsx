@@ -5,6 +5,7 @@ import { apiClient } from "../../lib/client.js";
 import { LoadingState } from "../../components/LoadingStates.js";
 import toast from "react-hot-toast";
 import { NumberedPagination } from "../../theme/components/navigation/NumberedPagination.js";
+import { formatDate } from "../../utils/format.js";
 import {
   UserGroupIcon,
   CurrencyYenIcon,
@@ -116,7 +117,7 @@ function PromoterOrdersModal({ userId, email, onClose }: { userId: number; email
                           : "-"}
                       </td>
                       <td className="px-3 py-2.5 text-right text-text-secondary text-xs">
-                        {order.createdAt?.substring(0, 16)}
+                        {formatDate(order.createdAt)}
                       </td>
                     </tr>
                   ))}
@@ -404,7 +405,7 @@ export default function PromotionPage() {
                 <tr key={item.id} className="border-b border-border text-sm hover:bg-surface-hover">
                   <td className="px-4 py-3 text-text-primary">{item.email || "-"}</td>
                   <td className="px-4 py-3 text-text-secondary">{item.contact || "-"}</td>
-                  <td className="px-4 py-3 text-text-secondary text-xs">{item.createdAt?.substring(0, 16)}</td>
+                  <td className="px-4 py-3 text-text-secondary text-xs">{formatDate(item.createdAt)}</td>
                   <td className="px-4 py-3">
                     <div className="flex gap-1">
                       <button onClick={() => setApproveItem(item)} className="rounded px-2 py-1 text-xs text-green-600 hover:bg-surface-hover border border-green-300">

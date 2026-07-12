@@ -97,5 +97,6 @@
   "passwordTooShort": "密码至少6位",
   "operationFailed": "操作失败",
   "system": "系统",
-  "operator": "操作人"
+  "operator": "操作人",
+  "time": "时间"
 }

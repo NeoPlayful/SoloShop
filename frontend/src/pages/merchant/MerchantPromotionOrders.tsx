@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../../lib/client.js";
 import { LoadingState } from "../../components/LoadingStates.js";
+import { formatDate } from "../../utils/format.js";
 
 export default function MerchantPromotionOrders() {
   const { t } = useTranslation("store");
@@ -70,7 +71,7 @@ export default function MerchantPromotionOrders() {
                     {order.commissionAmount ? `¥${Number(order.commissionAmount).toFixed(2)}` : "-"}
                   </td>
                   <td className="px-4 py-2.5 text-right text-text-secondary text-xs">
-                    {order.createdAt?.substring(0, 16)}
+                    {formatDate(order.createdAt)}
                   </td>
                 </tr>
               ))}
