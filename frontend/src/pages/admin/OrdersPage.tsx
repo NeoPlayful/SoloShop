@@ -57,6 +57,7 @@ export default function OrdersPage() {
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("common:orderNo")}</th>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("product2")}</th>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("amount2")}</th>
+          <th className="px-4 py-3 text-left text-sm text-text-primary">{t("common:orderStatus")}</th>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("common:paymentStatus")}</th>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("common:deliveryStatus")}</th>
           <th className="px-4 py-3 text-left text-sm text-text-primary">{t("time")}</th>
@@ -68,6 +69,7 @@ export default function OrdersPage() {
               <td className="px-4 py-3 text-sm font-mono text-text-primary">{item.orderNo}</td>
               <td className="px-4 py-3 text-sm text-text-primary">{item.product?.name || "-"}</td>
               <td className="px-4 py-3 text-sm text-text-primary">¥{item.totalAmount}</td>
+              <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.orderStatus === "closed" ? "bg-red-100 text-red-700" : item.orderStatus === "completed" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>{t("common:" + item.orderStatus)}</span></td>
               <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.paymentStatus === "paid" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>{item.paymentStatus === "paid" ? t("common:paid") : t("common:unpaid")}</span></td>
               <td className="px-4 py-3"><span className={`rounded px-2 py-0.5 text-xs ${item.deliveryStatus === "delivered" ? "bg-green-100 text-green-700" : item.deliveryStatus === "failed" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-500"}`}>{item.deliveryStatus === "delivered" ? t("common:delivered") : item.deliveryStatus === "failed" ? t("common:failed") : t("common:pending")}</span></td>
               <td className="px-4 py-3 text-sm text-text-secondary">{item.createdAt?.substring(0, 16) || "-"}</td>

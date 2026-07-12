@@ -25,7 +25,7 @@ export async function publicOrderRoutes(app: FastifyInstance) {
     }
 
     const totalAmount = Number(product.price) * body.quantity;
-    const orderNo = `${dayjs().format("YYYYMMDDHHmmss")}${Math.floor(Math.random() * 1000000)}`;
+    const orderNo = `${dayjs().format("YYYYMMDDHHmmss")}${String(Math.floor(Math.random() * 1000000)).padStart(6, "0")}`;
     const buyerIp = request.ip;
 
     try {
