@@ -13,7 +13,7 @@ export async function adminLogRoutes(app: FastifyInstance) {
     if (q.action) where.action = { contains: q.action };
     if (q.targetType) where.targetType = q.targetType;
     const [items, total] = await Promise.all([
-      prisma.operationLog.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: "desc" }, include: { user: { select: { username: true, name: true } } } }),
+      prisma.operationLog.findMany({ where, skip: (page - 1) * pageSize, take: pageSize, orderBy: { createdAt: "desc" }, include: { user: { select: { username: true } } } }),
       prisma.operationLog.count({ where }),
     ]);
     return success({ items, total, page, pageSize });

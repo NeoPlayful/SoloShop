@@ -2,6 +2,7 @@ import type { FastifyInstance } from "fastify";
 import { prisma } from "../../lib/db.js";
 import { authMiddleware } from "../../lib/auth.js";
 import { success, parsePagination } from "../../lib/api-utils.js";
+import { createOrderLog } from "../../lib/order-log.js";
 
 export async function adminDeliveryRoutes(app: FastifyInstance) {
   app.addHook("preHandler", authMiddleware);
@@ -26,7 +27,16 @@ export async function adminDeliveryRoutes(app: FastifyInstance) {
 
   app.post("/:id/retry", async (request) => {
     const { id } = request.params as { id: string };
+    const adminUser = (request as any).user?.username || "unknown";
     const delivery = await prisma.delivery.update({ where: { id: parseInt(id) }, data: { status: "delivered", retryCount: { increment: 1 }, deliveredAt: new Date() } });
+
+    await createOrderLog({
+      orderId: delivery.orderId,
+      eventType: "delivery.retried",
+      message: `管理员 ${adminUser} 重试发货`,
+      operator: adminUser,
+    });
+
     return success(delivery);
   });
 }

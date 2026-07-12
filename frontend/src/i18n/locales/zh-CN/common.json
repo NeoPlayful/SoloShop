@@ -79,6 +79,8 @@
   "paymentStatus": "支付状态",
   "deliveryStatus": "发货状态",
   "paymentSuccess": "支付成功",
+  "paymentRecord": "支付记录",
+  "unknown": "未知",
   "waitingPayment": "等待支付",
   "paymentSuccessDesc": "支付成功",
   "waitingPaymentDesc": "等待支付",
@@ -93,5 +95,7 @@
   "removeImage": "移除图片",
   "passwordMismatch": "两次密码输入不一致",
   "passwordTooShort": "密码至少6位",
-  "operationFailed": "操作失败"
+  "operationFailed": "操作失败",
+  "system": "系统",
+  "operator": "操作人"
 }
