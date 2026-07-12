@@ -18,7 +18,7 @@ export default function OrderDetailPage() {
   if (!data) return <div className="py-16 text-center text-text-secondary">{t("orderNotExist")}</div>;
 
   return (
-    <div className="mx-auto max-w-md py-8">
+    <div className="mx-auto w-full max-w-md py-8">
       <h1 className="mb-6 text-center text-xl font-bold">{t("orderDetail")}</h1>
       <div className="space-y-4 rounded-lg border-border bg-surface p-6">
         <div className="text-center">
