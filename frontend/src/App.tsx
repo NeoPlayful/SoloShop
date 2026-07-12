@@ -21,6 +21,7 @@ import SettingsPage from "./pages/admin/SettingsPage.js";
 import LogsPage from "./pages/admin/LogsPage.js";
 import UsersPage from "./pages/admin/UsersPage.js";
 import PromotionPage from "./pages/admin/PromotionPage.js";
+import PromotionOrdersPage from "./pages/admin/PromotionOrdersPage.js";
 import MerchantLayout from "./pages/merchant/MerchantLayout.js";
 import MerchantOverview from "./pages/merchant/MerchantOverview.js";
 import MerchantPromotionLink from "./pages/merchant/MerchantPromotionLink.js";
@@ -71,6 +72,7 @@ export default function App() {
           <Route path="deliveries" element={<DeliveriesPage />} />
           <Route path="settings" element={<SettingsPage />} />
           <Route path="promotion" element={<PromotionPage />} />
+          <Route path="orders-logs" element={<PromotionOrdersPage />} />
           <Route path="logs" element={<LogsPage />} />
           <Route path="users" element={<UsersPage />} />
         </Route>
