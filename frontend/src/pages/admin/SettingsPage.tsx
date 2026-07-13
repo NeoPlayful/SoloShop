@@ -101,6 +101,26 @@ export default function SettingsPage() {
     },
   });
 
+  const [tagInput, setTagInput] = useState("");
+  const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const val = tagInput.trim();
+      if (!val) return;
+      const current: string[] = promotionForm.withdrawal_account_types ?? [];
+      if (!current.includes(val)) {
+        setPromotionForm({ ...promotionForm, withdrawal_account_types: [...current, val] });
+      }
+      setTagInput("");
+    }
+  };
+  const removeTag = (tag: string) => {
+    setPromotionForm({
+      ...promotionForm,
+      withdrawal_account_types: (promotionForm.withdrawal_account_types ?? []).filter((t: string) => t !== tag),
+    });
+  };
+
   // ─── 主题设置 ───
   const themeMutation = useMutation({
     mutationFn: (body: Record<string, any>) => apiClient.patch("/admin/settings/site", body),
@@ -141,6 +161,7 @@ export default function SettingsPage() {
     setPromotionForm({
       default_commission_rate: data.promotion_default_commission_rate != null ? Number(data.promotion_default_commission_rate) * 100 : 10,
       max_commission_per_order: data.promotion_max_commission_per_order != null ? String(Number(data.promotion_max_commission_per_order)) : "",
+      withdrawal_account_types: data.promotion_withdrawal_account_types ?? ["支付宝", "微信支付", "银行卡"],
     });
   }
 
@@ -372,6 +393,33 @@ export default function SettingsPage() {
             onChange={(e) => setPromotionForm({ ...promotionForm, max_commission_per_order: e.target.value })}
             placeholder={t("maxCommissionHint")}
           />
+
+          {/* ── 提现方式 ── */}
+          <div className="mb-2 flex items-center gap-2 pt-2">
+            <span className="text-xs font-medium uppercase tracking-wider text-text-tertiary">{t("withdrawalAccountTypes")}</span>
+            <div className="flex-1 border-t border-border" />
+          </div>
+          <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-surface p-2 min-h-[42px]">
+            {(promotionForm.withdrawal_account_types ?? []).length === 0 ? (
+              <span className="text-sm text-text-tertiary px-1">暂无</span>
+            ) : (
+              (promotionForm.withdrawal_account_types ?? []).map((tag: string) => (
+                <span key={tag} className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-0.5 text-sm text-blue-700">
+                  {tag}
+                  <button type="button" onClick={() => removeTag(tag)} className="inline-flex h-4 w-4 items-center justify-center rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-700">&times;</button>
+                </span>
+              ))
+            )}
+          </div>
+          <input
+            type="text"
+            value={tagInput}
+            onChange={(e) => setTagInput(e.target.value)}
+            onKeyDown={handleTagKeyDown}
+            placeholder={t("tagInputPlaceholder")}
+            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:border-blue-500 transition-colors placeholder:text-text-tertiary"
+          />
+
           <div className="pt-2">
             <button
               onClick={() => {
@@ -383,6 +431,7 @@ export default function SettingsPage() {
                 } else {
                   body.max_commission_per_order = null;
                 }
+                body.withdrawal_account_types = promotionForm.withdrawal_account_types ?? ["支付宝", "微信支付", "银行卡"];
                 promotionMutation.mutate(body);
               }}
               disabled={promotionMutation.isPending}
