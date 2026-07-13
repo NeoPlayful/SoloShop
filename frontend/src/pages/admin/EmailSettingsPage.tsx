@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 
 function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label: string }) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center gap-3">
       <span className="text-sm text-text-primary">{label}</span>
       <button
         type="button"
@@ -64,6 +64,7 @@ export default function EmailSettingsPage() {
   if (data && !initialized) {
     setInitialized(true);
     setEmailForm({
+      enabled: data.email_enabled !== false,
       smtp_host: data.email_smtp_host ?? "",
       smtp_port: data.email_smtp_port ?? 465,
       smtp_secure: data.email_smtp_secure !== false,
@@ -84,6 +85,11 @@ export default function EmailSettingsPage() {
 
       <div className="mb-6 rounded-lg bg-surface p-6 shadow">
         <div className="space-y-4">
+          <Toggle
+            label={t("emailEnabled")}
+            value={emailForm.enabled ?? false}
+            onChange={(v) => setEmailForm({ ...emailForm, enabled: v })}
+          />
           <div className="grid grid-cols-2 gap-4">
             <Input
               label={t("smtpHost")}

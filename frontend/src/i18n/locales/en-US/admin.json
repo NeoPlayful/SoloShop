@@ -194,6 +194,7 @@
   "showStock": "Show Stock in Storefront",
   "securitySettings": "Security Settings",
   "promotionSettings": "Promotion Settings",
+  "emailEnabled": "Enable Email Service",
   "emailSettings": "Email Settings",
   "smtpHost": "SMTP Host",
   "smtpPort": "SMTP Port",

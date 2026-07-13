@@ -40,15 +40,16 @@ async function main() {
     { key: "site_theme_id", value: "default-theme", description: "站点默认色系" },
     { key: "site_theme_mode", value: "system", description: "站点默认亮暗模式" },
     { key: "promotion_withdrawal_account_types", value: ["支付宝", "微信支付", "银行卡"], description: "提现方式列表" },
-    { key: "email_template_register_code", value: { subject: "{{siteName}} 注册验证码", bodyHtml: "<h1 style=\"color:#2563eb;\">您的验证码</h1><p style=\"font-size:24px;font-weight:bold;color:#1f2937;\">{{code}}</p><p>有效期10分钟，请勿泄露。</p>" }, description: "注册验证码邮件模板" },
-    { key: "email_template_password_reset", value: { subject: "{{siteName}} 密码重置", bodyHtml: "<h1 style=\"color:#2563eb;\">密码重置</h1><p>您的验证码：<strong style=\"font-size:18px;\">{{code}}</strong></p><p>有效期10分钟，请勿泄露。</p>" }, description: "密码找回邮件模板" },
-    { key: "email_template_order_paid", value: { subject: "{{siteName}} - 订单已支付", bodyHtml: "<h1 style=\"color:#2563eb;\">感谢您的购买</h1><p>订单号：<strong>{{orderNo}}</strong></p><p>商品：{{productName}} × {{quantity}}</p><p>卡密内容：</p><pre style=\"background:#f3f4f6;padding:12px;border-radius:6px;font-size:14px;\">{{cardKeys}}</pre>" }, description: "支付发卡密邮件模板" },
+    { key: "email_enabled", value: false, description: "是否启用邮件服务" },
+    { key: "email_template_register_code", value: { subject: "{{siteName}} - 邮箱验证码", bodyHtml: "<div style=\"max-width:480px;margin:0 auto;font-family:sans-serif;\"><h1 style=\"color:#2563eb;\">{{siteName}}</h1><p>您好，</p><p>您的邮箱验证码为：</p><div style=\"text-align:center;margin:24px 0;\"><div style=\"font-size:32px;font-weight:bold;letter-spacing:4px;color:#1f2937;background:#f5f5f5;padding:16px 24px;border-radius:8px;display:inline-block;\">{{code}}</div></div><p style=\"color:#999;font-size:12px;\">此验证码将在 5 分钟后过期。</p><p style=\"color:#999;font-size:12px;\">如果您没有进行此操作，请忽略此邮件。</p></div>" }, description: "注册验证码邮件模板" },
+    { key: "email_template_password_reset", value: { subject: "{{siteName}} 密码重置", bodyHtml: "<div style=\"max-width:480px;margin:0 auto;font-family:sans-serif;\"><h1 style=\"color:#2563eb;\">密码重置</h1><p>您好，</p><p>您的密码重置验证码为：</p><div style=\"text-align:center;margin:24px 0;\"><div style=\"font-size:32px;font-weight:bold;letter-spacing:4px;color:#1f2937;background:#f5f5f5;padding:16px 24px;border-radius:8px;display:inline-block;\">{{code}}</div></div><p style=\"color:#999;font-size:12px;\">此验证码将在 10 分钟后过期。</p><p style=\"color:#999;font-size:12px;\">如果您没有进行此操作，请忽略此邮件。</p></div>" }, description: "密码找回邮件模板" },
+    { key: "email_template_order_paid", value: { subject: "{{siteName}} - 订单已支付", bodyHtml: "<div style=\"max-width:480px;margin:0 auto;font-family:sans-serif;\"><h1 style=\"color:#2563eb;\">感谢您的购买</h1><p>订单号：<strong>{{orderNo}}</strong></p><p>商品：{{productName}} × {{quantity}}</p><p>卡密内容：</p><div style=\"background:#f3f4f6;padding:12px;border-radius:6px;font-size:14px;font-family:monospace;white-space:pre-wrap;\">{{cardKeys}}</div></div>" }, description: "支付发卡密邮件模板" },
   ];
 
   for (const setting of defaultSettings) {
     await prisma.systemSetting.upsert({
       where: { key: setting.key },
-      update: {},
+      update: { value: setting.value, description: setting.description },
       create: setting,
     });
   }
