@@ -39,6 +39,7 @@ async function main() {
     { key: "order_query_require_email", value: true, description: "订单查询是否需要邮箱" },
     { key: "site_theme_id", value: "default-theme", description: "站点默认色系" },
     { key: "site_theme_mode", value: "system", description: "站点默认亮暗模式" },
+    { key: "promotion_withdrawal_account_types", value: ["支付宝", "微信支付", "银行卡"], description: "提现方式列表" },
   ];
 
   for (const setting of defaultSettings) {

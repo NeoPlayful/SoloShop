@@ -40,9 +40,17 @@ export default function MerchantWithdrawal() {
     retry: false,
   });
 
+  // 获取启用的提现方式
+  const { data: settings } = useQuery({
+    queryKey: ["public-settings"],
+    queryFn: () => apiClient.get("/public/settings").then((r) => r.data.data),
+    staleTime: 60000,
+  });
+  const accountTypes: string[] = settings?.promotion_withdrawal_account_types ?? ["支付宝", "微信支付", "银行卡"];
+
   // 表单
   const [amount, setAmount] = useState("");
-  const [accountType, setAccountType] = useState("alipay");
+  const [accountType, setAccountType] = useState("");
   const [accountName, setAccountName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
 
@@ -155,29 +163,23 @@ export default function MerchantWithdrawal() {
 
           <div>
             <label className="mb-1 block text-sm font-medium text-text-primary">{t("withdrawalAccountType")}</label>
-            <div className="flex gap-3">
-              <label className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm cursor-pointer transition-colors ${accountType === "alipay" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-border text-text-secondary hover:bg-surface-hover"}`}>
-                <input
-                  type="radio"
-                  name="accountType"
-                  value="alipay"
-                  checked={accountType === "alipay"}
-                  onChange={() => setAccountType("alipay")}
-                  className="sr-only"
-                />
-                {t("withdrawalAlipay")}
-              </label>
-              <label className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm cursor-pointer transition-colors ${accountType === "wechat" ? "border-blue-500 bg-blue-50 text-blue-700" : "border-border text-text-secondary hover:bg-surface-hover"}`}>
-                <input
-                  type="radio"
-                  name="accountType"
-                  value="wechat"
-                  checked={accountType === "wechat"}
-                  onChange={() => setAccountType("wechat")}
-                  className="sr-only"
-                />
-                {t("withdrawalWechat")}
-              </label>
+            <div className="flex flex-wrap gap-3">
+              {accountTypes.map((type) => (
+                <label
+                  key={type}
+                  className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 text-sm cursor-pointer transition-colors ${accountType === type ? "border-blue-500 bg-blue-50 text-blue-700" : "border-border text-text-secondary hover:bg-surface-hover"}`}
+                >
+                  <input
+                    type="radio"
+                    name="accountType"
+                    value={type}
+                    checked={accountType === type}
+                    onChange={() => setAccountType(type)}
+                    className="sr-only"
+                  />
+                  {type}
+                </label>
+              ))}
             </div>
           </div>
 
@@ -241,7 +243,7 @@ export default function MerchantWithdrawal() {
                       <td className="px-4 py-3 text-xs text-text-secondary">{formatDate(item.createdAt)}</td>
                       <td className="px-4 py-3 text-right font-medium text-text-primary">¥{Number(item.amount).toFixed(2)}</td>
                       <td className="px-4 py-3 text-text-secondary text-xs">
-                        {item.accountType === "alipay" ? t("withdrawalAlipay") : t("withdrawalWechat")}
+                        {item.accountType}
                         {item.accountName ? ` (${item.accountName})` : ""}
                       </td>
                       <td className="px-4 py-3 text-center">

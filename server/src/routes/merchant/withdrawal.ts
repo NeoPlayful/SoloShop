@@ -3,6 +3,13 @@ import { prisma } from "../../lib/db.js";
 import { authMiddleware } from "../../lib/auth.js";
 import { success, error } from "../../lib/api-utils.js";
 
+async function getEnabledAccountTypes(): Promise<string[]> {
+  const setting = await prisma.systemSetting.findUnique({
+    where: { key: "promotion_withdrawal_account_types" },
+  });
+  return (setting?.value as string[]) ?? ["支付宝", "微信支付", "银行卡"];
+}
+
 export async function merchantWithdrawalRoutes(app: FastifyInstance) {
   app.addHook("preHandler", authMiddleware);
 
@@ -38,7 +45,8 @@ export async function merchantWithdrawalRoutes(app: FastifyInstance) {
     if (body.amount < 10) {
       return reply.code(400).send(error("VALIDATION_ERROR", "最低提现金额为 ¥10"));
     }
-    if (!body.accountType || !["alipay", "wechat", "bank_card"].includes(body.accountType)) {
+    const enabledTypes = await getEnabledAccountTypes();
+    if (!body.accountType || !enabledTypes.includes(body.accountType)) {
       return reply.code(400).send(error("VALIDATION_ERROR", "请选择有效的收款账户类型"));
     }
     if (!body.accountNumber) {
