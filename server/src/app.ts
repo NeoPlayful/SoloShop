@@ -27,6 +27,7 @@ import { adminLogRoutes } from "./routes/admin/logs.js";
 import { adminSecurityRoutes } from "./routes/admin/security.js";
 import { adminUploadRoutes } from "./routes/admin/upload.js";
 import { adminPromotionRoutes } from "./routes/admin/promotion.js";
+import { adminWithdrawalRequestRoutes } from "./routes/admin/withdrawal-requests.js";
 import { publicSettingsRoutes } from "./routes/public/settings.js";
 import { publicCategoryRoutes } from "./routes/public/categories.js";
 import { publicProductRoutes } from "./routes/public/products.js";
@@ -34,6 +35,7 @@ import { publicOrderRoutes } from "./routes/public/orders.js";
 import { publicPaymentRoutes } from "./routes/public/payment.js";
 import { publicPromotionRoutes } from "./routes/public/promotion.js";
 import { webhookPayRoutes } from "./routes/webhook/pay.js";
+import { merchantWithdrawalRoutes } from "./routes/merchant/withdrawal.js";
 
 const envToLogger: Record<string, object> = {
   development: { level: "info" },
@@ -96,6 +98,7 @@ await app.register(adminLogRoutes, { prefix: "/api/admin/logs" });
 await app.register(adminSecurityRoutes, { prefix: "/api/admin/security" });
 await app.register(adminUploadRoutes, { prefix: "/api/admin/upload" });
 await app.register(adminPromotionRoutes, { prefix: "/api/admin/promotion" });
+await app.register(adminWithdrawalRequestRoutes, { prefix: "/api/admin/withdrawal-requests" });
 await app.register(publicSettingsRoutes, { prefix: "/api/public/settings" });
 await app.register(publicCategoryRoutes, { prefix: "/api/public/categories" });
 await app.register(publicProductRoutes, { prefix: "/api/public/products" });
@@ -103,6 +106,7 @@ await app.register(publicOrderRoutes, { prefix: "/api/public/orders" });
 await app.register(publicPaymentRoutes, { prefix: "/api/public/payment" });
 await app.register(publicPromotionRoutes, { prefix: "/api/public/promotion" });
 await app.register(webhookPayRoutes, { prefix: "/api/webhook/pay" });
+await app.register(merchantWithdrawalRoutes, { prefix: "/api/merchant/withdrawal" });
 
 // ─── 启动 ───
 const start = async () => {

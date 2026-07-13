@@ -24,6 +24,7 @@ model User {
   promotionInfo PromotionInfo? // 推广信息（role=promoter 时有）
   orders        Order[]
   operationLogs OperationLog[]
+  withdrawalRequests WithdrawalRequest[]
 }
 
 // ─── 推广信息（与 User 1:1） ───
@@ -36,11 +37,37 @@ model PromotionInfo {
   orderCount      Int      @default(0)
   totalSales      Decimal  @default(0) @db.Decimal(12, 2)
   totalCommission Decimal  @default(0) @db.Decimal(12, 2)
+  withdrawnAmount  Decimal  @default(0) @db.Decimal(12, 2) // 已提现金额
   createdAt       DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
 
   @@index([referralCode])
+}
+
+// ─── 提现申请 ───
+model WithdrawalRequest {
+  id            Int       @id @default(autoincrement())
+  userId        Int
+  amount        Decimal   @db.Decimal(10, 2) // 申请提现金额
+  fee           Decimal   @default(0) @db.Decimal(10, 2) // 手续费
+  netAmount     Decimal   @db.Decimal(10, 2) // 实际到账金额 = amount - fee
+  status        String    @default("pending") // pending / approved / rejected / paid
+  accountType   String    // alipay / wechat / bank_card
+  accountName   String?   // 账户名
+  accountNumber String    // 账号
+  remark        String?   // 拒绝理由/备注
+  reviewedBy    Int?      // 审核管理员 ID
+  reviewedAt    DateTime?
+  paidAt        DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
 }
 
 // ─── 商品分类 ───

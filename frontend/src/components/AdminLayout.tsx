@@ -19,6 +19,7 @@ import {
   MoonIcon,
   ChevronDownIcon,
   EnvelopeIcon,
+  CurrencyYenIcon,
 } from "@heroicons/react/24/outline";
 import { apiClient } from "../lib/client.js";
 import { useTheme } from "../theme/index.js";
@@ -51,6 +52,7 @@ const navGroups = [
     label: "promotionGroup",
     items: [
       { path: "/admin/promotion", label: "promotionManagement", icon: MegaphoneIcon },
+      { path: "/admin/withdrawal-requests", label: "withdrawalRequests", icon: CurrencyYenIcon },
     ],
   },
   {
