@@ -1,7 +1,8 @@
 import type { FastifyInstance } from "fastify";
 import { prisma } from "../../lib/db.js";
 import { authMiddleware } from "../../lib/auth.js";
-import { success } from "../../lib/api-utils.js";
+import { success, error } from "../../lib/api-utils.js";
+import { testMailConnection, resetTransporter } from "../../lib/mailer.js";
 
 export async function adminSettingsRoutes(app: FastifyInstance) {
   app.addHook("preHandler", authMiddleware);
@@ -24,4 +25,23 @@ export async function adminSettingsRoutes(app: FastifyInstance) {
   app.patch("/order", async (request) => updateSettings("order", request.body as any));
   app.patch("/security", async (request) => updateSettings("security", request.body as any));
   app.patch("/promotion", async (request) => updateSettings("promotion", request.body as any));
+
+  // ─── 邮件设置 ───
+  app.patch("/email", async (request) => {
+    const result = await updateSettings("email", request.body as any);
+    resetTransporter();
+    return result;
+  });
+
+  // ─── 测试邮件 ───
+  app.post("/email/test", async (request, reply) => {
+    const { to } = request.body as { to?: string };
+    if (!to) return reply.code(400).send(error("VALIDATION_ERROR", "收件人地址不能为空"));
+    try {
+      await testMailConnection(to);
+      return success({ message: "测试邮件已发送" });
+    } catch (err: any) {
+      return reply.code(500).send(error("EMAIL_ERROR", err.message || "发送失败"));
+    }
+  });
 }

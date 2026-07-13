@@ -18,6 +18,7 @@ import {
   SunIcon,
   MoonIcon,
   ChevronDownIcon,
+  EnvelopeIcon,
 } from "@heroicons/react/24/outline";
 import { apiClient } from "../lib/client.js";
 import { useTheme } from "../theme/index.js";
@@ -58,6 +59,7 @@ const navGroups = [
       { path: "/admin/payment-channels", label: "paymentChannels", icon: BoltIcon },
       { path: "/admin/users", label: "users", icon: UserIcon },
       { path: "/admin/settings", label: "settings", icon: Cog6ToothIcon },
+      { path: "/admin/email-settings", label: "emailSettings", icon: EnvelopeIcon },
       { path: "/admin/logs", label: "logs", icon: DocumentTextIcon },
     ],
   },
