@@ -284,6 +284,7 @@
   "withdrawalAmount": "Amount",
   "withdrawalFee": "Fee",
   "withdrawalNetAmount": "Net Amount",
+  "withdrawalPaymentMethod": "Payment Method",
   "withdrawalAccount": "Account",
   "withdrawalAccountName": "Real Name",
   "withdrawalAccountNumber": "Payment Account",
@@ -296,9 +297,11 @@
   "withdrawalRejectConfirm": "Reject this withdrawal request?",
   "withdrawalMonthlyPaid": "This Month Paid",
   "withdrawalTotalWithdrawn": "Total Withdrawn",
-  "withdrawalPendingCount": "Pending Count",
+  "withdrawalMonthlyApplyCount": "Monthly Applications",
+  "withdrawalPendingCount": "Pending Review",
   "withdrawalPendingAmount": "Pending Amount",
   "withdrawalSearchPlaceholder": "Search by email...",
   "withdrawalAllStatus": "All Statuses",
-  "withdrawalNoData": "No withdrawal requests"
+  "withdrawalNoData": "No withdrawal requests",
+  "withdrawalApplyTime": "Apply Time"
 }

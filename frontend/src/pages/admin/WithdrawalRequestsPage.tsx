@@ -12,6 +12,7 @@ import {
   CheckCircleIcon,
   XCircleIcon,
   BanknotesIcon,
+  DocumentTextIcon,
 } from "@heroicons/react/24/outline";
 
 /* ========== KPI 卡片 ========== */
@@ -72,9 +73,15 @@ function ApproveModal({ item, onClose }: { item: any; onClose: () => void }) {
         <h2 className="mb-4 text-lg font-bold text-text-primary">{t("withdrawalApproveConfirm")}</h2>
         <div className="mb-4 space-y-2 rounded-lg bg-surface-alt p-3 text-sm text-text-secondary">
           <div className="flex justify-between">
-            <span>{t("withdrawalAccount")}:</span>
+            <span>{t("withdrawalPaymentMethod")}:</span>
             <span className="text-text-primary">{item.accountType}</span>
           </div>
+          {item.accountName && (
+            <div className="flex justify-between">
+              <span>{t("withdrawalAccountName")}:</span>
+              <span className="text-text-primary">{item.accountName}</span>
+            </div>
+          )}
           <div className="flex justify-between">
             <span>{t("withdrawalAccountNumber")}:</span>
             <span className="text-text-primary font-mono">{item.accountNumber}</span>
@@ -267,19 +274,21 @@ export default function WithdrawalRequestsPage() {
 
       {/* KPI 统计 */}
       <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4">
-        <KpiCard
-          icon={<ClockIcon className="h-4 w-4" />}
-          label={t("withdrawalPendingCount")}
-          value={stats?.pendingCount ?? 0}
-          accent="amber"
-        />
-        <KpiCard
-          icon={<CurrencyYenIcon className="h-4 w-4" />}
-          label={t("withdrawalPendingAmount")}
-          value={Number(stats?.pendingAmount ?? 0).toFixed(2)}
-          unit={t("unitYuan")}
-          accent="amber"
-        />
+        {/* 待审核：合并笔数 + 金额 */}
+        <div className="rounded-xl bg-surface p-4 shadow-card transition-shadow hover:shadow-md">
+          <div className="mb-2 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-yellow-100">
+            <span className="h-4 w-4 text-yellow-500"><ClockIcon className="h-4 w-4" /></span>
+          </div>
+          <p className="text-xs text-text-secondary">{t("withdrawalPendingCount")}</p>
+          <div className="mt-0.5 flex items-baseline gap-3">
+            <p className="text-xl font-bold text-text-primary">
+              {stats?.pendingCount ?? 0}<span className="ml-0.5 text-sm font-normal text-text-secondary">笔</span>
+            </p>
+            <p className="text-lg font-semibold text-amber-600">
+              ¥{Number(stats?.pendingAmount ?? 0).toFixed(2)}
+            </p>
+          </div>
+        </div>
         <KpiCard
           icon={<BanknotesIcon className="h-4 w-4" />}
           label={t("withdrawalMonthlyPaid")}
@@ -293,6 +302,12 @@ export default function WithdrawalRequestsPage() {
           value={Number(stats?.totalWithdrawn ?? 0).toFixed(2)}
           unit={t("unitYuan")}
           accent="purple"
+        />
+        <KpiCard
+          icon={<DocumentTextIcon className="h-4 w-4" />}
+          label={t("withdrawalMonthlyApplyCount")}
+          value={stats?.monthlyApplyCount ?? 0}
+          accent="blue"
         />
       </div>
 
@@ -339,33 +354,40 @@ export default function WithdrawalRequestsPage() {
               <table className="w-full whitespace-nowrap">
                 <thead className="border-b border-border bg-surface-alt">
                   <tr>
-                    <th className="px-4 py-3 text-left text-sm text-text-primary">{tc("time")}</th>
                     <th className="px-4 py-3 text-left text-sm text-text-primary">{t("promotionName")}</th>
                     <th className="px-4 py-3 text-right text-sm text-text-primary">{t("withdrawalAmount")}</th>
                     <th className="px-4 py-3 text-right text-sm text-text-primary">{t("withdrawalFee")}</th>
                     <th className="px-4 py-3 text-right text-sm text-text-primary">{t("withdrawalNetAmount")}</th>
-                    <th className="px-4 py-3 text-left text-sm text-text-primary">{t("withdrawalAccount")}</th>
+                    <th className="px-4 py-3 text-left text-sm text-text-primary">{t("withdrawalPaymentMethod")}</th>
+                    <th className="px-4 py-3 text-left text-sm text-text-primary">{t("withdrawalAccountName")}</th>
+                    <th className="px-4 py-3 text-left text-sm text-text-primary">{t("withdrawalAccountNumber")}</th>
                     <th className="px-4 py-3 text-left text-sm text-text-primary">{tc("status")}</th>
+                    <th className="px-4 py-3 text-left text-sm text-text-primary">{t("withdrawalApplyTime")}</th>
                     <th className="px-4 py-3 text-left text-sm text-text-primary">{tc("actions")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {list.map((item: any) => (
                     <tr key={item.id} className="border-b border-border text-sm hover:bg-surface-hover">
-                      <td className="px-4 py-3 text-xs text-text-secondary">{formatDate(item.createdAt)}</td>
                       <td className="px-4 py-3 font-medium text-text-primary">{item.user?.email || "-"}</td>
                       <td className="px-4 py-3 text-right text-text-primary">¥{Number(item.amount).toFixed(2)}</td>
                       <td className="px-4 py-3 text-right text-text-secondary">¥{Number(item.fee).toFixed(2)}</td>
                       <td className="px-4 py-3 text-right font-medium text-text-primary">¥{Number(item.netAmount).toFixed(2)}</td>
                       <td className="px-4 py-3 text-text-secondary">
-                        <span className="text-xs">{item.accountType}</span>
-                        <span className="ml-1 font-mono text-xs">{item.accountNumber}</span>
+                        <span className="inline-block rounded bg-surface-alt px-2 py-0.5 text-xs font-medium text-text-primary">{item.accountType}</span>
+                      </td>
+                      <td className="px-4 py-3 text-text-secondary">
+                        <span className="text-xs">{item.accountName || "-"}</span>
+                      </td>
+                      <td className="px-4 py-3 text-text-secondary">
+                        <span className="font-mono text-xs">{item.accountNumber}</span>
                       </td>
                       <td className="px-4 py-3">
                         <span className={`rounded px-2 py-0.5 text-xs font-medium ${statusStyles[item.status] || "bg-gray-100 text-gray-700"}`}>
                           {t(`withdrawal${item.status.charAt(0).toUpperCase()}${item.status.slice(1)}` as any)}
                         </span>
                       </td>
+                      <td className="px-4 py-3 text-xs text-text-secondary">{formatDate(item.createdAt)}</td>
                       <td className="px-4 py-3">
                         <div className="flex gap-1 flex-wrap">
                           {item.status === "pending" && (

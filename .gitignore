@@ -24,6 +24,7 @@ backups/
 # 系统
 .DS_Store
 *.log
+*.tsbuildinfo
 
 # IDE
 .vscode/

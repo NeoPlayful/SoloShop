@@ -20,6 +20,7 @@ export async function adminWithdrawalRequestRoutes(app: FastifyInstance) {
       pendingAgg,
       monthlyPaidAgg,
       totalPaidAgg,
+      monthlyApplyAgg,
     ] = await Promise.all([
       prisma.withdrawalRequest.aggregate({
         where: { status: "pending" },
@@ -34,6 +35,9 @@ export async function adminWithdrawalRequestRoutes(app: FastifyInstance) {
         where: { status: "paid" },
         _sum: { netAmount: true },
       }),
+      prisma.withdrawalRequest.count({
+        where: { createdAt: { gte: firstDayOfMonth } },
+      }),
     ]);
 
     return success({
@@ -41,6 +45,7 @@ export async function adminWithdrawalRequestRoutes(app: FastifyInstance) {
       pendingAmount: pendingAgg._sum.amount ?? 0,
       monthlyPaid: monthlyPaidAgg._sum.netAmount ?? 0,
       totalWithdrawn: totalPaidAgg._sum.netAmount ?? 0,
+      monthlyApplyCount: monthlyApplyAgg,
     });
   });
 

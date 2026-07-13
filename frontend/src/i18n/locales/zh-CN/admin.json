@@ -284,6 +284,7 @@
   "withdrawalAmount": "提现金额",
   "withdrawalFee": "手续费",
   "withdrawalNetAmount": "到账金额",
+  "withdrawalPaymentMethod": "支付方式",
   "withdrawalAccount": "收款账户",
   "withdrawalAccountName": "真实姓名",
   "withdrawalAccountNumber": "支付账号",
@@ -296,9 +297,11 @@
   "withdrawalRejectConfirm": "确认拒绝此提现申请？",
   "withdrawalMonthlyPaid": "本月已打款",
   "withdrawalTotalWithdrawn": "累计已提现",
-  "withdrawalPendingCount": "待审核笔数",
+  "withdrawalMonthlyApplyCount": "本月申请笔数",
+  "withdrawalPendingCount": "待审核",
   "withdrawalPendingAmount": "待审核金额",
   "withdrawalSearchPlaceholder": "搜索推广人邮箱...",
   "withdrawalAllStatus": "全部状态",
-  "withdrawalNoData": "暂无提现申请"
+  "withdrawalNoData": "暂无提现申请",
+  "withdrawalApplyTime": "申请时间"
 }

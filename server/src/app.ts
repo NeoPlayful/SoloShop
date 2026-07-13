@@ -112,21 +112,23 @@ await app.register(merchantWithdrawalRoutes, { prefix: "/api/merchant/withdrawal
 const start = async () => {
   try {
     await prisma.$connect();
-    app.log.info("✅ 数据库连接成功");
+    console.log("✅ Database connected");
 
     try {
       await redis.ping();
-      app.log.info("✅ Redis 连接成功");
+      console.log("✅ Redis connected");
     } catch (e) {
-      app.log.warn("⚠️ Redis 连接失败，限流和卡密池功能不可用");
+      console.warn("⚠️ Redis connection failed, rate limiting and card pool unavailable");
     }
+
+    console.log("✅ Startup aggregation completed");
 
     const port = parseInt(process.env.PORT || "4000");
     const host = process.env.HOST || "0.0.0.0";
     await app.listen({ port, host });
-    app.log.info(`🚀 SoloShop API 启动成功: http://${host}:${port}`);
+    console.log(`🚀 SoloShop API started: http://${host}:${port}`);
   } catch (err) {
-    app.log.error(err);
+    console.error(err);
     process.exit(1);
   }
 };
