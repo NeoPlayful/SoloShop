@@ -95,8 +95,6 @@ export async function publicPromotionRoutes(app: FastifyInstance) {
         orderNo: true,
         totalAmount: true,
         commissionAmount: true,
-        commissionStatus: true,
-        paymentStatus: true,
         createdAt: true,
         productSnapshot: true,
       },

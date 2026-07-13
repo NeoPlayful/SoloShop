@@ -24,11 +24,14 @@ export default function CheckoutPage() {
     refetchInterval: 3000,
   });
 
+  const buyerEmail = order?.buyerEmail;
+  const orderDetailUrl = `/order/${orderNo}${buyerEmail ? `?email=${encodeURIComponent(buyerEmail)}` : ""}`;
+
   useEffect(() => {
     if (order?.paymentStatus === "paid") {
-      navigate(`/order/${orderNo}`);
+      navigate(orderDetailUrl);
     }
-  }, [order, orderNo, navigate]);
+  }, [order, orderNo, navigate, orderDetailUrl]);
 
   // 监听订单支付状态
   useEffect(() => {
@@ -38,12 +41,12 @@ export default function CheckoutPage() {
         const res = await apiClient.get(`/public/payment/status/${orderNo}`);
         if (res.data.data?.paymentStatus === "paid") {
           clearInterval(interval);
-          navigate(`/order/${orderNo}`);
+          navigate(orderDetailUrl);
         }
       } catch {}
     }, 3000);
     return () => clearInterval(interval);
-  }, [orderNo, navigate]);
+  }, [orderNo, navigate, orderDetailUrl]);
 
   const handlePay = async () => {
     try {
@@ -52,7 +55,7 @@ export default function CheckoutPage() {
         // Mock 支付直接回调
         await apiClient.post("/webhook/pay/mock", { orderNo });
         toast.success("Payment successful!");
-        navigate(`/order/${orderNo}`);
+        navigate(orderDetailUrl);
       }
     } catch {
       toast.error("Payment creation failed");

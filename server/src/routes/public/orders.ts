@@ -67,23 +67,96 @@ export async function publicOrderRoutes(app: FastifyInstance) {
     }
   });
 
-  // 查询订单状态
+  // 查询订单状态（支持 email 参数以查看卡密内容）
   app.get("/:orderNo/status", async (request, reply) => {
     const { orderNo } = request.params as { orderNo: string };
-    const order = await prisma.order.findUnique({ where: { orderNo } });
+    const { email } = request.query as { email?: string };
+    const order = await prisma.order.findUnique({
+      where: { orderNo },
+      include: {
+        deliveries: {
+          orderBy: { createdAt: "desc" },
+          take: 50,
+          select: { id: true, content: true, type: true, createdAt: true, deliveredAt: true },
+        },
+      },
+    });
     if (!order) return reply.code(404).send(error("ORDER_NOT_FOUND", "订单不存在"));
-    return success({ orderNo: order.orderNo, orderStatus: order.orderStatus, paymentStatus: order.paymentStatus, deliveryStatus: order.deliveryStatus });
+
+    // 只有买家邮箱匹配才返回卡密内容
+    const emailMatched = !!email && order.buyerEmail === email;
+
+    return success({
+      orderNo: order.orderNo,
+      productSnapshot: order.productSnapshot,
+      quantity: order.quantity,
+      totalAmount: order.totalAmount,
+      orderStatus: order.orderStatus,
+      paymentStatus: order.paymentStatus,
+      deliveryStatus: order.deliveryStatus,
+      createdAt: order.createdAt,
+      paidAt: order.paidAt,
+      buyerEmail: order.buyerEmail,
+      deliveries: emailMatched
+        ? order.deliveries.map((d) => ({
+            cardContent: d.content ?? null,
+            deliveredAt: d.createdAt,
+          }))
+        : [],
+    });
   });
 
   // 订单查询（订单号+邮箱）
   app.post("/query", async (request, reply) => {
-    const { orderNo, email } = request.body as { orderNo: string; email: string };
-    if (!orderNo || !email) return reply.code(400).send(error("VALIDATION_ERROR", "订单号和邮箱不能为空"));
+    const { orderNo, email } = request.body as { orderNo: string; email?: string };
+    if (!orderNo) return reply.code(400).send(error("VALIDATION_ERROR", "订单号不能为空"));
+
+    // 读取是否需要邮箱验证的设置
+    const requireEmailSetting = await prisma.systemSetting.findUnique({
+      where: { key: "order_order_query_require_email" },
+    });
+    const requireEmail = requireEmailSetting?.value !== false; // 默认 true
+
+    if (requireEmail && !email) {
+      return reply.code(400).send(error("VALIDATION_ERROR", "订单号和邮箱不能为空"));
+    }
+
     const order = await prisma.order.findUnique({
       where: { orderNo },
-      include: { deliveries: { orderBy: { createdAt: "desc" }, take: 1 }, product: { select: { name: true } } },
+      include: {
+        deliveries: {
+          orderBy: { createdAt: "desc" },
+          take: 50,
+          select: { id: true, content: true, type: true, createdAt: true, deliveredAt: true },
+        },
+      },
     });
-    if (!order || order.buyerEmail !== email) return reply.code(404).send(error("ORDER_NOT_FOUND", "订单不存在或邮箱不匹配"));
-    return success(order);
+
+    if (!order) return reply.code(404).send(error("ORDER_NOT_FOUND", "订单不存在"));
+    if (requireEmail && order.buyerEmail !== email) {
+      return reply.code(404).send(error("ORDER_NOT_FOUND", "订单不存在或邮箱不匹配"));
+    }
+
+    // 只有邮箱匹配才返回卡密内容
+    const emailMatched = !!email && order.buyerEmail === email;
+
+    return success({
+      orderNo: order.orderNo,
+      productSnapshot: order.productSnapshot,
+      quantity: order.quantity,
+      totalAmount: order.totalAmount,
+      orderStatus: order.orderStatus,
+      paymentStatus: order.paymentStatus,
+      deliveryStatus: order.deliveryStatus,
+      createdAt: order.createdAt,
+      paidAt: order.paidAt,
+      buyerEmail: order.buyerEmail,
+      deliveries: emailMatched
+        ? order.deliveries.map((d) => ({
+            cardContent: d.content ?? null,
+            deliveredAt: d.createdAt,
+          }))
+        : [],
+    });
   });
 }
