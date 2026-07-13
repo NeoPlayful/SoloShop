@@ -66,6 +66,12 @@ export async function sendMail(options: {
   html?: string;
   text?: string;
 }): Promise<void> {
+  // 检查邮件服务是否启用
+  const enabledSetting = await prisma.systemSetting.findUnique({ where: { key: "email_enabled" } });
+  if (enabledSetting?.value === false) {
+    throw new Error("邮件服务未启用");
+  }
+
   const tr = await getTransporter();
   if (!tr) {
     throw new Error("SMTP 未配置");
