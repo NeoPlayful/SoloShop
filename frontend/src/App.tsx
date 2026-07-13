@@ -18,6 +18,7 @@ import PaymentsPage from "./pages/admin/PaymentsPage.js";
 import DeliveriesPage from "./pages/admin/DeliveriesPage.js";
 import PaymentChannelsPage from "./pages/admin/PaymentChannelsPage.js";
 import SettingsPage from "./pages/admin/SettingsPage.js";
+import EmailSettingsPage from "./pages/admin/EmailSettingsPage.js";
 import LogsPage from "./pages/admin/LogsPage.js";
 import UsersPage from "./pages/admin/UsersPage.js";
 import PromotionPage from "./pages/admin/PromotionPage.js";
@@ -71,6 +72,7 @@ export default function App() {
           <Route path="payment-channels" element={<PaymentChannelsPage />} />
           <Route path="deliveries" element={<DeliveriesPage />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="email-settings" element={<EmailSettingsPage />} />
           <Route path="promotion" element={<PromotionPage />} />
           <Route path="orders-logs" element={<PromotionOrdersPage />} />
           <Route path="logs" element={<LogsPage />} />
