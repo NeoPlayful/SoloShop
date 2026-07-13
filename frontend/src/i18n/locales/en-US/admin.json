@@ -205,6 +205,12 @@
   "superAdmin": "Super Admin",
   "normalAdmin": "Normal Admin",
   "lastLogin": "Last Login",
+  "addUser": "Add User",
+  "editUser": "Edit User",
+  "deleteUser": "Delete User",
+  "remark": "Remark",
+  "passwordPlaceholder": "Leave blank to keep current password",
+  "deleteUserConfirm": "Delete this user? The user will be disabled and login info cleared.",
 
   "productEdit": "Edit Product",
   "productName": "Product Name",

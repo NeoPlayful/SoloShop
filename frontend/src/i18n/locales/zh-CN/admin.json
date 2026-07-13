@@ -205,6 +205,12 @@
   "superAdmin": "超级管理员",
   "normalAdmin": "普通管理员",
   "lastLogin": "最后登录",
+  "addUser": "新建用户",
+  "editUser": "编辑用户",
+  "deleteUser": "删除用户",
+  "remark": "备注",
+  "passwordPlaceholder": "留空不修改密码",
+  "deleteUserConfirm": "确定删除此用户？此操作将禁用用户并清除登录信息。",
 
   "productEdit": "商品编辑",
   "productName": "商品名称",

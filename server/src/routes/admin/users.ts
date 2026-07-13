@@ -57,12 +57,11 @@ export async function adminUsersRoutes(app: FastifyInstance) {
     };
 
     if (!body.role) return reply.code(400).send(error("VALIDATION_ERROR", "角色不能为空"));
+    if (!body.email) return reply.code(400).send(error("VALIDATION_ERROR", "邮箱不能为空"));
 
     // 检查 email 或 username 唯一性
-    if (body.email) {
-      const exists = await prisma.user.findUnique({ where: { email: body.email } });
-      if (exists) return reply.code(400).send(error("VALIDATION_ERROR", "邮箱已存在"));
-    }
+    const emailExists = await prisma.user.findUnique({ where: { email: body.email } });
+    if (emailExists) return reply.code(400).send(error("VALIDATION_ERROR", "邮箱已存在"));
     if (body.username) {
       const exists = await prisma.user.findUnique({ where: { username: body.username } });
       if (exists) return reply.code(400).send(error("VALIDATION_ERROR", "用户名已存在"));
@@ -104,10 +103,15 @@ export async function adminUsersRoutes(app: FastifyInstance) {
   app.patch("/:id", { preHandler: [superAdminMiddleware] }, async (request, reply) => {
     const { id } = request.params as { id: string };
     const body = request.body as {
+      username?: string;
+      password?: string;
+      email?: string;
       contact?: string;
+      role?: string;
       isActive?: boolean;
       remark?: string;
-      email?: string;
+      referralCode?: string;
+      commissionRate?: number;
     };
 
     const existing = await prisma.user.findUnique({ where: { id: parseInt(id) } });
@@ -118,14 +122,47 @@ export async function adminUsersRoutes(app: FastifyInstance) {
       const emailExists = await prisma.user.findUnique({ where: { email: body.email } });
       if (emailExists) return reply.code(400).send(error("VALIDATION_ERROR", "邮箱已存在"));
     }
+    // 检查 username 唯一性
+    if (body.username && body.username !== existing.username) {
+      const nameExists = await prisma.user.findUnique({ where: { username: body.username } });
+      if (nameExists) return reply.code(400).send(error("VALIDATION_ERROR", "用户名已存在"));
+    }
 
     const data: Record<string, unknown> = {};
+    if (body.username !== undefined) data.username = body.username;
+    if (body.password) data.password = await bcrypt.hash(body.password, 10);
+    if (body.email !== undefined) data.email = body.email;
     if (body.contact !== undefined) data.contact = body.contact;
+    if (body.role !== undefined) data.role = body.role;
     if (body.isActive !== undefined) data.isActive = body.isActive;
     if (body.remark !== undefined) data.remark = body.remark;
-    if (body.email !== undefined) data.email = body.email;
 
     const user = await prisma.user.update({ where: { id: parseInt(id) }, data });
+
+    // 角色变更时联动处理推广信息
+    if (body.role === "promoter" && body.role !== existing.role) {
+      // 变为推广人 — 创建 promotionInfo（如不存在）
+      const existingPromotion = await prisma.promotionInfo.findUnique({ where: { userId: user.id } });
+      if (!existingPromotion) {
+        const code = body.referralCode || generateReferralCode();
+        const existingCode = await prisma.promotionInfo.findUnique({ where: { referralCode: code } });
+        if (existingCode) return reply.code(400).send(error("VALIDATION_ERROR", "推广码已存在"));
+        await prisma.promotionInfo.create({
+          data: {
+            userId: user.id,
+            referralCode: code,
+            commissionRate: body.commissionRate ?? 0.1,
+          },
+        });
+      }
+    } else if (body.role === "promoter" && body.commissionRate !== undefined) {
+      // 已经是推广人，更新佣金比例
+      await prisma.promotionInfo.updateMany({
+        where: { userId: user.id },
+        data: { commissionRate: body.commissionRate },
+      });
+    }
+
     return success({ id: user.id, username: user.username, role: user.role });
   });
 
@@ -144,6 +181,29 @@ export async function adminUsersRoutes(app: FastifyInstance) {
     const existing = await prisma.user.findUnique({ where: { id: parseInt(id) } });
     if (!existing) return reply.code(404).send(error("VALIDATION_ERROR", "用户不存在"));
     await prisma.user.update({ where: { id: parseInt(id) }, data: { isActive: true } });
+    return success(null);
+  });
+
+  // ─── 删除用户（软删除） ───
+  app.delete("/:id", { preHandler: [superAdminMiddleware] }, async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const existing = await prisma.user.findUnique({
+      where: { id: parseInt(id) },
+      include: { _count: { select: { orders: true } } },
+    });
+    if (!existing) return reply.code(404).send(error("VALIDATION_ERROR", "用户不存在"));
+    if (existing.role === "super_admin")
+      return reply.code(400).send(error("VALIDATION_ERROR", "不能删除超级管理员"));
+
+    // 软删除：禁用 + 清除敏感标识
+    await prisma.user.update({
+      where: { id: parseInt(id) },
+      data: {
+        isActive: false,
+        username: existing.username ? `${existing.username}_deleted_${Date.now()}` : undefined,
+        email: existing.email ? `${existing.email}_deleted_${Date.now()}` : undefined,
+      },
+    });
     return success(null);
   });
 }
