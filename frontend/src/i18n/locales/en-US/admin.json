@@ -201,7 +201,9 @@
   "fromName": "Sender Name",
   "fromAddress": "Sender Address",
   "testEmail": "Send Test Email",
-  "sendTestEmailTo": "Send test email to",
+  "sendTestEmailTo": "Send test to",
+  "sendTestEmail": "Send",
+  "enterTestEmailPlaceholder": "Enter test recipient email",
   "testEmailSent": "Test email sent successfully",
   "testEmailFailed": "Failed to send test email",
 

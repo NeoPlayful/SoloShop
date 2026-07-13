@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "../../lib/client.js";
 import { LoadingState } from "../../components/LoadingStates.js";
 import { Input } from "../../theme/components/form/Input.js";
-import { Modal } from "../../components/Modal.js";
 import toast from "react-hot-toast";
 
 function Toggle({ value, onChange, label }: { value: boolean; onChange: (v: boolean) => void; label: string }) {
@@ -43,14 +42,16 @@ export default function EmailSettingsPage() {
     },
   });
 
-  const [testEmailDialogOpen, setTestEmailDialogOpen] = useState(false);
-  const [testEmailTo, setTestEmailTo] = useState("");
+  const [testEmailTo, setTestEmailTo] = useState(() => localStorage.getItem("soloshop-test-email") || "");
+
+  useEffect(() => {
+    localStorage.setItem("soloshop-test-email", testEmailTo);
+  }, [testEmailTo]);
+
   const testEmailMutation = useMutation({
     mutationFn: (to: string) => apiClient.post("/admin/settings/email/test", { to }),
     onSuccess: () => {
       toast.success(t("testEmailSent"));
-      setTestEmailDialogOpen(false);
-      setTestEmailTo("");
     },
     onError: (err: any) => {
       const msg = err?.response?.data?.error?.message || err?.message || tc("operationFailed");
@@ -104,7 +105,7 @@ export default function EmailSettingsPage() {
                 <Toggle
                   label={t("smtpSecure")}
                   value={emailForm.smtp_secure !== false}
-                  onChange={(v) => setEmailForm({ ...emailForm, smtp_secure: v })}
+                  onChange={(v) => setEmailForm({ ...emailForm, smtp_secure: v, smtp_port: v ? 465 : 587 })}
                 />
               </div>
             </div>
@@ -134,7 +135,7 @@ export default function EmailSettingsPage() {
               onChange={(e) => setEmailForm({ ...emailForm, from_address: e.target.value })}
             />
           </div>
-          <div className="flex items-center gap-3 pt-2">
+          <div className="pt-2">
             <button
               onClick={handleSave}
               disabled={emailMutation.isPending}
@@ -142,44 +143,35 @@ export default function EmailSettingsPage() {
             >
               {emailMutation.isPending ? tc("saving") : tc("save")}
             </button>
-            <button
-              onClick={() => setTestEmailDialogOpen(true)}
-              disabled={testEmailMutation.isPending}
-              className="rounded border border-border px-4 py-2 text-sm text-text-primary hover:bg-surface-hover disabled:opacity-50"
-            >
-              {t("testEmail")}
-            </button>
           </div>
         </div>
       </div>
 
-      {/* ── 测试邮件对话框 ── */}
-      <Modal open={testEmailDialogOpen} onClose={() => setTestEmailDialogOpen(false)} title={t("testEmail")}>
-        <div className="space-y-4">
-          <Input
-            label={t("sendTestEmailTo")}
-            type="email"
-            value={testEmailTo}
-            onChange={(e) => setTestEmailTo(e.target.value)}
-            placeholder="email@example.com"
-          />
-          <div className="flex justify-end gap-3">
-            <button
-              onClick={() => setTestEmailDialogOpen(false)}
-              className="rounded border border-border px-4 py-2 text-sm text-text-primary hover:bg-surface-hover"
-            >
-              {tc("cancel")}
-            </button>
-            <button
-              onClick={() => testEmailTo && testEmailMutation.mutate(testEmailTo)}
-              disabled={!testEmailTo || testEmailMutation.isPending}
-              className="rounded bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600 disabled:opacity-50"
-            >
-              {testEmailMutation.isPending ? tc("saving") : tc("confirm")}
-            </button>
-          </div>
+      {/* ── 测试发件 ── */}
+      <div className="rounded-lg bg-surface p-6 shadow">
+        <div className="mb-2 flex items-center gap-2">
+          <span className="text-xs font-medium uppercase tracking-wider text-text-tertiary">{t("testEmail")}</span>
+          <div className="flex-1 border-t border-border" />
         </div>
-      </Modal>
+        <div className="flex items-end gap-3">
+          <div className="flex-1">
+            <Input
+              label={t("sendTestEmailTo")}
+              type="email"
+              value={testEmailTo}
+              onChange={(e) => setTestEmailTo(e.target.value)}
+              placeholder={t("enterTestEmailPlaceholder")}
+            />
+          </div>
+          <button
+            onClick={() => testEmailTo && testEmailMutation.mutate(testEmailTo)}
+            disabled={!testEmailTo || testEmailMutation.isPending}
+            className="mb-0.5 rounded bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600 disabled:opacity-50"
+          >
+            {testEmailMutation.isPending ? tc("saving") : t("sendTestEmail")}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
