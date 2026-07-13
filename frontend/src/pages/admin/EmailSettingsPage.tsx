@@ -168,10 +168,11 @@ export default function EmailSettingsPage() {
             disabled={!testEmailTo || testEmailMutation.isPending}
             className="mb-0.5 rounded bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600 disabled:opacity-50"
           >
-            {testEmailMutation.isPending ? tc("saving") : t("sendTestEmail")}
+            {testEmailMutation.isPending ? t("testEmailSending") : t("sendTestEmail")}
           </button>
         </div>
       </div>
+
     </div>
   );
 }

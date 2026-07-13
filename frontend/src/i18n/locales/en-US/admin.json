@@ -208,6 +208,7 @@
   "enterTestEmailPlaceholder": "Enter test recipient email",
   "testEmailSent": "Test email sent successfully",
   "testEmailFailed": "Failed to send test email",
+  "testEmailSending": "Sending...",
 
   "operationLogs": "Operation Logs",
   "action": "Action",
