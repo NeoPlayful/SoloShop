@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../../lib/client.js";
 import { LoadingState } from "../../components/LoadingStates.js";
 import { SiteHeader } from "../../components/SiteHeader.js";
+import FloatingNav from "../../components/FloatingNav.js";
 
 export default function MerchantLayout() {
   const { t } = useTranslation("store");
@@ -35,8 +36,8 @@ export default function MerchantLayout() {
       {/* 主体区域：全宽滚动容器 — 滚动条在页面最右侧 */}
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto flex w-full max-w-5xl px-4">
-          {/* 侧边栏 - sticky 固定 */}
-          <aside className="sticky top-0 self-start w-48 shrink-0 py-6">
+          {/* 侧边栏 - 移动端隐藏 */}
+          <aside className="sticky top-0 self-start hidden md:block w-48 shrink-0 py-6">
             <div className="flex h-[calc(100vh-6.5rem)] flex-col rounded-xl border border-sidebar-border bg-sidebar p-2">
             <div className="mb-3 px-3 pb-2 pt-1 text-xs font-semibold uppercase tracking-wider text-text-tertiary border-b border-sidebar-border">
               {t("merchantCenter")}
@@ -66,6 +67,15 @@ export default function MerchantLayout() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                     {t("sidebarPromotionOrders")}
+                  </NavLink>
+                )}
+
+                {showPromotionItems && (
+                  <NavLink to="/merchant/withdrawal" className={linkClass}>
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    {t("sidebarWithdrawal")}
                   </NavLink>
                 )}
 
@@ -100,12 +110,15 @@ export default function MerchantLayout() {
           </div>
         </aside>
 
-        {/* 内容区 - 跟随外层滚动 */}
-        <div className="min-w-0 flex-1 py-6 pl-6">
+        {/* 内容区 - 移动端全宽 */}
+        <div className="min-w-0 flex-1 py-6 pl-0 md:pl-6">
           <Outlet />
         </div>
       </div>
-    </div>
+      </div>
+
+      {/* 移动端悬浮导航 */}
+      <FloatingNav isAdmin={isAdmin} showPromotionItems={showPromotionItems} />
     </div>
   );
 }

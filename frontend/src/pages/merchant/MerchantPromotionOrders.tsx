@@ -45,7 +45,8 @@ export default function MerchantPromotionOrders() {
         {!orders || orders.length === 0 ? (
           <div className="px-4 py-8 text-center text-sm text-text-secondary">{t("noPromotionOrders")}</div>
         ) : (
-          <table className="w-full">
+          <div className="overflow-x-auto">
+          <table className="w-full whitespace-nowrap">
             <thead>
               <tr className="border-b border-border bg-surface-alt text-xs text-text-secondary">
                 <th className="px-4 py-2 text-left">{t("orderNo")}</th>
@@ -77,6 +78,7 @@ export default function MerchantPromotionOrders() {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
 
