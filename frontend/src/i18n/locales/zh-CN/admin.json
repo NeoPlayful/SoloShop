@@ -208,6 +208,7 @@
   "enterTestEmailPlaceholder": "输入测试接收邮箱",
   "testEmailSent": "测试邮件已发送",
   "testEmailFailed": "测试邮件发送失败",
+  "testEmailSending": "发送中...",
 
   "operationLogs": "操作日志",
   "action": "操作",

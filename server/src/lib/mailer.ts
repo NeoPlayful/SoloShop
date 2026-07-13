@@ -63,7 +63,8 @@ async function getTransporter(): Promise<Transporter | null> {
 export async function sendMail(options: {
   to: string;
   subject: string;
-  html: string;
+  html?: string;
+  text?: string;
 }): Promise<void> {
   const tr = await getTransporter();
   if (!tr) {
@@ -79,7 +80,8 @@ export async function sendMail(options: {
     from,
     to: options.to,
     subject: options.subject,
-    html: options.html,
+    ...(options.text ? { text: options.text } : {}),
+    ...(options.html ? { html: options.html } : {}),
   });
 }
 
@@ -99,10 +101,17 @@ export async function testMailConnection(to: string): Promise<void> {
     // verify 失败仍尝试发送，有些 SMTP 服务不支持 verify
   }
 
+  // 获取站点名称
+  const siteSetting = await prisma.systemSetting.findUnique({ where: { key: "site_name" } });
+  const siteName = String(siteSetting?.value || "SoloShop");
+
+  const now = new Date().toLocaleString("zh-CN", { hour12: false });
+
   await sendMail({
     to,
-    subject: "SoloShop 邮件服务测试",
-    html: "<h1>邮件服务测试</h1><p>如果您收到此邮件，说明 SMTP 配置正确。</p>",
+    subject: `${siteName} - SMTP 测试邮件`,
+    text: `SMTP 配置测试\n\n这是一封来自 ${siteName} 的测试邮件。\n\n如果您收到此邮件，说明 SMTP 配置正确，邮件服务正常工作。\n\n发送时间：${now}`,
+    html: `<h1 style="color:#2563eb;">SMTP 配置测试</h1><p>这是一封来自 <strong>${siteName}</strong> 的测试邮件。</p><p>如果您收到此邮件，说明 SMTP 配置正确，邮件服务正常工作。</p><p style="color:#6b7280;font-size:13px;">发送时间：${now}</p>`,
   });
 }
 
@@ -111,4 +120,32 @@ export async function testMailConnection(to: string): Promise<void> {
  */
 export function resetTransporter(): void {
   transporter = null;
+}
+
+/**
+ * 渲染邮件模板 — 从 SystemSetting 读取模板内容，替换变量
+ * @returns { subject, html } 或 null（模板不存在时）
+ */
+export async function renderTemplate(
+  templateKey: string,
+  variables: Record<string, string>,
+): Promise<{ subject: string; html: string } | null> {
+  const setting = await prisma.systemSetting.findUnique({
+    where: { key: templateKey },
+  });
+  if (!setting?.value) return null;
+
+  const template = setting.value as { subject: string; bodyHtml: string };
+  if (!template.subject || !template.bodyHtml) return null;
+
+  let subject = template.subject;
+  let html = template.bodyHtml;
+
+  for (const [key, value] of Object.entries(variables)) {
+    const placeholder = new RegExp(`\\{\\{${key}\\}\\}`, "g");
+    subject = subject.replace(placeholder, value);
+    html = html.replace(placeholder, value);
+  }
+
+  return { subject, html };
 }

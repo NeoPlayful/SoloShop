@@ -399,7 +399,7 @@ export default function SettingsPage() {
             <span className="text-xs font-medium uppercase tracking-wider text-text-tertiary">{t("withdrawalAccountTypes")}</span>
             <div className="flex-1 border-t border-border" />
           </div>
-          <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-surface p-2 min-h-[42px]">
+          <div className="flex flex-wrap items-center gap-2 min-h-[42px]">
             {(promotionForm.withdrawal_account_types ?? []).length === 0 ? (
               <span className="text-sm text-text-tertiary px-1">暂无</span>
             ) : (
