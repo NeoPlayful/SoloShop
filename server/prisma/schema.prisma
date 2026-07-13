@@ -18,6 +18,7 @@ model User {
   isActive    Boolean   @default(true)
   lastLoginAt DateTime?
   remark      String? // 后台备注
+  deletedAt   DateTime? // 软删除时间
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

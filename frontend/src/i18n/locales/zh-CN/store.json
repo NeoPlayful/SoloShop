@@ -137,5 +137,6 @@
   "deliveryFailed": "发货失败",
   "cardContent": "卡密内容",
   "orderTime": "下单时间",
-  "productName": "商品名称"
+  "productName": "商品名称",
+  "emailRequired": "请填写邮箱"
 }

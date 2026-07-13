@@ -10,7 +10,7 @@ export async function adminUsersRoutes(app: FastifyInstance) {
   // ─── 用户列表 ───
   app.get("/", async (request) => {
     const query = request.query as { role?: string };
-    const where: Record<string, unknown> = {};
+    const where: Record<string, unknown> = { deletedAt: null };
     if (query.role) where.role = query.role;
 
     const users = await prisma.user.findMany({
@@ -194,15 +194,12 @@ export async function adminUsersRoutes(app: FastifyInstance) {
     if (!existing) return reply.code(404).send(error("VALIDATION_ERROR", "用户不存在"));
     if (existing.role === "super_admin")
       return reply.code(400).send(error("VALIDATION_ERROR", "不能删除超级管理员"));
+    if (existing.deletedAt) return success(null);
 
-    // 软删除：禁用 + 清除敏感标识
+    // 软删除：设置删除时间，保留邮箱原样
     await prisma.user.update({
       where: { id: parseInt(id) },
-      data: {
-        isActive: false,
-        username: existing.username ? `${existing.username}_deleted_${Date.now()}` : undefined,
-        email: existing.email ? `${existing.email}_deleted_${Date.now()}` : undefined,
-      },
+      data: { deletedAt: new Date(), isActive: false },
     });
     return success(null);
   });
