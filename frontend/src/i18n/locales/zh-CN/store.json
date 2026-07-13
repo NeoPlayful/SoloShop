@@ -131,5 +131,11 @@
   "withdrawalPending": "待审核",
   "withdrawalApproved": "已通过",
   "withdrawalRejected": "已拒绝",
-  "withdrawalPaid": "已打款"
+  "withdrawalPaid": "已打款",
+  "delivered": "已发货",
+  "delivering": "发货中",
+  "deliveryFailed": "发货失败",
+  "cardContent": "卡密内容",
+  "orderTime": "下单时间",
+  "productName": "商品名称"
 }

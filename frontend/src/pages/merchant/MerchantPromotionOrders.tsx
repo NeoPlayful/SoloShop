@@ -60,9 +60,9 @@ export default function MerchantPromotionOrders() {
               {orders.map((order: any, i: number) => (
                 <tr key={i} className="border-b border-border text-sm hover:bg-surface-hover">
                   <td className="px-4 py-2.5 font-mono text-xs">
-                    <Link to={`/order/${order.orderNo}`} className="text-blue-500 hover:text-blue-600 hover:underline">
+                    <span className="text-text-primary">
                       {order.orderNo}
-                    </Link>
+                    </span>
                   </td>
                   <td className="px-4 py-2.5 text-text-primary">{order.productSnapshot?.name || "-"}</td>
                   <td className="px-4 py-2.5 text-right text-text-primary">

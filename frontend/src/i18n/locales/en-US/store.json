@@ -131,5 +131,11 @@
   "withdrawalPending": "Pending",
   "withdrawalApproved": "Approved",
   "withdrawalRejected": "Rejected",
-  "withdrawalPaid": "Paid"
+  "withdrawalPaid": "Paid",
+  "delivered": "Delivered",
+  "delivering": "Delivering",
+  "deliveryFailed": "Delivery Failed",
+  "cardContent": "Card Content",
+  "orderTime": "Order Time",
+  "productName": "Product Name"
 }

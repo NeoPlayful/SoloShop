@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiClient } from "../lib/client.js";
 import { Input } from "../theme/components/form/Input.js";
@@ -9,19 +9,28 @@ export default function OrderQueryPage() {
   const { t } = useTranslation("store");
   const [orderNo, setOrderNo] = useState("");
   const [email, setEmail] = useState("");
+  const [requireEmail, setRequireEmail] = useState(true);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    apiClient.get("/public/settings").then((r) => {
+      const val = r.data.data?.order_order_query_require_email;
+      setRequireEmail(val !== false);
+    }).catch(() => {});
+  }, []);
+
   const handleQuery = async () => {
-    if (!orderNo || !email) { toast.error("Please enter order number and email"); return; }
+    if (!orderNo) { toast.error(t("orderQueryError")); return; }
+    if (requireEmail && !email) { toast.error(t("orderQueryError")); return; }
     try {
-      const res = await apiClient.post("/public/orders/query", { orderNo, email });
+      const res = await apiClient.post("/public/orders/query", { orderNo, email: requireEmail ? email : undefined });
       if (res.data.success) {
-        navigate(`/order/${orderNo}`);
+        navigate(`/order/${orderNo}${email ? `?email=${encodeURIComponent(email)}` : ""}`);
       } else {
-        toast.error(res.data.error?.message || "Query failed");
+        toast.error(res.data.error?.message || t("orderQueryFail"));
       }
     } catch {
-      toast.error("Order not found or email does not match");
+      toast.error(t("orderQueryFail"));
     }
   };
 
@@ -33,10 +42,12 @@ export default function OrderQueryPage() {
           <label className="mb-1 block text-sm font-medium">{t("orderNo", { ns: "common" })}</label>
           <Input value={orderNo} onChange={(e) => setOrderNo(e.target.value)} placeholder={t("orderNoPlaceholder")} />
         </div>
-        <div>
-          <label className="mb-1 block text-sm font-medium">{t("email")}</label>
-          <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("orderEmailPlaceholder")} />
-        </div>
+        {requireEmail && (
+          <div>
+            <label className="mb-1 block text-sm font-medium">{t("email")}</label>
+            <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={t("orderEmailPlaceholder")} />
+          </div>
+        )}
         <button onClick={handleQuery} className="w-full rounded bg-blue-500 py-2 text-white hover:bg-blue-600">{t("orderQueryBtn")}</button>
       </div>
     </div>
