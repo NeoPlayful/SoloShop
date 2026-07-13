@@ -140,6 +140,9 @@ export async function adminPromotionRoutes(app: FastifyInstance) {
     if (query.status === "active") where.isActive = true;
     else if (query.status === "inactive") where.isActive = false;
 
+    // 排除已删除用户
+    where.deletedAt = null;
+
     const [promoters, total] = await Promise.all([
       prisma.user.findMany({
         where,

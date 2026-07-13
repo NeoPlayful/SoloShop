@@ -2,6 +2,7 @@ import type { FastifyInstance } from "fastify";
 import { prisma } from "../../lib/db.js";
 import { confirmSale } from "../../lib/card-pool.js";
 import { createOrderLog } from "../../lib/order-log.js";
+import { sendMail, renderTemplate } from "../../lib/mailer.js";
 
 export async function webhookPayRoutes(app: FastifyInstance) {
   // mock支付回调
@@ -72,6 +73,38 @@ export async function webhookPayRoutes(app: FastifyInstance) {
         message: `自动发卡 ${cards.length} 条`,
         metadata: { deliveryId: delivery.id, cardCount: cards.length, content },
       });
+
+      // ─── 发送卡密邮件 ───
+      try {
+        const siteSetting = await prisma.systemSetting.findUnique({ where: { key: "site_name" } });
+        const siteName = String(siteSetting?.value || "SoloShop");
+        const snapshot = order.productSnapshot as { name?: string } || {};
+        const productName = snapshot.name || "—";
+        const cardKeys = cards.map((c) => c.content).join("\n");
+        const rendered = await renderTemplate("email_template_order_paid", {
+          siteName,
+          orderNo: order.orderNo,
+          productName,
+          quantity: String(order.quantity),
+          cardKeys,
+        });
+        if (rendered && order.buyerEmail) {
+          await sendMail({ to: order.buyerEmail, subject: rendered.subject, html: rendered.html });
+          await createOrderLog({
+            orderId: order.id,
+            eventType: "email.sent",
+            message: `发卡邮件已发送至 ${order.buyerEmail}`,
+            metadata: { to: order.buyerEmail, template: "email_template_order_paid" },
+          });
+        }
+      } catch (err: any) {
+        await createOrderLog({
+          orderId: order.id,
+          eventType: "email.failed",
+          message: `发卡邮件发送失败: ${err.message || "未知错误"}`,
+          metadata: { error: err.message, to: order.buyerEmail },
+        });
+      }
     }
 
     // ─── 记录订单完成日志 ───

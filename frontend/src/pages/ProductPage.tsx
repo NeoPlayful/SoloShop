@@ -29,6 +29,10 @@ export default function ProductPage() {
       toast.error("Insufficient stock");
       return;
     }
+    if (!email) {
+      toast.error(t("emailRequired"));
+      return;
+    }
     try {
       const promoRef = localStorage.getItem("soloshop_promo_ref") || undefined;
       const res = await apiClient.post("/public/orders", {

@@ -137,5 +137,6 @@
   "deliveryFailed": "Delivery Failed",
   "cardContent": "Card Content",
   "orderTime": "Order Time",
-  "productName": "Product Name"
+  "productName": "Product Name",
+  "emailRequired": "Please enter your email"
 }
