@@ -201,7 +201,9 @@
   "fromName": "发件人名称",
   "fromAddress": "发件人地址",
   "testEmail": "发送测试邮件",
-  "sendTestEmailTo": "发送测试邮件至",
+  "sendTestEmailTo": "测试发件",
+  "sendTestEmail": "发送",
+  "enterTestEmailPlaceholder": "输入测试接收邮箱",
   "testEmailSent": "测试邮件已发送",
   "testEmailFailed": "测试邮件发送失败",
 
