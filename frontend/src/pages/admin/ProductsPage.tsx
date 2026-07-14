@@ -12,14 +12,15 @@ import toast from "react-hot-toast";
 export default function ProductsPage() {
   const { t } = useTranslation("admin");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const qc = useQueryClient();
   const navigate = useNavigate();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-products", page, search, status],
-    queryFn: () => apiClient.get("/admin/products", { params: { page, pageSize: 20, search, status } }).then((r) => r.data.data),
+    queryKey: ["admin-products", page, pageSize, search, status],
+    queryFn: () => apiClient.get("/admin/products", { params: { page, pageSize, search, status } }).then((r) => r.data.data),
   });
 
   const toggleMutation = useMutation({
@@ -85,7 +86,17 @@ export default function ProductsPage() {
           ))}
         </tbody>
       </table>
-      <Pagination page={page} pageSize={20} total={data?.total || 0} onChange={setPage} />
+      <Pagination
+        page={page}
+        pageSize={pageSize}
+        total={data?.total || 0}
+        onChange={setPage}
+        pageSizeOptions={[10, 20, 50, 100]}
+        onPageSizeChange={(nextPageSize) => {
+          setPageSize(nextPageSize);
+          setPage(1);
+        }}
+      />
     </div>
   );
 }

@@ -13,14 +13,15 @@ import toast from "react-hot-toast";
 export default function OrdersPage() {
   const { t } = useTranslation("admin");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [orderNo, setOrderNo] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("");
   const [detail, setDetail] = useState<any>(null);
   const qc = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-orders", page, orderNo, paymentStatus],
-    queryFn: () => apiClient.get("/admin/orders", { params: { page, pageSize: 20, orderNo, paymentStatus } }).then((r) => r.data.data),
+    queryKey: ["admin-orders", page, pageSize, orderNo, paymentStatus],
+    queryFn: () => apiClient.get("/admin/orders", { params: { page, pageSize, orderNo, paymentStatus } }).then((r) => r.data.data),
   });
 
   const markPaidMutation = useMutation({
@@ -82,7 +83,17 @@ export default function OrdersPage() {
           ))}
         </tbody>
       </table>
-      <Pagination page={page} pageSize={20} total={data?.total || 0} onChange={setPage} />
+      <Pagination
+        page={page}
+        pageSize={pageSize}
+        total={data?.total || 0}
+        onChange={setPage}
+        pageSizeOptions={[10, 20, 50, 100]}
+        onPageSizeChange={(nextPageSize) => {
+          setPageSize(nextPageSize);
+          setPage(1);
+        }}
+      />
 
       <Modal open={!!detail} title={`${t("orderDetail2")} ${detail?.orderNo || ""}`} onClose={() => setDetail(null)}>
         {detail && (
@@ -91,9 +102,9 @@ export default function OrdersPage() {
             <div><strong>{t("quantity2")}:</strong> {detail.quantity}</div>
             <div><strong>{t("amount2")}:</strong> ¥{detail.totalAmount}</div>
             <div><strong>{t("email2")}:</strong> {detail.buyerEmail || "-"}</div>
-            <div><strong>{t("common:orderStatus")}:</strong> {detail.orderStatus}</div>
-            <div><strong>{t("common:paymentStatus")}:</strong> {detail.paymentStatus}</div>
-            <div><strong>{t("common:deliveryStatus")}:</strong> {detail.deliveryStatus}</div>
+            <div><strong>{t("common:orderStatus")}:</strong> {t(`common:${detail.orderStatus}`)}</div>
+            <div><strong>{t("common:paymentStatus")}:</strong> {t(`common:${detail.paymentStatus}`)}</div>
+            <div><strong>{t("common:deliveryStatus")}:</strong> {t(`common:${detail.deliveryStatus}`)}</div>
             {detail.deliveries?.length > 0 && (
               <div><strong>{t("deliveryContent")}:</strong><pre className="mt-1 rounded bg-surface-alt p-2 text-xs text-text-primary">{detail.deliveries[0]?.content || "-"}</pre></div>
             )}

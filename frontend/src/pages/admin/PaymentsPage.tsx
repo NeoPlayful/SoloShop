@@ -17,6 +17,7 @@ export default function PaymentsPage() {
   const { t } = useTranslation("admin");
   const { t: tc } = useTranslation("common");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [orderNo, setOrderNo] = useState("");
   const [status, setStatus] = useState("");
   const [channel, setChannel] = useState("");
@@ -33,13 +34,13 @@ export default function PaymentsPage() {
 
   // 获取支付列表
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-payments", page, orderNo, status, channel, paidAtFrom, paidAtTo],
+    queryKey: ["admin-payments", page, pageSize, orderNo, status, channel, paidAtFrom, paidAtTo],
     queryFn: () =>
       apiClient
         .get("/admin/payments", {
           params: {
             page,
-            pageSize: 20,
+            pageSize,
             ...(orderNo && { orderNo }),
             ...(status && { status }),
             ...(channel && { channel }),
@@ -247,7 +248,17 @@ export default function PaymentsPage() {
         </table>
 
         <div className="px-4">
-          <Pagination page={page} pageSize={20} total={total} onChange={setPage} />
+          <Pagination
+            page={page}
+            pageSize={pageSize}
+            total={total}
+            onChange={setPage}
+            pageSizeOptions={[10, 20, 50, 100]}
+            onPageSizeChange={(nextPageSize) => {
+              setPageSize(nextPageSize);
+              setPage(1);
+            }}
+          />
         </div>
       </div>
 

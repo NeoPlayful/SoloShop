@@ -235,10 +235,10 @@ export default function WithdrawalRequestsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [approveItem, setApproveItem] = useState<any>(null);
   const [rejectItem, setRejectItem] = useState<any>(null);
   const [markPaidItem, setMarkPaidItem] = useState<any>(null);
-  const pageSize = 15;
 
   // 统计
   const { data: stats } = useQuery({
@@ -249,7 +249,7 @@ export default function WithdrawalRequestsPage() {
 
   // 列表
   const { data: listData, isLoading } = useQuery({
-    queryKey: ["admin-withdrawal-requests", search, statusFilter, page],
+    queryKey: ["admin-withdrawal-requests", search, statusFilter, page, pageSize],
     queryFn: () =>
       apiClient
         .get("/admin/withdrawal-requests", {
@@ -427,6 +427,11 @@ export default function WithdrawalRequestsPage() {
                 pageSize={pageSize}
                 total={total}
                 onChange={setPage}
+                pageSizeOptions={[10, 20, 50, 100]}
+                onPageSizeChange={(nextPageSize) => {
+                  setPageSize(nextPageSize);
+                  setPage(1);
+                }}
               />
             </div>
           </>

@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { prisma } from "../../lib/db.js";
 import { authMiddleware, superAdminMiddleware } from "../../lib/auth.js";
-import { success, error } from "../../lib/api-utils.js";
+import { success, error, parsePagination } from "../../lib/api-utils.js";
 import bcrypt from "bcryptjs";
 
 export async function adminUsersRoutes(app: FastifyInstance) {
@@ -9,12 +9,16 @@ export async function adminUsersRoutes(app: FastifyInstance) {
 
   // ─── 用户列表 ───
   app.get("/", async (request) => {
-    const query = request.query as { role?: string };
+    const query = request.query as { role?: string; page?: string; pageSize?: string };
     const where: Record<string, unknown> = { deletedAt: null };
     if (query.role) where.role = query.role;
 
+    const { page, pageSize } = parsePagination(query);
+    const total = await prisma.user.count({ where });
     const users = await prisma.user.findMany({
       where,
+      skip: (page - 1) * pageSize,
+      take: pageSize,
       select: {
         id: true,
         email: true,
@@ -39,7 +43,7 @@ export async function adminUsersRoutes(app: FastifyInstance) {
       },
       orderBy: { createdAt: "desc" },
     });
-    return success(users);
+    return success({ items: users, total, page, pageSize });
   });
 
   // ─── 创建用户（管理员或推广人） ───

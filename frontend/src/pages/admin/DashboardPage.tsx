@@ -22,15 +22,22 @@ import dayjs from "dayjs";
 
 function StatusBadge({ status }: { status: string }) {
   const { t } = useTranslation("admin");
-  const map: Record<string, { bg: string; text: string; label: string }> = {
-    paid: { bg: "bg-badge-success-bg", text: "text-badge-success-text", label: "paid" },
-    unpaid: { bg: "bg-badge-warning-bg", text: "text-badge-warning-text", label: "unpaid" },
-    refunded: { bg: "bg-badge-danger-bg", text: "text-badge-danger-text", label: "refunded" },
+  const map: Record<string, { bg: string; text: string }> = {
+    pending: { bg: "bg-badge-warning-bg", text: "text-badge-warning-text" },
+    unpaid: { bg: "bg-badge-warning-bg", text: "text-badge-warning-text" },
+    delivering: { bg: "bg-badge-info-bg", text: "text-badge-info-text" },
+    paid: { bg: "bg-badge-success-bg", text: "text-badge-success-text" },
+    completed: { bg: "bg-badge-success-bg", text: "text-badge-success-text" },
+    delivered: { bg: "bg-badge-success-bg", text: "text-badge-success-text" },
+    failed: { bg: "bg-badge-danger-bg", text: "text-badge-danger-text" },
+    refunded: { bg: "bg-badge-danger-bg", text: "text-badge-danger-text" },
+    cancelled: { bg: "bg-badge-info-bg", text: "text-badge-info-text" },
+    closed: { bg: "bg-badge-info-bg", text: "text-badge-info-text" },
   };
-  const s = map[status] || { bg: "bg-badge-info-bg", text: "text-badge-info-text", label: status };
+  const s = map[status] || { bg: "bg-badge-info-bg", text: "text-badge-info-text" };
   return (
     <span className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-medium ${s.bg} ${s.text}`}>
-      {t(s.label)}
+      {t(status, { ns: "common", defaultValue: status })}
     </span>
   );
 }

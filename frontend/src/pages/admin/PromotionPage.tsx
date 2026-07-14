@@ -65,11 +65,12 @@ function PromoterOrdersModal({ userId, email, onClose }: { userId: number; email
   const { t } = useTranslation("admin");
   const { t: tc } = useTranslation("common");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-promotion-orders", userId, page],
+    queryKey: ["admin-promotion-orders", userId, page, pageSize],
     queryFn: () =>
-      apiClient.get(`/admin/promotion/${userId}/orders?page=${page}&pageSize=10`).then((r) => r.data.data),
+      apiClient.get(`/admin/promotion/${userId}/orders?page=${page}&pageSize=${pageSize}`).then((r) => r.data.data),
   });
 
   return (
@@ -127,9 +128,14 @@ function PromoterOrdersModal({ userId, email, onClose }: { userId: number; email
               <div className="mt-2">
                 <NumberedPagination
                   page={data.page}
-                  pageSize={10}
+                  pageSize={pageSize}
                   total={data.total}
                   onChange={setPage}
+                  pageSizeOptions={[10, 20, 50, 100]}
+                  onPageSizeChange={(nextPageSize) => {
+                    setPageSize(nextPageSize);
+                    setPage(1);
+                  }}
                 />
               </div>
             </>
@@ -269,7 +275,7 @@ export default function PromotionPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(1);
-  const pageSize = 15;
+  const [pageSize, setPageSize] = useState(20);
 
   // 总览统计
   const { data: overview, isLoading: overviewLoading } = useQuery({
@@ -280,7 +286,7 @@ export default function PromotionPage() {
 
   // 推广人列表（已通过 + 待审核统一查询）
   const { data: listData, isLoading: listLoading } = useQuery({
-    queryKey: ["admin-promotion", search, statusFilter, page],
+    queryKey: ["admin-promotion", search, statusFilter, page, pageSize],
     queryFn: () =>
       apiClient
         .get("/admin/promotion", {
@@ -529,6 +535,11 @@ export default function PromotionPage() {
                 pageSize={pageSize}
                 total={total}
                 onChange={setPage}
+                pageSizeOptions={[10, 20, 50, 100]}
+                onPageSizeChange={(nextPageSize) => {
+                  setPageSize(nextPageSize);
+                  setPage(1);
+                }}
               />
             </div>
           </>

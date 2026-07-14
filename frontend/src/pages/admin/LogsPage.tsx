@@ -9,10 +9,11 @@ import { formatDate } from "../../utils/format.js";
 export default function LogsPage() {
   const { t } = useTranslation("admin");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [tab, setTab] = useState<"operation" | "login">("operation");
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-logs", tab, page],
-    queryFn: () => apiClient.get(`/admin/logs/${tab}`, { params: { page, pageSize: 20 } }).then((r) => r.data.data),
+    queryKey: ["admin-logs", tab, page, pageSize],
+    queryFn: () => apiClient.get(`/admin/logs/${tab}`, { params: { page, pageSize } }).then((r) => r.data.data),
   });
   if (isLoading) return <LoadingState />;
   return (
@@ -40,7 +41,17 @@ export default function LogsPage() {
           ))}
         </tbody>
       </table>
-      <Pagination page={page} pageSize={20} total={data?.total || 0} onChange={setPage} />
+      <Pagination
+        page={page}
+        pageSize={pageSize}
+        total={data?.total || 0}
+        onChange={setPage}
+        pageSizeOptions={[10, 20, 50, 100]}
+        onPageSizeChange={(nextPageSize) => {
+          setPageSize(nextPageSize);
+          setPage(1);
+        }}
+      />
     </div>
   );
 }

@@ -200,14 +200,15 @@ export default function PromotionOrdersPage() {
   const [search, setSearch] = useState("");
   const [commissionStatus, setCommissionStatus] = useState("");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-promotion-orders-log", search, commissionStatus, page],
+    queryKey: ["admin-promotion-orders-log", search, commissionStatus, page, pageSize],
     queryFn: () =>
       apiClient
         .get("/admin/promotion/orders", {
-          params: { search, commissionStatus, page, pageSize: 15 },
+          params: { search, commissionStatus, page, pageSize },
         })
         .then((r) => r.data.data),
   });
@@ -345,9 +346,14 @@ export default function PromotionOrdersPage() {
             <div className="px-4">
               <NumberedPagination
                 page={page}
-                pageSize={15}
+                pageSize={pageSize}
                 total={total}
                 onChange={setPage}
+                pageSizeOptions={[10, 20, 50, 100]}
+                onPageSizeChange={(nextPageSize) => {
+                  setPageSize(nextPageSize);
+                  setPage(1);
+                }}
               />
             </div>
           </>
