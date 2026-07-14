@@ -57,17 +57,17 @@ async function main() {
 
   // 创建默认支付渠道（仅配置模板，需后台启用和填写密钥）
   const channels = [
-    { code: "epay", name: "易支付", config: { apiUrl: "", pid: "", key: "" }, isEnabled: false },
-    { code: "alipay", name: "支付宝", config: { apiUrl: "", pid: "", key: "" }, isEnabled: false },
-    { code: "wxpay", name: "微信支付", config: { apiUrl: "", pid: "", key: "" }, isEnabled: false },
-    { code: "stripe", name: "Stripe", config: { secretKey: "", webhookSecret: "" }, isEnabled: false },
-    { code: "mock", name: "模拟支付（开发测试）", config: {}, isEnabled: true },
+    { code: "mock", name: "模拟支付（开发测试）", config: {}, isEnabled: true, sortOrder: 1 },
+    { code: "alipay", name: "支付宝", config: { apiUrl: "", pid: "", key: "" }, isEnabled: false, sortOrder: 2 },
+    { code: "wxpay", name: "微信支付", config: { apiUrl: "", pid: "", key: "" }, isEnabled: false, sortOrder: 3 },
+    { code: "epay", name: "易支付", config: { apiUrl: "", pid: "", key: "" }, isEnabled: false, sortOrder: 4 },
+    { code: "stripe", name: "Stripe", config: { secretKey: "", webhookSecret: "" }, isEnabled: false, sortOrder: 5 },
   ];
 
   for (const ch of channels) {
     await prisma.paymentChannel.upsert({
       where: { code: ch.code },
-      update: {},
+      update: { sortOrder: ch.sortOrder, name: ch.name },
       create: ch,
     });
   }
