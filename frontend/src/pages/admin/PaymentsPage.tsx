@@ -135,7 +135,7 @@ export default function PaymentsPage() {
           className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text-primary outline-none focus:border-blue-500 transition-colors"
         >
           <option value="">{t("allChannels")}</option>
-          {channelsData?.map((ch: any) => (
+          {channelsData?.items?.map((ch: any) => (
             <option key={ch.code} value={ch.code}>
               {ch.name}
             </option>

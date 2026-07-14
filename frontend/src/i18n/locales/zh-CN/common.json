@@ -66,6 +66,7 @@
   "markPaid": "标记支付",
   "closeOrder": "关闭",
   "submitOrder": "提交订单",
+  "processing": "处理中...",
   "payNow": "确认支付",
   "paid": "已支付",
   "unpaid": "未支付",

@@ -182,7 +182,7 @@ model Order {
 model Payment {
   id             Int       @id @default(autoincrement())
   orderId        Int
-  channel        String // 支付渠道编码 yipay / stripe
+  channel        String // 支付渠道编码 epay / alipay / wxpay / stripe / mock
   tradeNo        String? // 平台订单号
   channelOrderNo String? // 支付渠道订单号
   amount         Decimal   @db.Decimal(10, 2)
@@ -220,7 +220,7 @@ model Delivery {
 // ─── 支付渠道配置 ───
 model PaymentChannel {
   id        Int      @id @default(autoincrement())
-  code      String   @unique // yipay / stripe
+  code      String   @unique // epay / alipay / wxpay / stripe / mock
   name      String
   config    Json // 渠道配置（密钥、URL等），前端返回时脱敏
   isEnabled Boolean  @default(false)
