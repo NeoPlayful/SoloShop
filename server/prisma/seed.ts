@@ -57,7 +57,9 @@ async function main() {
 
   // 创建默认支付渠道（仅配置模板，需后台启用和填写密钥）
   const channels = [
-    { code: "yipay", name: "易支付", config: { apiUrl: "", appId: "", appKey: "" }, isEnabled: false },
+    { code: "epay", name: "易支付", config: { apiUrl: "", pid: "", key: "" }, isEnabled: false },
+    { code: "alipay", name: "支付宝", config: { apiUrl: "", pid: "", key: "" }, isEnabled: false },
+    { code: "wxpay", name: "微信支付", config: { apiUrl: "", pid: "", key: "" }, isEnabled: false },
     { code: "stripe", name: "Stripe", config: { secretKey: "", webhookSecret: "" }, isEnabled: false },
     { code: "mock", name: "模拟支付（开发测试）", config: {}, isEnabled: true },
   ];

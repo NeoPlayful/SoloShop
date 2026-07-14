@@ -162,7 +162,7 @@ function RecentOrdersSection({ loading, error, data, refetch }: {
         {data.slice(0, 6).map((order: any) => (
           <Link
             key={order.id}
-            to={`/admin/orders/${order.id}`}
+            to="/admin/orders"
             className="flex items-center justify-between py-2.5 transition-colors hover:bg-surface-hover -mx-1 px-1 rounded"
           >
             <div className="min-w-0 flex-1">

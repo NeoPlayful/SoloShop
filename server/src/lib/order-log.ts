@@ -15,7 +15,9 @@ export type OrderLogEventType =
   | "order.expired"
   | "commission.pending"
   | "commission.settled"
-  | "note.updated";
+  | "note.updated"
+  | "email.sent"
+  | "email.failed";
 
 /**
  * 记录订单日志
