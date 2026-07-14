@@ -12,14 +12,15 @@ import toast from "react-hot-toast";
 export default function CategoriesPage() {
   const { t } = useTranslation("admin");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState({ name: "", slug: "", description: "", sortOrder: 0 });
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const qc = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-categories", page],
-    queryFn: () => apiClient.get("/admin/categories", { params: { page, pageSize: 20 } }).then((r) => r.data.data),
+    queryKey: ["admin-categories", page, pageSize],
+    queryFn: () => apiClient.get("/admin/categories", { params: { page, pageSize } }).then((r) => r.data.data),
   });
 
   const saveMutation = useMutation({
@@ -81,7 +82,17 @@ export default function CategoriesPage() {
           ))}
         </tbody>
       </table>
-      <Pagination page={page} pageSize={20} total={data?.total || 0} onChange={setPage} />
+      <Pagination
+        page={page}
+        pageSize={pageSize}
+        total={data?.total || 0}
+        onChange={setPage}
+        pageSizeOptions={[10, 20, 50, 100]}
+        onPageSizeChange={(nextPageSize) => {
+          setPageSize(nextPageSize);
+          setPage(1);
+        }}
+      />
 
       <Modal open={editId !== null} title={editId && editId > 0 ? t("editCategory") : t("addCategory")} onClose={() => { setEditId(null); setForm({ name: "", slug: "", description: "", sortOrder: 0 }); }}>
         <div className="space-y-4">

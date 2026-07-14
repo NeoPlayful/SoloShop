@@ -5,12 +5,15 @@ interface NumberedPaginationProps {
   pageSize: number;
   total: number;
   onChange: (page: number) => void;
+  pageSizeOptions?: number[];
+  onPageSizeChange?: (pageSize: number) => void;
 }
 
-export function NumberedPagination({ page, pageSize, total, onChange }: NumberedPaginationProps) {
+export function NumberedPagination({ page, pageSize, total, onChange, pageSizeOptions, onPageSizeChange }: NumberedPaginationProps) {
   const { t } = useTranslation();
   const totalPages = Math.ceil(total / pageSize);
-  if (totalPages <= 1) return null;
+  const showPageSizeSelector = !!onPageSizeChange && !!pageSizeOptions?.length;
+  if (totalPages <= 0 && !showPageSizeSelector) return null;
 
   const getPageNumbers = (): (number | "...")[] => {
     if (totalPages <= 7) {
@@ -29,9 +32,22 @@ export function NumberedPagination({ page, pageSize, total, onChange }: Numbered
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className="flex items-center justify-between py-4">
-      <div className="text-sm text-text-secondary">
-        {t("totalRecords", { total })}
+    <div className="flex flex-wrap items-center justify-between gap-3 py-4">
+      <div className="flex items-center gap-3 text-sm text-text-secondary">
+        <span>{t("totalRecords", { total })}</span>
+        {showPageSizeSelector && (
+          <select
+            value={pageSize}
+            onChange={(e) => onPageSizeChange?.(Number(e.target.value))}
+            className="rounded border border-border bg-surface px-2 py-1 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-ring-focus"
+          >
+            {pageSizeOptions?.map((option) => (
+              <option key={option} value={option}>
+                {`${option}${t("pageSizeSuffix", { ns: "common", defaultValue: "条/页" })}`}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
       <div className="flex items-center gap-1">
         <button
@@ -50,11 +66,12 @@ export function NumberedPagination({ page, pageSize, total, onChange }: Numbered
             <button
               key={num}
               onClick={() => onChange(num)}
+              disabled={totalPages <= 1}
               className={`min-w-[32px] rounded px-2 py-1 text-sm transition-colors ${
                 num === page
                   ? "bg-blue-500 text-white"
                   : "border border-border text-text-primary hover:bg-surface-hover"
-              }`}
+              } disabled:opacity-40`}
             >
               {num}
             </button>

@@ -28,6 +28,8 @@
   "prevPage": "Previous",
   "nextPage": "Next",
   "pageInfo": "{{page}} / {{total}}",
+  "pageSize": "Per page",
+  "pageSizeSuffix": " items/page",
   "confirmTitle": "Confirm Action",
   "confirmMessage": "Are you sure you want to proceed?",
   "noData": "No data",

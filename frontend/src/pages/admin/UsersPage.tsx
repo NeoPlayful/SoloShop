@@ -5,6 +5,7 @@ import { apiClient } from "../../lib/client.js";
 import { LoadingState } from "../../components/LoadingStates.js";
 import { Modal } from "../../components/Modal.js";
 import { ConfirmDialog } from "../../components/ConfirmDialog.js";
+import { NumberedPagination } from "../../theme/components/navigation/NumberedPagination.js";
 import toast from "react-hot-toast";
 import { formatDate } from "../../utils/format.js";
 
@@ -37,6 +38,8 @@ export default function UsersPage() {
   const { t: tc } = useTranslation("common");
   const queryClient = useQueryClient();
   const [roleFilter, setRoleFilter] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
 
   // Modal 状态
   const [modalOpen, setModalOpen] = useState(false);
@@ -48,9 +51,11 @@ export default function UsersPage() {
   const [deleteTarget, setDeleteTarget] = useState<any>(null);
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-users", roleFilter],
-    queryFn: () => apiClient.get("/admin/users", { params: { role: roleFilter || undefined } }).then((r) => r.data.data),
+    queryKey: ["admin-users", roleFilter, page, pageSize],
+    queryFn: () => apiClient.get("/admin/users", { params: { role: roleFilter || undefined, page, pageSize } }).then((r) => r.data.data),
   });
+  const list = data?.items || [];
+  const total = data?.total || 0;
 
   const disableMutation = useMutation({
     mutationFn: (id: number) => apiClient.post(`/admin/users/${id}/disable`),
@@ -175,7 +180,7 @@ export default function UsersPage() {
         <div className="flex items-center gap-3">
           <div className="flex gap-1">
             {roleOptions.map((r) => (
-              <button key={r} onClick={() => setRoleFilter(r)} className={`rounded-lg px-3 py-1.5 text-xs transition-colors ${roleFilter === r ? "bg-blue-500 text-white" : "bg-surface-alt text-text-secondary hover:bg-surface-hover"}`}>
+              <button key={r} onClick={() => { setRoleFilter(r); setPage(1); }} className={`rounded-lg px-3 py-1.5 text-xs transition-colors ${roleFilter === r ? "bg-blue-500 text-white" : "bg-surface-alt text-text-secondary hover:bg-surface-hover"}`}>
                 {r ? roleLabels[r] || r : tc("all")}
               </button>
             ))}
@@ -201,7 +206,7 @@ export default function UsersPage() {
             </tr>
           </thead>
           <tbody>
-            {data?.map((item: any) => (
+            {list.map((item: any) => (
               <tr key={item.id} className="border-b border-border text-sm hover:bg-surface-hover">
                 <td className="px-4 py-3 text-text-primary">{item.id}</td>
                 <td className="px-4 py-3 font-mono text-xs font-medium text-text-primary">{item.username || "-"}</td>
@@ -233,11 +238,25 @@ export default function UsersPage() {
                 </td>
               </tr>
             ))}
-            {(!data || data.length === 0) && (
+            {list.length === 0 && (
               <tr><td colSpan={8} className="px-4 py-8 text-center text-sm text-text-secondary">{t("noData")}</td></tr>
             )}
           </tbody>
         </table>
+      </div>
+
+      <div className="mt-4">
+        <NumberedPagination
+          page={page}
+          pageSize={pageSize}
+          total={data?.total || 0}
+          onChange={setPage}
+          pageSizeOptions={[10, 20, 50, 100]}
+          onPageSizeChange={(nextPageSize) => {
+            setPageSize(nextPageSize);
+            setPage(1);
+          }}
+        />
       </div>
 
       {/* ── 新建/编辑 Modal ── */}

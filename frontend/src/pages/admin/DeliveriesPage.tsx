@@ -10,10 +10,11 @@ import { formatDate } from "../../utils/format.js";
 export default function DeliveriesPage() {
   const { t } = useTranslation("admin");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [status, setStatus] = useState("");
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-deliveries", page, status],
-    queryFn: () => apiClient.get("/admin/deliveries", { params: { page, pageSize: 20, status } }).then((r) => r.data.data),
+    queryKey: ["admin-deliveries", page, pageSize, status],
+    queryFn: () => apiClient.get("/admin/deliveries", { params: { page, pageSize, status } }).then((r) => r.data.data),
   });
   if (isLoading) return <LoadingState />;
   return (
@@ -49,7 +50,17 @@ export default function DeliveriesPage() {
           ))}
         </tbody>
       </table>
-      <Pagination page={page} pageSize={20} total={data?.total || 0} onChange={setPage} />
+      <Pagination
+        page={page}
+        pageSize={pageSize}
+        total={data?.total || 0}
+        onChange={setPage}
+        pageSizeOptions={[10, 20, 50, 100]}
+        onPageSizeChange={(nextPageSize) => {
+          setPageSize(nextPageSize);
+          setPage(1);
+        }}
+      />
     </div>
   );
 }

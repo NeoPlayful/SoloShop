@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 export default function CardsPage() {
   const { t } = useTranslation("admin");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const [productId, setProductId] = useState("");
   const [status, setStatus] = useState("");
   const [showImport, setShowImport] = useState(false);
@@ -21,8 +22,8 @@ export default function CardsPage() {
   const qc = useQueryClient();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-cards", page, productId, status],
-    queryFn: () => apiClient.get("/admin/cards", { params: { page, pageSize: 20, productId, status } }).then((r) => r.data.data),
+    queryKey: ["admin-cards", page, pageSize, productId, status],
+    queryFn: () => apiClient.get("/admin/cards", { params: { page, pageSize, productId, status } }).then((r) => r.data.data),
   });
 
   const { data: products } = useQuery({
@@ -94,7 +95,17 @@ export default function CardsPage() {
           ))}
         </tbody>
       </table>
-      <Pagination page={page} pageSize={20} total={data?.total || 0} onChange={setPage} />
+      <Pagination
+        page={page}
+        pageSize={pageSize}
+        total={data?.total || 0}
+        onChange={setPage}
+        pageSizeOptions={[10, 20, 50, 100]}
+        onPageSizeChange={(nextPageSize) => {
+          setPageSize(nextPageSize);
+          setPage(1);
+        }}
+      />
 
       <Modal open={showImport} title={t("importCards")} onClose={() => setShowImport(false)}>
         <div className="space-y-4">

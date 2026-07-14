@@ -1,15 +1,19 @@
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { apiClient } from "../../lib/client.js";
 import { LoadingState } from "../../components/LoadingStates.js";
+import { NumberedPagination } from "../../theme/components/navigation/NumberedPagination.js";
 import toast from "react-hot-toast";
 
 export default function PaymentChannelsPage() {
   const { t } = useTranslation("admin");
   const qc = useQueryClient();
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
   const { data, isLoading } = useQuery({
-    queryKey: ["admin-payment-channels"],
-    queryFn: () => apiClient.get("/admin/payment-channels").then((r) => r.data.data),
+    queryKey: ["admin-payment-channels", page, pageSize],
+    queryFn: () => apiClient.get("/admin/payment-channels", { params: { page, pageSize } }).then((r) => r.data.data),
   });
 
   const toggleMutation = useMutation({
@@ -17,12 +21,15 @@ export default function PaymentChannelsPage() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-payment-channels"] }); toast.success(t("operationSuccess", { ns: "common" })); },
   });
 
+  const channels = data?.items || [];
+  const total = data?.total || 0;
+
   if (isLoading) return <LoadingState />;
   return (
     <div>
       <h1 className="mb-4 text-xl font-bold text-text-primary">{t("channelManagement")}</h1>
       <div className="space-y-4">
-        {data?.map((ch: any) => (
+        {channels.map((ch: any) => (
           <div key={ch.code} className="flex items-center justify-between rounded-lg bg-surface p-4 shadow">
             <div>
               <p className="font-medium text-text-primary">{ch.name}</p>
@@ -34,6 +41,19 @@ export default function PaymentChannelsPage() {
             </div>
           </div>
         ))}
+        <div className="px-1">
+          <NumberedPagination
+            page={page}
+            pageSize={pageSize}
+            total={total}
+            onChange={setPage}
+            pageSizeOptions={[10, 20, 50, 100]}
+            onPageSizeChange={(nextPageSize) => {
+              setPageSize(nextPageSize);
+              setPage(1);
+            }}
+          />
+        </div>
       </div>
     </div>
   );
